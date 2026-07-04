@@ -2616,7 +2616,7 @@
                             </select>
                         </td>
                         <td><input type="text" value="${p.name}" onchange="updateProductField('${p.id}','name',this.value)" /></td>
-                        <td><input type="text" value="${p.quantity}" onchange="updateProductField('${p.id}','name',this.value)" /></td>
+                        <td><input type="text" value="${p.quantity}" onchange="updateProductField('${p.id}','quantity',this.value)" /></td>
                         <td><input type="number" value="${p.estimated || 0}" onchange="updateProductField('${p.id}','estimated',parseFloat(this.value)||0)" style="width:60px;" /></td>
                         <td><input type="number" value="${p.real || 0}" onchange="updateProductField('${p.id}','real',parseFloat(this.value)||0)" style="width:60px;" /></td>
                         <td style="font-weight:600;color:${(p.real||0) > (p.estimated||0) ? 'var(--red)' : 'var(--green)'};">${fmt((p.real||0) - (p.estimated||0))}</td>
