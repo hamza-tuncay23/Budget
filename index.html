@@ -1,40 +1,1814 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>BudgetFlow</title>
-<link rel="stylesheet" href="style.css">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>💰 Smart Budget</title>
+
+    <!-- Firebase SDKs -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js">
+    </script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js">
+    </script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js">
+    </script>
+
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js">
+    </script>
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+
+    <style>
+        /* ───────────── RESET & VARIABLES ───────────── */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+        }
+
+        :root {
+            --bg: #f5f7fa;
+            --card: #ffffff;
+            --text: #1e293b;
+            --text2: #64748b;
+            --border: #e2e8f0;
+            --primary: #3b82f6;
+            --primary-light: #dbeafe;
+            --shadow: 0 4px 24px rgba(0, 0, 0, 0.06);
+            --radius: 16px;
+            --green: #22c55e;
+            --red: #ef4444;
+            --orange: #f59e0b;
+            --transition: 0.25s ease;
+        }
+
+        .dark {
+            --bg: #0f172a;
+            --card: #1e293b;
+            --text: #f1f5f9;
+            --text2: #94a3b8;
+            --border: #334155;
+            --primary: #60a5fa;
+            --primary-light: #1e293b;
+            --shadow: 0 4px 24px rgba(0, 0, 0, 0.3);
+        }
+
+        body {
+            background: var(--bg);
+            color: var(--text);
+            padding: 20px;
+            min-height: 100vh;
+            transition: background var(--transition), color var(--transition);
+        }
+
+        /* ───────────── LOGIN SCREEN ───────────── */
+        #loginScreen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: var(--bg);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            transition: opacity 0.5s ease;
+        }
+
+        #loginScreen.hidden {
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .login-box {
+            background: var(--card);
+            padding: 40px 36px;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            border: 1px solid var(--border);
+            max-width: 400px;
+            width: 100%;
+        }
+
+        .login-box h2 {
+            font-size: 24px;
+            margin-bottom: 6px;
+        }
+
+        .login-box .subtitle {
+            color: var(--text2);
+            margin-bottom: 24px;
+            font-size: 14px;
+        }
+
+        .login-box input {
+            width: 100%;
+            padding: 12px 16px;
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            background: var(--bg);
+            color: var(--text);
+            font-size: 15px;
+            margin-bottom: 12px;
+            transition: border var(--transition);
+        }
+
+        .login-box input:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+
+        .login-box button {
+            width: 100%;
+            padding: 12px;
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: opacity var(--transition);
+        }
+
+        .login-box button:hover {
+            opacity: 0.85;
+        }
+
+        .login-box .error {
+            color: var(--red);
+            font-size: 13px;
+            margin-top: 8px;
+            display: none;
+        }
+
+        .login-box .loading-text {
+            color: var(--text2);
+            font-size: 13px;
+            text-align: center;
+            margin-top: 8px;
+        }
+
+        /* ───────────── APP (hidden until login) ───────────── */
+        #app {
+            display: none;
+            max-width: 1300px;
+            margin: 0 auto;
+        }
+
+        #app.visible {
+            display: block;
+        }
+
+        /* ───────────── SYNC STATUS ───────────── */
+        .sync-status {
+            font-size: 12px;
+            color: var(--text2);
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .sync-status .dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            display: inline-block;
+        }
+
+        .sync-status .dot.online {
+            background: var(--green);
+        }
+        .sync-status .dot.offline {
+            background: var(--red);
+        }
+        .sync-status .dot.syncing {
+            background: var(--orange);
+            animation: pulse 0.8s ease infinite;
+        }
+
+        @keyframes pulse {
+            0%,
+            100% {
+                opacity: 1;
+            }
+            50% {
+                opacity: 0.3;
+            }
+        }
+
+        /* ───────────── REST OF STYLES (same as before) ───────────── */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 16px;
+            margin-bottom: 28px;
+        }
+
+        .header h1 {
+            font-size: 26px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .header h1 i {
+            color: var(--primary);
+        }
+
+        .header-actions {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+
+        .header-actions button {
+            background: var(--card);
+            border: 1px solid var(--border);
+            color: var(--text);
+            padding: 8px 16px;
+            border-radius: 40px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all var(--transition);
+            box-shadow: var(--shadow);
+        }
+
+        .header-actions button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 28px rgba(0, 0, 0, 0.1);
+        }
+
+        .header-actions .logout-btn {
+            background: #fee2e2;
+            color: var(--red);
+            border: none;
+        }
+
+        .header-actions .logout-btn:hover {
+            background: #fecaca;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 16px;
+            margin-bottom: 28px;
+        }
+
+        .stat-card {
+            background: var(--card);
+            border-radius: var(--radius);
+            padding: 20px 22px;
+            box-shadow: var(--shadow);
+            border: 1px solid var(--border);
+            transition: all var(--transition);
+        }
+
+        .stat-card:hover {
+            transform: translateY(-3px);
+        }
+
+        .stat-card .label {
+            font-size: 13px;
+            font-weight: 500;
+            color: var(--text2);
+            text-transform: uppercase;
+            letter-spacing: 0.4px;
+            margin-bottom: 4px;
+        }
+
+        .stat-card .value {
+            font-size: 28px;
+            font-weight: 700;
+        }
+
+        .stat-card .sub {
+            font-size: 13px;
+            color: var(--text2);
+            margin-top: 4px;
+        }
+
+        .stat-card .progress-bar {
+            width: 100%;
+            height: 6px;
+            background: var(--border);
+            border-radius: 10px;
+            margin-top: 10px;
+            overflow: hidden;
+        }
+
+        .stat-card .progress-bar .fill {
+            height: 100%;
+            border-radius: 10px;
+            background: var(--primary);
+            transition: width 0.6s ease;
+        }
+
+        .green .value {
+            color: var(--green);
+        }
+        .red .value {
+            color: var(--red);
+        }
+        .blue .value {
+            color: var(--primary);
+        }
+        .orange .value {
+            color: var(--orange);
+        }
+
+        .row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 24px;
+            margin-bottom: 28px;
+        }
+
+        @media (max-width: 900px) {
+            .row {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .card {
+            background: var(--card);
+            border-radius: var(--radius);
+            padding: 22px 24px;
+            box-shadow: var(--shadow);
+            border: 1px solid var(--border);
+            transition: all var(--transition);
+        }
+
+        .card h3 {
+            font-size: 17px;
+            font-weight: 600;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .card h3 i {
+            color: var(--primary);
+        }
+
+        .card h3 .badge {
+            font-size: 12px;
+            background: var(--primary-light);
+            color: var(--primary);
+            padding: 2px 12px;
+            border-radius: 40px;
+            font-weight: 500;
+            margin-left: auto;
+        }
+
+        .chart-container {
+            max-height: 240px;
+            max-width: 100%;
+            margin: 0 auto;
+            position: relative;
+        }
+
+        .category-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 0;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .category-item:last-child {
+            border-bottom: none;
+        }
+
+        .category-item .name {
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .category-item .name .dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            display: inline-block;
+        }
+
+        .category-item .amount {
+            font-weight: 600;
+        }
+
+        .table-wrap {
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 14px;
+        }
+
+        th {
+            text-align: left;
+            padding: 10px 8px;
+            font-weight: 600;
+            color: var(--text2);
+            border-bottom: 2px solid var(--border);
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+        }
+
+        td {
+            padding: 10px 8px;
+            border-bottom: 1px solid var(--border);
+            vertical-align: middle;
+        }
+
+        td input[type="text"],
+        td input[type="number"] {
+            background: transparent;
+            border: 1px solid transparent;
+            padding: 4px 6px;
+            border-radius: 6px;
+            color: var(--text);
+            font-size: 14px;
+            width: 100%;
+            min-width: 60px;
+            transition: border var(--transition);
+        }
+
+        td input:focus {
+            border-color: var(--primary);
+            outline: none;
+            background: var(--bg);
+        }
+
+        td input[type="checkbox"] {
+            width: 18px;
+            height: 18px;
+            accent-color: var(--primary);
+            cursor: pointer;
+        }
+
+        .btn-icon {
+            background: transparent;
+            border: none;
+            color: var(--text2);
+            cursor: pointer;
+            padding: 4px 8px;
+            border-radius: 6px;
+            transition: all var(--transition);
+            font-size: 14px;
+        }
+
+        .btn-icon:hover {
+            background: var(--border);
+            color: var(--text);
+        }
+
+        .btn-icon.danger:hover {
+            background: #fee2e2;
+            color: var(--red);
+        }
+
+        .add-row {
+            background: transparent;
+            border: 1px dashed var(--border);
+            color: var(--text2);
+            padding: 8px 16px;
+            border-radius: 40px;
+            cursor: pointer;
+            font-size: 13px;
+            transition: all var(--transition);
+            margin-top: 10px;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .add-row:hover {
+            border-color: var(--primary);
+            color: var(--primary);
+            background: var(--primary-light);
+        }
+
+        .toolbar {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin-bottom: 16px;
+            align-items: center;
+        }
+
+        .toolbar input,
+        .toolbar select {
+            background: var(--bg);
+            border: 1px solid var(--border);
+            padding: 8px 14px;
+            border-radius: 40px;
+            color: var(--text);
+            font-size: 14px;
+            flex: 1 1 160px;
+            min-width: 120px;
+        }
+
+        .toolbar input:focus,
+        .toolbar select:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+
+        .tabs {
+            display: flex;
+            gap: 4px;
+            background: var(--bg);
+            border-radius: 40px;
+            padding: 4px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .tabs button {
+            background: transparent;
+            border: none;
+            padding: 8px 20px;
+            border-radius: 40px;
+            font-weight: 500;
+            color: var(--text2);
+            cursor: pointer;
+            transition: all var(--transition);
+            font-size: 14px;
+        }
+
+        .tabs button.active {
+            background: var(--card);
+            color: var(--text);
+            box-shadow: var(--shadow);
+        }
+
+        .tabs button:hover {
+            color: var(--text);
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .month-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 16px;
+        }
+
+        .month-card {
+            background: var(--card);
+            border-radius: var(--radius);
+            padding: 16px 20px;
+            border: 1px solid var(--border);
+            box-shadow: var(--shadow);
+            transition: all var(--transition);
+            cursor: pointer;
+        }
+
+        .month-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
+        }
+
+        .month-card .month-name {
+            font-weight: 600;
+            font-size: 18px;
+        }
+
+        .month-card .month-stats {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 8px;
+            font-size: 14px;
+            color: var(--text2);
+        }
+
+        .month-card .month-stats span {
+            font-weight: 600;
+            color: var(--text);
+        }
+
+        .settings-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 0;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .settings-row:last-child {
+            border-bottom: none;
+        }
+
+        .toggle-switch {
+            width: 44px;
+            height: 24px;
+            background: var(--border);
+            border-radius: 40px;
+            position: relative;
+            cursor: pointer;
+            transition: background var(--transition);
+            flex-shrink: 0;
+        }
+
+        .toggle-switch.active {
+            background: var(--primary);
+        }
+
+        .toggle-switch .knob {
+            width: 18px;
+            height: 18px;
+            background: white;
+            border-radius: 50%;
+            position: absolute;
+            top: 3px;
+            left: 3px;
+            transition: left var(--transition);
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+        }
+
+        .toggle-switch.active .knob {
+            left: 23px;
+        }
+
+        @media (max-width: 600px) {
+            .header h1 {
+                font-size: 20px;
+            }
+            .stat-card .value {
+                font-size: 22px;
+            }
+            .card {
+                padding: 16px;
+            }
+            td input[type="text"],
+            td input[type="number"] {
+                min-width: 40px;
+                font-size: 12px;
+            }
+            th {
+                font-size: 10px;
+            }
+            td {
+                font-size: 12px;
+                padding: 6px 4px;
+            }
+            .stats-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+            .login-box {
+                padding: 24px 20px;
+                margin: 16px;
+            }
+        }
+
+        @media (max-width: 400px) {
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .mt-16 {
+            margin-top: 16px;
+        }
+        .mb-16 {
+            margin-bottom: 16px;
+        }
+        .flex {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .text-center {
+            text-align: center;
+        }
+        .text-muted {
+            color: var(--text2);
+            font-size: 13px;
+        }
+        .hidden {
+            display: none !important;
+        }
+
+        .toast {
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            background: var(--card);
+            border: 1px solid var(--border);
+            padding: 14px 22px;
+            border-radius: var(--radius);
+            box-shadow: 0 8px 40px rgba(0, 0, 0, 0.15);
+            font-weight: 500;
+            z-index: 999;
+            animation: slideUp 0.3s ease;
+            max-width: 340px;
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+    </style>
 </head>
 <body>
-<aside>
-<h2>BudgetFlow</h2>
-<nav>
-<button data-page="dashboard">Dashboard</button>
-<button data-page="shopping">Shopping</button>
-<button data-page="products">Products</button>
-<button data-page="budget">Budget</button>
-<button data-page="statistics">Statistics</button>
-<button data-page="goals">Goals</button>
-<button data-page="inventory">Inventory</button>
-<button data-page="bills">Bills</button>
-<button data-page="ai">AI</button>
-<button data-page="settings">Settings</button>
-</nav>
-</aside>
-<main id="content">
-<h1>Dashboard</h1>
-<div class="cards">
-<div class="card"><h3>Remaining</h3><p id="remaining">2000 DH</p></div>
-<div class="card"><h3>Spent</h3><p id="spent">0 DH</p></div>
-<div class="card"><h3>Estimated</h3><p id="estimated">0 DH</p></div>
-</div>
-<h2>Shopping</h2>
-<input id="product" placeholder="Product">
-<input id="price" type="number" placeholder="Price">
-<button id="add">Add</button>
-<ul id="list"></ul>
-</main>
-<script src="script.js"></script>
+
+    <!-- ═══════════ LOGIN SCREEN ═══════════ -->
+    <div id="loginScreen">
+        <div class="login-box">
+            <h2>🔐 Smart Budget</h2>
+            <p class="subtitle">Sign in to sync across all your devices</p>
+            <form id="loginForm" onsubmit="handleLogin(event)">
+                <input type="email" id="loginEmail" placeholder="Email" required />
+                <input type="password" id="loginPassword" placeholder="Password" required />
+                <button type="submit" id="loginBtn">Sign In</button>
+                <div class="error" id="loginError">Invalid email or password</div>
+                <div class="loading-text" id="loginLoading">Connecting...</div>
+            </form>
+            <p style="margin-top:16px;font-size:13px;color:var(--text2);text-align:center;">
+                Data is encrypted and synced in real-time
+            </p>
+        </div>
+    </div>
+
+    <!-- ═══════════ APP ═══════════ -->
+    <div id="app">
+
+        <header class="header">
+            <h1><i class="fas fa-wallet"></i> Smart Budget</h1>
+            <div class="header-actions">
+                <span class="sync-status" id="syncStatus">
+                    <span class="dot offline" id="syncDot"></span>
+                    <span id="syncText">Offline</span>
+                </span>
+                <button onclick="exportCSV()"><i class="fas fa-file-export"></i> Export</button>
+                <button onclick="document.getElementById('csvInput').click()"><i class="fas fa-file-import"></i> Import</button>
+                <button class="logout-btn" onclick="handleLogout()"><i class="fas fa-sign-out-alt"></i> Logout</button>
+            </div>
+        </header>
+
+        <!-- Stats Grid -->
+        <section class="stats-grid" id="statsGrid">
+            <div class="stat-card blue">
+                <div class="label">💰 Monthly Budget</div>
+                <div class="value" id="budgetDisplay">0 DH</div>
+                <div class="sub"><i class="fas fa-pen" style="cursor:pointer;" onclick="editBudget()"></i> Click to edit</div>
+            </div>
+            <div class="stat-card green">
+                <div class="label">✅ Total Spent</div>
+                <div class="value" id="spentDisplay">0 DH</div>
+                <div class="sub">This month</div>
+            </div>
+            <div class="stat-card orange">
+                <div class="label">📊 Remaining</div>
+                <div class="value" id="remainingDisplay">0 DH</div>
+                <div class="progress-bar"><div class="fill" id="progressFill" style="width:0%;"></div></div>
+            </div>
+            <div class="stat-card red">
+                <div class="label">📉 Estimated vs Real</div>
+                <div class="value" id="diffDisplay">0 DH</div>
+                <div class="sub" id="diffSub">Difference</div>
+            </div>
+        </section>
+
+        <!-- Tabs -->
+        <div class="tabs">
+            <button class="active" data-tab="dashboard"><i class="fas fa-chart-pie"></i> Dashboard</button>
+            <button data-tab="shopping"><i class="fas fa-shopping-cart"></i> Shopping</button>
+            <button data-tab="products"><i class="fas fa-boxes"></i> Products</button>
+            <button data-tab="months"><i class="fas fa-calendar-alt"></i> Months</button>
+            <button data-tab="settings"><i class="fas fa-cog"></i> Settings</button>
+        </div>
+
+        <!-- Dashboard -->
+        <div class="tab-content active" id="tab-dashboard">
+            <div class="row">
+                <div class="card">
+                    <h3><i class="fas fa-chart-pie"></i> Spending by Category <span class="badge">This month</span></h3>
+                    <div class="chart-container">
+                        <canvas id="pieChart"></canvas>
+                    </div>
+                </div>
+                <div class="card">
+                    <h3><i class="fas fa-list"></i> Category Breakdown</h3>
+                    <div id="categoryList">
+                        <div class="text-muted text-center" style="padding:20px 0;">No data yet.</div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="card">
+                    <h3><i class="fas fa-clock"></i> Recent Purchases</h3>
+                    <div id="recentPurchases">
+                        <div class="text-muted text-center" style="padding:20px 0;">No purchases yet.</div>
+                    </div>
+                </div>
+                <div class="card">
+                    <h3><i class="fas fa-bolt"></i> Quick Stats</h3>
+                    <div id="quickStats">
+                        <div class="text-muted text-center" style="padding:20px 0;">Statistics will appear here.</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Shopping -->
+        <div class="tab-content" id="tab-shopping">
+            <div class="card">
+                <h3><i class="fas fa-shopping-list"></i> Shopping Checklist</h3>
+                <div class="toolbar">
+                    <input type="text" id="searchShopping" placeholder="🔍 Search products..." oninput="renderShopping()" />
+                    <select id="filterShopping" onchange="renderShopping()">
+                        <option value="all">All</option>
+                        <option value="bought">Bought</option>
+                        <option value="unbought">Unbought</option>
+                    </select>
+                    <select id="priorityFilter" onchange="renderShopping()">
+                        <option value="all">All priorities</option>
+                        <option value="high">High</option>
+                        <option value="medium">Medium</option>
+                        <option value="low">Low</option>
+                    </select>
+                    <button class="add-row" onclick="addProduct()"><i class="fas fa-plus"></i> Add product</button>
+                </div>
+                <div class="table-wrap">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th style="width:30px;">✔</th>
+                                <th>Product</th>
+                                <th>Category</th>
+                                <th>Qty</th>
+                                <th>Est. (DH)</th>
+                                <th>Real (DH)</th>
+                                <th>Diff</th>
+                                <th>Priority</th>
+                                <th style="width:60px;">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="shoppingBody"></tbody>
+                    </table>
+                </div>
+                <div style="margin-top:12px; display:flex; gap:12px; flex-wrap:wrap;">
+                    <span class="text-muted">Total estimated: <strong id="shoppingEstTotal">0 DH</strong></span>
+                    <span class="text-muted">Total real: <strong id="shoppingRealTotal">0 DH</strong></span>
+                    <span class="text-muted">Bought: <strong id="shoppingBoughtCount">0</strong> / <span id="shoppingTotalCount">0</span></span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Products -->
+        <div class="tab-content" id="tab-products">
+            <div class="card">
+                <h3><i class="fas fa-box"></i> Product Database</h3>
+                <div class="toolbar">
+                    <input type="text" id="searchProducts" placeholder="🔍 Search products..." oninput="renderProducts()" />
+                    <select id="categoryFilter" onchange="renderProducts()">
+                        <option value="all">All categories</option>
+                    </select>
+                    <button class="add-row" onclick="addProduct()"><i class="fas fa-plus"></i> Add product</button>
+                </div>
+                <div class="table-wrap">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Product</th>
+                                <th>Category</th>
+                                <th>Subcategory</th>
+                                <th>Default price</th>
+                                <th>Unit</th>
+                                <th style="width:60px;">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="productsBody"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- Months -->
+        <div class="tab-content" id="tab-months">
+            <div class="card">
+                <h3><i class="fas fa-calendar-alt"></i> Monthly Sheets</h3>
+                <p class="text-muted" style="margin-bottom:16px;">Each month is saved automatically. Click a month to view details.</p>
+                <div id="monthGrid" class="month-grid"></div>
+            </div>
+        </div>
+
+        <!-- Settings -->
+        <div class="tab-content" id="tab-settings">
+            <div class="card">
+                <h3><i class="fas fa-sliders-h"></i> Settings</h3>
+                <div class="settings-row">
+                    <span><i class="fas fa-moon"></i> Dark Mode</span>
+                    <div class="toggle-switch" id="darkToggle" onclick="toggleDark()">
+                        <div class="knob"></div>
+                    </div>
+                </div>
+                <div class="settings-row">
+                    <span><i class="fas fa-coins"></i> Currency</span>
+                    <select id="currencySelect" onchange="updateCurrency()" style="background:var(--bg);border:1px solid var(--border);padding:6px 12px;border-radius:8px;color:var(--text);">
+                        <option value="DH">DH</option>
+                        <option value="$">$</option>
+                        <option value="€">€</option>
+                        <option value="£">£</option>
+                    </select>
+                </div>
+                <div class="settings-row">
+                    <span><i class="fas fa-cloud"></i> Cloud Sync</span>
+                    <span class="text-muted" id="syncStatusText">Connected</span>
+                </div>
+                <div class="settings-row">
+                    <span><i class="fas fa-file-excel"></i> Export Excel (CSV)</span>
+                    <button onclick="exportCSV()" style="background:var(--primary);color:white;border:none;padding:6px 16px;border-radius:40px;cursor:pointer;">Export</button>
+                </div>
+                <div class="settings-row">
+                    <span><i class="fas fa-file-import"></i> Import CSV</span>
+                    <input type="file" id="csvInput" accept=".csv" style="display:none;" onchange="handleImport(event)" />
+                    <button onclick="document.getElementById('csvInput').click()" style="background:var(--primary);color:white;border:none;padding:6px 16px;border-radius:40px;cursor:pointer;">Import</button>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Toast -->
+    <div id="toast" class="toast hidden"></div>
+
+    <!-- ──────────────────────────────────────────────── -->
+    <!-- JAVASCRIPT -->
+    <!-- ──────────────────────────────────────────────── -->
+
+    <script>
+        // ═══════════════════════════════════════════════════
+        //  🔥 FIREBASE CONFIG — REPLACE WITH YOUR OWN!
+        // ═══════════════════════════════════════════════════
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyBeSa90G5b_fl9HoNiDQhUJSyS_4n3x5o0",
+            authDomain: "smart-budget-55f99.firebaseapp.com",
+            projectId: "smart-budget-55f99",
+            storageBucket: "smart-budget-55f99.firebasestorage.app",
+            messagingSenderId: "386991773547",
+            appId: "1:386991773547:web:9e335b919e448f2dcfde2e",
+            measurementId: "G-M6HT37LGFK"
+        };
+
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+        const auth = firebase.auth();
+        const db = firebase.firestore();
+
+        // Enable offline persistence (works even without internet)
+        db.enablePersistence({ synchronizeTabs: true })
+            .then(() => console.log('🔥 Offline persistence enabled'))
+            .catch(err => console.warn('Persistence error:', err));
+
+        // ──────────────── STATE ────────────────
+        let currentUser = null;
+        let data = {
+            budget: 1500,
+            currency: 'DH',
+            products: [],
+            months: {}
+        };
+        let isSyncing = false;
+        let syncTimeout = null;
+        let pieChartInstance = null;
+
+        const STORAGE_KEY = 'smartBudgetLocal';
+
+        // ──────────────── AUTH ────────────────
+
+        function handleLogin(e) {
+            e.preventDefault();
+            const email = document.getElementById('loginEmail').value;
+            const password = document.getElementById('loginPassword').value;
+            const errorEl = document.getElementById('loginError');
+            const loadingEl = document.getElementById('loginLoading');
+            const btn = document.getElementById('loginBtn');
+
+            errorEl.style.display = 'none';
+            loadingEl.style.display = 'block';
+            btn.disabled = true;
+            btn.textContent = 'Signing in...';
+
+            auth.signInWithEmailAndPassword(email, password)
+                .then(userCredential => {
+                    currentUser = userCredential.user;
+                    loadingEl.style.display = 'none';
+                    btn.disabled = false;
+                    btn.textContent = 'Sign In';
+                    document.getElementById('loginScreen').classList.add('hidden');
+                    document.getElementById('app').classList.add('visible');
+                    initializeApp();
+                })
+                .catch(error => {
+                    loadingEl.style.display = 'none';
+                    btn.disabled = false;
+                    btn.textContent = 'Sign In';
+                    errorEl.textContent = error.message;
+                    errorEl.style.display = 'block';
+                });
+        }
+
+        function handleLogout() {
+            if (confirm('Logout?')) {
+                auth.signOut().then(() => {
+                    currentUser = null;
+                    document.getElementById('app').classList.remove('visible');
+                    document.getElementById('loginScreen').classList.remove('hidden');
+                    document.getElementById('loginPassword').value = '';
+                    showToast('Logged out');
+                });
+            }
+        }
+
+        // Auto-login if already authenticated
+        auth.onAuthStateChanged(user => {
+            if (user) {
+                currentUser = user;
+                document.getElementById('loginScreen').classList.add('hidden');
+                document.getElementById('app').classList.add('visible');
+                initializeApp();
+            } else {
+                document.getElementById('loginScreen').classList.remove('hidden');
+                document.getElementById('app').classList.remove('visible');
+            }
+        });
+
+        // ──────────────── DATA LAYER ────────────────
+
+        function getMonthKey(date = new Date()) {
+            return date.getFullYear() + '-' + String(date.getMonth() + 1).padStart(2, '0');
+        }
+
+        function getCurrentMonthProducts() {
+            const key = getMonthKey();
+            if (!data.months[key]) {
+                data.months[key] = { budget: data.budget, products: [] };
+            }
+            return data.months[key].products;
+        }
+
+        function getCurrentMonthBudget() {
+            const key = getMonthKey();
+            if (!data.months[key]) {
+                data.months[key] = { budget: data.budget, products: [] };
+            }
+            return data.months[key].budget || data.budget;
+        }
+
+        function setCurrentMonthBudget(val) {
+            const key = getMonthKey();
+            if (!data.months[key]) {
+                data.months[key] = { budget: data.budget, products: [] };
+            }
+            data.months[key].budget = parseFloat(val) || 0;
+            data.budget = data.months[key].budget;
+            saveToFirebase();
+            refreshAll();
+        }
+
+        function fmt(n) {
+            return Number(n).toFixed(0) + ' ' + (data.currency || 'DH');
+        }
+
+        function getCurrency() { return data.currency || 'DH'; }
+
+        // ──────────────── FIREBASE SYNC ────────────────
+
+        function saveToFirebase() {
+            if (!currentUser) return;
+            isSyncing = true;
+            updateSyncStatus('syncing');
+
+            const docRef = db.collection('users').doc(currentUser.uid);
+            const saveData = {
+                budget: data.budget,
+                currency: data.currency,
+                products: data.products,
+                months: data.months,
+                updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+            };
+
+            docRef.set(saveData, { merge: true })
+                .then(() => {
+                    isSyncing = false;
+                    updateSyncStatus('online');
+                    // Also save locally as backup
+                    localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+                })
+                .catch(err => {
+                    isSyncing = false;
+                    updateSyncStatus('offline');
+                    console.warn('Firebase save error:', err);
+                    // Still save locally
+                    localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+                });
+        }
+
+        function loadFromFirebase() {
+            if (!currentUser) return;
+            updateSyncStatus('syncing');
+
+            const docRef = db.collection('users').doc(currentUser.uid);
+            docRef.get()
+                .then(doc => {
+                    if (doc.exists) {
+                        const fbData = doc.data();
+                        data.budget = fbData.budget || 1500;
+                        data.currency = fbData.currency || 'DH';
+                        data.products = fbData.products || [];
+                        data.months = fbData.months || {};
+                        // Save to local as cache
+                        localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+                        refreshAll();
+                        updateSyncStatus('online');
+                        showToast('📥 Data synced from cloud');
+                    } else {
+                        // No cloud data yet, upload local
+                        saveToFirebase();
+                        updateSyncStatus('online');
+                    }
+                })
+                .catch(err => {
+                    console.warn('Firebase load error:', err);
+                    // Try to load from local cache
+                    const local = localStorage.getItem(STORAGE_KEY);
+                    if (local) {
+                        try {
+                            const parsed = JSON.parse(local);
+                            data = parsed;
+                            refreshAll();
+                            updateSyncStatus('offline');
+                            showToast('📱 Using offline data');
+                        } catch (e) {}
+                    } else {
+                        // Seed with demo data
+                        seedDemoData();
+                        refreshAll();
+                        updateSyncStatus('offline');
+                    }
+                });
+        }
+
+        // Listen for real-time updates from other devices
+        function listenToFirebase() {
+            if (!currentUser) return;
+            const docRef = db.collection('users').doc(currentUser.uid);
+            docRef.onSnapshot(doc => {
+                if (doc.exists && !isSyncing) {
+                    const fbData = doc.data();
+                    // Check if data is different from current
+                    const currentStr = JSON.stringify(data);
+                    const fbStr = JSON.stringify({
+                        budget: fbData.budget,
+                        currency: fbData.currency,
+                        products: fbData.products,
+                        months: fbData.months
+                    });
+                    if (currentStr !== fbStr) {
+                        data.budget = fbData.budget || 1500;
+                        data.currency = fbData.currency || 'DH';
+                        data.products = fbData.products || [];
+                        data.months = fbData.months || {};
+                        localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+                        refreshAll();
+                        showToast('🔄 Synced from another device');
+                    }
+                }
+            }, err => {
+                console.warn('Realtime listener error:', err);
+                updateSyncStatus('offline');
+            });
+        }
+
+        function updateSyncStatus(status) {
+            const dot = document.getElementById('syncDot');
+            const text = document.getElementById('syncText');
+            const statusText = document.getElementById('syncStatusText');
+            if (!dot) return;
+            dot.className = 'dot';
+            if (status === 'online') {
+                dot.classList.add('online');
+                text.textContent = 'Synced';
+                if (statusText) statusText.textContent = 'Connected';
+            } else if (status === 'offline') {
+                dot.classList.add('offline');
+                text.textContent = 'Offline';
+                if (statusText) statusText.textContent = 'Offline';
+            } else {
+                dot.classList.add('syncing');
+                text.textContent = 'Syncing...';
+                if (statusText) statusText.textContent = 'Syncing...';
+            }
+        }
+
+        // ──────────────── DEMO DATA ────────────────
+
+        function seedDemoData() {
+            const now = new Date();
+            const monthKey = getMonthKey(now);
+            data.products = [
+                { id: 'p1', name: 'Riz', category: 'Alimentation', subcategory: 'Féculents', defaultPrice: 25, unit: 'Kg',
+                    priority: 'medium', bought: false, quantity: 1, estimated: 25, real: 0, notes: '', date: now
+                        .toISOString() },
+                { id: 'p2', name: 'Lait', category: 'Produits laitiers', subcategory: 'Lait', defaultPrice: 8, unit: 'L',
+                    priority: 'high', bought: false, quantity: 3, estimated: 24, real: 0, notes: '', date: now
+                        .toISOString() },
+                { id: 'p3', name: 'Poulet', category: 'Viandes', subcategory: 'Volaille', defaultPrice: 25, unit: 'Kg',
+                    priority: 'high', bought: false, quantity: 2, estimated: 50, real: 0, notes: '', date: now
+                        .toISOString() },
+                { id: 'p4', name: 'Œufs', category: 'Viandes', subcategory: 'Œufs', defaultPrice: 30, unit: 'pièce',
+                    priority: 'medium', bought: false, quantity: 30, estimated: 30, real: 0, notes: '', date: now
+                        .toISOString() },
+                { id: 'p5', name: 'Pâtes', category: 'Alimentation', subcategory: 'Féculents', defaultPrice: 20, unit: 'Kg',
+                    priority: 'low', bought: false, quantity: 1, estimated: 20, real: 0, notes: '', date: now
+                        .toISOString() },
+                { id: 'p6', name: 'Fromage', category: 'Produits laitiers', subcategory: 'Fromage', defaultPrice: 40,
+                    unit: 'boîte', priority: 'medium', bought: false, quantity: 1, estimated: 40, real: 0, notes: '',
+                    date: now.toISOString() },
+            ];
+            data.months[monthKey] = {
+                budget: data.budget,
+                products: JSON.parse(JSON.stringify(data.products))
+            };
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+        }
+
+        // ──────────────── APP INIT ────────────────
+
+        function initializeApp() {
+            // Load from Firebase
+            loadFromFirebase();
+            // Set up real-time listener
+            listenToFirebase();
+            // Set up auto-save debounce
+            setupAutoSave();
+            // Refresh UI
+            refreshAll();
+            // Apply dark mode
+            if (localStorage.getItem('darkMode') === 'true') {
+                document.body.classList.add('dark');
+                updateDarkToggle();
+            }
+        }
+
+        function setupAutoSave() {
+            // Save to Firebase whenever data changes, with debounce
+            const originalSave = saveToFirebase;
+            saveToFirebase = function() {
+                if (syncTimeout) clearTimeout(syncTimeout);
+                syncTimeout = setTimeout(() => {
+                    originalSave.call(this);
+                    syncTimeout = null;
+                }, 500);
+            };
+            // Override refreshAll to save
+            const originalRefresh = refreshAll;
+            refreshAll = function() {
+                originalRefresh.call(this);
+                saveToFirebase();
+            };
+        }
+
+        // ──────────────── RENDER FUNCTIONS ────────────────
+
+        function refreshAll() {
+            renderStats();
+            renderShopping();
+            renderProducts();
+            renderMonths();
+            renderDashboard();
+            updateCurrencySelect();
+            updateDarkToggle();
+        }
+
+        function renderStats() {
+            const monthProducts = getCurrentMonthProducts();
+            const budget = getCurrentMonthBudget();
+            let totalReal = 0,
+                totalEst = 0;
+            for (const p of monthProducts) {
+                if (p.bought) {
+                    totalReal += parseFloat(p.real) || 0;
+                }
+                totalEst += parseFloat(p.estimated) || 0;
+            }
+            const remaining = budget - totalReal;
+            const diff = totalEst - totalReal;
+
+            document.getElementById('budgetDisplay').textContent = fmt(budget);
+            document.getElementById('spentDisplay').textContent = fmt(totalReal);
+            document.getElementById('remainingDisplay').textContent = fmt(remaining);
+            document.getElementById('diffDisplay').textContent = fmt(diff);
+            document.getElementById('diffSub').textContent = diff >= 0 ? 'Under budget' : 'Over budget';
+
+            const pct = budget > 0 ? Math.min((totalReal / budget) * 100, 100) : 0;
+            document.getElementById('progressFill').style.width = pct + '%';
+            document.getElementById('progressFill').style.background = pct > 90 ? 'var(--red)' : pct > 70 ? 'var(--orange)' :
+                'var(--primary)';
+        }
+
+        function renderDashboard() {
+            const monthProducts = getCurrentMonthProducts();
+            const bought = monthProducts.filter(p => p.bought);
+
+            const catMap = {};
+            for (const p of bought) {
+                const cat = p.category || 'Uncategorized';
+                if (!catMap[cat]) catMap[cat] = 0;
+                catMap[cat] += parseFloat(p.real) || 0;
+            }
+            const catEntries = Object.entries(catMap).sort((a, b) => b[1] - a[1]);
+
+            const listEl = document.getElementById('categoryList');
+            if (catEntries.length === 0) {
+                listEl.innerHTML = '<div class="text-muted text-center" style="padding:20px 0;">No data yet.</div>';
+            } else {
+                const colors = ['#3b82f6', '#22c55e', '#f59e0b', '#ef4444', '#8b5cf6', '#ec4899', '#14b8a6', '#f97316'];
+                listEl.innerHTML = catEntries.map(([cat, amount], i) => `
+                    <div class="category-item">
+                        <span class="name"><span class="dot" style="background:${colors[i % colors.length]};"></span> ${cat}</span>
+                        <span class="amount">${fmt(amount)}</span>
+                    </div>
+                `).join('');
+            }
+
+            const ctx = document.getElementById('pieChart').getContext('2d');
+            if (pieChartInstance) pieChartInstance.destroy();
+            if (catEntries.length === 0) {
+                pieChartInstance = new Chart(ctx, {
+                    type: 'doughnut',
+                    data: { labels: ['No data'], datasets: [{ data: [1], backgroundColor: ['#e2e8f0'] }] },
+                    options: { responsive: true, maintainAspectRatio: true, plugins: { legend: { display: false } } }
+                });
+            } else {
+                const colors = ['#3b82f6', '#22c55e', '#f59e0b', '#ef4444', '#8b5cf6', '#ec4899', '#14b8a6', '#f97316'];
+                pieChartInstance = new Chart(ctx, {
+                    type: 'doughnut',
+                    data: {
+                        labels: catEntries.map(e => e[0]),
+                        datasets: [{ data: catEntries.map(e => e[1]), backgroundColor: colors.slice(0, catEntries
+                                .length) }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: true,
+                        plugins: { legend: { position: 'bottom', labels: { color: getComputedStyle(document.body)
+                                    .getPropertyValue('--text').trim() || '#1e293b' } } }
+                    }
+                });
+            }
+
+            const recent = monthProducts.filter(p => p.bought).sort((a, b) => new Date(b.date) - new Date(a.date)).slice(0,
+            5);
+            const recentEl = document.getElementById('recentPurchases');
+            if (recent.length === 0) {
+                recentEl.innerHTML = '<div class="text-muted text-center" style="padding:20px 0;">No purchases yet.</div>';
+            } else {
+                recentEl.innerHTML = recent.map(p => `
+                    <div class="category-item">
+                        <span class="name">${p.name}</span>
+                        <span class="amount">${fmt(p.real)}</span>
+                    </div>
+                `).join('');
+            }
+
+            const totalItems = monthProducts.length;
+            const boughtItems = monthProducts.filter(p => p.bought).length;
+            const totalEst = monthProducts.reduce((s, p) => s + (parseFloat(p.estimated) || 0), 0);
+            const totalReal = monthProducts.reduce((s, p) => s + (parseFloat(p.real) || 0), 0);
+            document.getElementById('quickStats').innerHTML = `
+                <div class="category-item"><span class="name">📦 Total items</span><span>${totalItems}</span></div>
+                <div class="category-item"><span class="name">✅ Bought</span><span>${boughtItems}</span></div>
+                <div class="category-item"><span class="name">📊 Estimated total</span><span>${fmt(totalEst)}</span></div>
+                <div class="category-item"><span class="name">💵 Real total</span><span>${fmt(totalReal)}</span></div>
+                <div class="category-item"><span class="name">🏷️ Top category</span><span>${catEntries.length > 0 ? catEntries[0][0] : '—'}</span></div>
+            `;
+        }
+
+        function renderShopping() {
+            const monthProducts = getCurrentMonthProducts();
+            const search = document.getElementById('searchShopping').value.toLowerCase();
+            const filter = document.getElementById('filterShopping').value;
+            const priority = document.getElementById('priorityFilter').value;
+
+            let filtered = monthProducts.filter(p => {
+                const matchSearch = p.name.toLowerCase().includes(search) || (p.category || '').toLowerCase()
+                    .includes(search);
+                const matchFilter = filter === 'all' ? true : filter === 'bought' ? p.bought : !p.bought;
+                const matchPriority = priority === 'all' ? true : p.priority === priority;
+                return matchSearch && matchFilter && matchPriority;
+            });
+
+            const tbody = document.getElementById('shoppingBody');
+            if (filtered.length === 0) {
+                tbody.innerHTML =
+                    `<tr><td colspan="9" class="text-muted text-center" style="padding:20px;">No products found</td></tr>`;
+            } else {
+                tbody.innerHTML = filtered.map(p => `
+                    <tr>
+                        <td><input type="checkbox" ${p.bought ? 'checked' : ''} onchange="toggleBought('${p.id}')" /></td>
+                        <td><input type="text" value="${p.name}" onchange="updateProductField('${p.id}','name',this.value)" /></td>
+                        <td><input type="text" value="${p.category || ''}" onchange="updateProductField('${p.id}','category',this.value)" /></td>
+                        <td><input type="number" value="${p.quantity || 1}" onchange="updateProductField('${p.id}','quantity',parseFloat(this.value)||0)" style="width:50px;" /></td>
+                        <td><input type="number" value="${p.estimated || 0}" onchange="updateProductField('${p.id}','estimated',parseFloat(this.value)||0)" style="width:60px;" /></td>
+                        <td><input type="number" value="${p.real || 0}" onchange="updateProductField('${p.id}','real',parseFloat(this.value)||0)" style="width:60px;" /></td>
+                        <td style="font-weight:600;color:${(p.real||0) > (p.estimated||0) ? 'var(--red)' : 'var(--green)'};">${fmt((p.real||0) - (p.estimated||0))}</td>
+                        <td>
+                            <select onchange="updateProductField('${p.id}','priority',this.value)" style="background:transparent;border:1px solid var(--border);border-radius:6px;padding:2px 6px;color:var(--text);">
+                                <option value="low" ${p.priority === 'low' ? 'selected' : ''}>Low</option>
+                                <option value="medium" ${p.priority === 'medium' ? 'selected' : ''}>Medium</option>
+                                <option value="high" ${p.priority === 'high' ? 'selected' : ''}>High</option>
+                            </select>
+                        </td>
+                        <td>
+                            <button class="btn-icon" onclick="deleteProduct('${p.id}')"><i class="fas fa-trash danger"></i></button>
+                        </td>
+                    </tr>
+                `).join('');
+            }
+
+            const totalEst = monthProducts.reduce((s, p) => s + (parseFloat(p.estimated) || 0), 0);
+            const totalReal = monthProducts.reduce((s, p) => s + (parseFloat(p.real) || 0), 0);
+            const totalBought = monthProducts.filter(p => p.bought).length;
+            document.getElementById('shoppingEstTotal').textContent = fmt(totalEst);
+            document.getElementById('shoppingRealTotal').textContent = fmt(totalReal);
+            document.getElementById('shoppingBoughtCount').textContent = totalBought;
+            document.getElementById('shoppingTotalCount').textContent = monthProducts.length;
+
+            saveToFirebase();
+            renderStats();
+            renderDashboard();
+        }
+
+        function renderProducts() {
+            const search = document.getElementById('searchProducts').value.toLowerCase();
+            const catFilter = document.getElementById('categoryFilter').value;
+
+            const cats = new Set(data.products.map(p => p.category).filter(Boolean));
+            const catSelect = document.getElementById('categoryFilter');
+            const currentVal = catSelect.value;
+            catSelect.innerHTML = '<option value="all">All categories</option>' +
+                Array.from(cats).map(c => `<option value="${c}">${c}</option>`).join('');
+            catSelect.value = currentVal;
+
+            let filtered = data.products.filter(p => {
+                const matchSearch = p.name.toLowerCase().includes(search) || (p.category || '').toLowerCase()
+                    .includes(search);
+                const matchCat = catFilter === 'all' ? true : p.category === catFilter;
+                return matchSearch && matchCat;
+            });
+
+            const tbody = document.getElementById('productsBody');
+            if (filtered.length === 0) {
+                tbody.innerHTML =
+                    `<tr><td colspan="6" class="text-muted text-center" style="padding:20px;">No products in database</td></tr>`;
+            } else {
+                tbody.innerHTML = filtered.map(p => `
+                    <tr>
+                        <td><input type="text" value="${p.name}" onchange="updateMasterProduct('${p.id}','name',this.value)" /></td>
+                        <td><input type="text" value="${p.category || ''}" onchange="updateMasterProduct('${p.id}','category',this.value)" /></td>
+                        <td><input type="text" value="${p.subcategory || ''}" onchange="updateMasterProduct('${p.id}','subcategory',this.value)" /></td>
+                        <td><input type="number" value="${p.defaultPrice || 0}" onchange="updateMasterProduct('${p.id}','defaultPrice',parseFloat(this.value)||0)" style="width:70px;" /></td>
+                        <td><input type="text" value="${p.unit || ''}" onchange="updateMasterProduct('${p.id}','unit',this.value)" style="width:60px;" /></td>
+                        <td>
+                            <button class="btn-icon" onclick="deleteMasterProduct('${p.id}')"><i class="fas fa-trash danger"></i></button>
+                        </td>
+                    </tr>
+                `).join('');
+            }
+        }
+
+        function renderMonths() {
+            const grid = document.getElementById('monthGrid');
+            const keys = Object.keys(data.months).sort().reverse();
+            if (keys.length === 0) {
+                grid.innerHTML = '<div class="text-muted text-center" style="padding:20px 0;">No months yet.</div>';
+                return;
+            }
+            grid.innerHTML = keys.map(key => {
+                const month = data.months[key];
+                const totalReal = (month.products || []).reduce((s, p) => s + (p.bought ? (parseFloat(p.real) || 0) :
+                    0), 0);
+                const totalEst = (month.products || []).reduce((s, p) => s + (parseFloat(p.estimated) || 0), 0);
+                const date = new Date(key + '-01');
+                const name = date.toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
+                return `
+                    <div class="month-card" onclick="loadMonth('${key}')">
+                        <div class="month-name">📅 ${name}</div>
+                        <div class="month-stats">
+                            <span>Budget: ${fmt(month.budget || 0)}</span>
+                            <span>Spent: ${fmt(totalReal)}</span>
+                        </div>
+                        <div class="month-stats">
+                            <span>Items: ${(month.products||[]).length}</span>
+                            <span>Remaining: ${fmt((month.budget||0) - totalReal)}</span>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        // ──────────────── ACTIONS ────────────────
+
+        function addProduct() {
+            const name = prompt('Product name:');
+            if (!name) return;
+            const cat = prompt('Category (e.g. Alimentation):') || 'Uncategorized';
+            const price = parseFloat(prompt('Estimated price (DH):')) || 0;
+            const newProduct = {
+                id: 'p' + Date.now() + Math.random().toString(36).slice(2, 6),
+                name: name,
+                category: cat,
+                subcategory: '',
+                defaultPrice: price,
+                unit: 'piece',
+                priority: 'medium',
+                bought: false,
+                quantity: 1,
+                estimated: price,
+                real: 0,
+                notes: '',
+                date: new Date().toISOString()
+            };
+            data.products.push(newProduct);
+            const monthProducts = getCurrentMonthProducts();
+            monthProducts.push(JSON.parse(JSON.stringify(newProduct)));
+            saveToFirebase();
+            refreshAll();
+            showToast('Added: ' + name);
+        }
+
+        function toggleBought(id) {
+            const monthProducts = getCurrentMonthProducts();
+            const p = monthProducts.find(p => p.id === id);
+            if (p) {
+                p.bought = !p.bought;
+                if (p.bought && p.real === 0) {
+                    p.real = p.estimated || 0;
+                }
+                const master = data.products.find(m => m.id === id);
+                if (master) master.bought = p.bought;
+                saveToFirebase();
+                refreshAll();
+            }
+        }
+
+        function updateProductField(id, field, value) {
+            const monthProducts = getCurrentMonthProducts();
+            const p = monthProducts.find(p => p.id === id);
+            if (p) {
+                p[field] = value;
+                if (['name', 'category', 'subcategory', 'defaultPrice', 'unit', 'priority'].includes(field)) {
+                    const master = data.products.find(m => m.id === id);
+                    if (master) master[field] = value;
+                }
+                saveToFirebase();
+                refreshAll();
+            }
+        }
+
+        function updateMasterProduct(id, field, value) {
+            const p = data.products.find(p => p.id === id);
+            if (p) {
+                p[field] = value;
+                for (const key in data.months) {
+                    const mp = data.months[key].products.find(m => m.id === id);
+                    if (mp) mp[field] = value;
+                }
+                saveToFirebase();
+                refreshAll();
+                showToast('Updated');
+            }
+        }
+
+        function deleteProduct(id) {
+            if (!confirm('Delete this product from current month?')) return;
+            const monthProducts = getCurrentMonthProducts();
+            const idx = monthProducts.findIndex(p => p.id === id);
+            if (idx !== -1) monthProducts.splice(idx, 1);
+            saveToFirebase();
+            refreshAll();
+            showToast('Deleted');
+        }
+
+        function deleteMasterProduct(id) {
+            if (!confirm('Delete this product from ALL data?')) return;
+            data.products = data.products.filter(p => p.id !== id);
+            for (const key in data.months) {
+                data.months[key].products = data.months[key].products.filter(p => p.id !== id);
+            }
+            saveToFirebase();
+            refreshAll();
+            showToast('Deleted from all');
+        }
+
+        function editBudget() {
+            const current = getCurrentMonthBudget();
+            const newBudget = prompt('Set monthly budget (DH):', current);
+            if (newBudget !== null && !isNaN(parseFloat(newBudget))) {
+                setCurrentMonthBudget(parseFloat(newBudget));
+                showToast('Budget updated to ' + fmt(parseFloat(newBudget)));
+            }
+        }
+
+        function loadMonth(key) {
+            if (confirm(`Load ${key}? This will switch your current view to that month.`)) {
+                const currentKey = getMonthKey();
+                data.months[currentKey].products = getCurrentMonthProducts();
+                const monthData = data.months[key];
+                const currentMonthKey = getMonthKey();
+                data.months[currentMonthKey].products = JSON.parse(JSON.stringify(monthData.products));
+                data.months[currentMonthKey].budget = monthData.budget;
+                data.budget = monthData.budget;
+                saveToFirebase();
+                refreshAll();
+                switchTab('shopping');
+                showToast('Loaded ' + key);
+            }
+        }
+
+        // ──────────────── TABS ────────────────
+
+        document.querySelectorAll('.tabs button').forEach(btn => {
+            btn.addEventListener('click', function() {
+                switchTab(this.dataset.tab);
+            });
+        });
+
+        function switchTab(tab) {
+            document.querySelectorAll('.tabs button').forEach(b => b.classList.remove('active'));
+            document.querySelector(`.tabs button[data-tab="${tab}"]`)?.classList.add('active');
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+            document.getElementById('tab-' + tab)?.classList.add('active');
+            if (tab === 'dashboard') renderDashboard();
+            if (tab === 'shopping') renderShopping();
+            if (tab === 'products') renderProducts();
+            if (tab === 'months') renderMonths();
+        }
+
+        // ──────────────── DARK MODE ────────────────
+
+        function toggleDark() {
+            document.body.classList.toggle('dark');
+            updateDarkToggle();
+            localStorage.setItem('darkMode', document.body.classList.contains('dark') ? 'true' : 'false');
+        }
+
+        function updateDarkToggle() {
+            const isDark = document.body.classList.contains('dark');
+            const toggle = document.getElementById('darkToggle');
+            if (toggle) {
+                toggle.classList.toggle('active', isDark);
+            }
+        }
+
+        function updateCurrencySelect() {
+            const sel = document.getElementById('currencySelect');
+            if (sel) sel.value = data.currency || 'DH';
+        }
+
+        function updateCurrency() {
+            const sel = document.getElementById('currencySelect');
+            data.currency = sel.value;
+            saveToFirebase();
+            refreshAll();
+            showToast('Currency updated');
+        }
+
+        // ──────────────── EXPORT / IMPORT ────────────────
+
+        function exportCSV() {
+            const monthProducts = getCurrentMonthProducts();
+            if (monthProducts.length === 0) {
+                showToast('No data to export');
+                return;
+            }
+            const headers = ['Name', 'Category', 'Subcategory', 'Quantity', 'Unit', 'Estimated', 'Real', 'Bought', 'Priority',
+                'Notes'
+            ];
+            const rows = monthProducts.map(p => [
+                p.name, p.category || '', p.subcategory || '', p.quantity || 1, p.unit || '',
+                p.estimated || 0, p.real || 0, p.bought ? 'Yes' : 'No', p.priority || '', p.notes || ''
+            ]);
+            const csv = [headers.join(','), ...rows.map(r => r.join(','))].join('\n');
+            const blob = new Blob(['\uFEFF' + csv], { type: 'text/csv;charset=utf-8;' });
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(blob);
+            link.download = `budget_${getMonthKey()}.csv`;
+            link.click();
+            showToast('Exported!');
+        }
+
+        function handleImport(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const text = e.target.result;
+                const lines = text.split('\n').filter(l => l.trim());
+                if (lines.length < 2) { showToast('Invalid CSV'); return; }
+                const headers = lines[0].split(',').map(h => h.trim().toLowerCase());
+                const monthProducts = getCurrentMonthProducts();
+                for (let i = 1; i < lines.length; i++) {
+                    const vals = lines[i].split(',').map(v => v.trim());
+                    const obj = {};
+                    headers.forEach((h, idx) => { obj[h] = vals[idx] || ''; });
+                    if (!obj.name) continue;
+                    const existing = monthProducts.find(p => p.name === obj.name && p.category === obj.category);
+                    if (existing) {
+                        existing.estimated = parseFloat(obj.estimated) || 0;
+                        existing.real = parseFloat(obj.real) || 0;
+                        existing.bought = obj.bought?.toLowerCase() === 'yes';
+                        existing.quantity = parseFloat(obj.quantity) || 1;
+                        existing.unit = obj.unit || '';
+                        existing.priority = obj.priority || 'medium';
+                    } else {
+                        monthProducts.push({
+                            id: 'p' + Date.now() + Math.random().toString(36).slice(2, 6),
+                            name: obj.name,
+                            category: obj.category || 'Uncategorized',
+                            subcategory: obj.subcategory || '',
+                            defaultPrice: parseFloat(obj.estimated) || 0,
+                            unit: obj.unit || '',
+                            priority: obj.priority || 'medium',
+                            bought: obj.bought?.toLowerCase() === 'yes',
+                            quantity: parseFloat(obj.quantity) || 1,
+                            estimated: parseFloat(obj.estimated) || 0,
+                            real: parseFloat(obj.real) || 0,
+                            notes: obj.notes || '',
+                            date: new Date().toISOString()
+                        });
+                    }
+                }
+                for (const p of monthProducts) {
+                    if (!data.products.find(m => m.id === p.id)) {
+                        data.products.push(JSON.parse(JSON.stringify(p)));
+                    }
+                }
+                saveToFirebase();
+                refreshAll();
+                showToast('Imported ' + (monthProducts.length) + ' products');
+            };
+            reader.readAsText(file);
+            event.target.value = '';
+        }
+
+        // ──────────────── TOAST ────────────────
+
+        function showToast(msg) {
+            const el = document.getElementById('toast');
+            el.textContent = msg;
+            el.classList.remove('hidden');
+            clearTimeout(el._timeout);
+            el._timeout = setTimeout(() => el.classList.add('hidden'), 3000);
+        }
+
+        // ──────────────── INIT ────────────────
+
+        // Override saveToFirebase to handle debounce correctly
+        const originalSaveToFirebase = saveToFirebase;
+        saveToFirebase = function() {
+            if (syncTimeout) clearTimeout(syncTimeout);
+            syncTimeout = setTimeout(() => {
+                originalSaveToFirebase.call(this);
+                syncTimeout = null;
+            }, 500);
+        };
+
+        console.log('🚀 Smart Budget with Cloud Sync loaded!');
+    </script>
 </body>
 </html>
