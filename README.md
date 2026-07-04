@@ -1,2 +1,0 @@
-# BudgetFlow
-Starter project.
