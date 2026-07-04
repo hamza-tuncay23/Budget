@@ -641,17 +641,10 @@
             background: var(--bg);
         }
 
-        td input[type="checkbox"] {
-            width: 18px;
-            height: 18px;
-            accent-color: var(--primary);
-            cursor: pointer;
-        }
-
-        /* ─── Custom 3-state checkbox ─── */
+        /* ─── Status Checkbox ─── */
         .status-checkbox {
-            width: 28px;
-            height: 28px;
+            width: 32px;
+            height: 32px;
             border-radius: 50%;
             border: 3px solid var(--border);
             display: flex;
@@ -659,10 +652,11 @@
             justify-content: center;
             cursor: pointer;
             transition: all var(--transition);
-            font-size: 14px;
+            font-size: 16px;
             font-weight: 700;
             background: var(--bg);
             user-select: none;
+            margin: 0 auto;
         }
 
         .status-checkbox.empty {
@@ -682,8 +676,14 @@
             color: var(--green);
         }
 
+        .status-checkbox.over {
+            border-color: var(--red);
+            background: rgba(239, 68, 68, 0.15);
+            color: var(--red);
+        }
+
         .status-checkbox:hover {
-            transform: scale(1.1);
+            transform: scale(1.15);
         }
 
         .btn-icon {
@@ -965,22 +965,41 @@
 
         .cart-item .cart-name {
             flex: 1;
+            font-weight: 500;
         }
 
-        .cart-item .cart-price-input {
-            width: 80px;
-            padding: 4px 8px;
+        .cart-item .cart-price-controls {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .cart-item .cart-price-controls button {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
             border: 2px solid var(--border);
-            border-radius: 8px;
             background: var(--bg);
             color: var(--text);
+            cursor: pointer;
             font-size: 14px;
-            text-align: right;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all var(--transition);
         }
 
-        .cart-item .cart-price-input:focus {
-            outline: none;
+        .cart-item .cart-price-controls button:hover {
             border-color: var(--primary);
+            background: var(--primary-light);
+        }
+
+        .cart-item .cart-price-controls .price-display {
+            min-width: 60px;
+            text-align: center;
+            font-weight: 600;
+            font-size: 15px;
         }
 
         /* ───────────── MONTH GRID ───────────── */
@@ -1096,25 +1115,6 @@
 
         .wishlist-card h3 i {
             color: var(--pink);
-        }
-
-        .wishlist-card textarea {
-            width: 100%;
-            min-height: 120px;
-            padding: 12px 16px;
-            border: 2px solid var(--border);
-            border-radius: 12px;
-            background: var(--bg);
-            color: var(--text);
-            font-size: 14px;
-            resize: vertical;
-            transition: border var(--transition);
-            font-family: inherit;
-        }
-
-        .wishlist-card textarea:focus {
-            outline: none;
-            border-color: var(--primary);
         }
 
         .wishlist-card .wishlist-items {
@@ -1234,15 +1234,6 @@
             font-size: 12px;
             color: var(--text2);
             margin-top: 4px;
-        }
-
-        .admin-user-card .badge-admin {
-            background: var(--purple);
-            color: white;
-            padding: 1px 10px;
-            border-radius: 40px;
-            font-size: 10px;
-            font-weight: 600;
         }
 
         .admin-user-detail {
@@ -1416,7 +1407,7 @@
                 <!-- Login Form -->
                 <div id="loginForm">
                     <h2><i class="fas fa-wallet"></i> Smart Budget</h2>
-                    <p class="subtitle">Sign in to sync across all your devices</p>
+                    <p class="subtitle" id="loginSubtitle">Sign in to sync across all your devices</p>
 
                     <input type="email" id="loginEmail" placeholder="Email" required />
                     <input type="password" id="loginPassword" placeholder="Password" required />
@@ -1427,14 +1418,14 @@
                     <div class="loading-text" id="loginLoading">Connecting...</div>
 
                     <div class="toggle-mode">
-                        Don't have an account? <a onclick="showRegister()">Sign Up</a>
+                        <span id="noAccountText">Don't have an account?</span> <a onclick="showRegister()" id="signUpLink">Sign Up</a>
                     </div>
                 </div>
 
                 <!-- Register Form -->
                 <div id="registerForm" style="display:none;">
-                    <h2><i class="fas fa-user-plus"></i> Create Account</h2>
-                    <p class="subtitle">Join Smart Budget and track your finances</p>
+                    <h2><i class="fas fa-user-plus"></i> <span id="createAccountTitle">Create Account</span></h2>
+                    <p class="subtitle" id="registerSubtitle">Join Smart Budget and track your finances</p>
 
                     <div class="input-group">
                         <input type="text" id="regName" placeholder="Name" required />
@@ -1451,14 +1442,14 @@
                     <div class="loading-text" id="registerLoading">Creating account...</div>
 
                     <div class="toggle-mode">
-                        Already have an account? <a onclick="showLogin()">Sign In</a>
+                        <span id="haveAccountText">Already have an account?</span> <a onclick="showLogin()" id="signInLink">Sign In</a>
                     </div>
                 </div>
 
                 <!-- Verification Section -->
                 <div class="verify-section" id="verifySection">
-                    <h3 style="font-size:18px;margin-bottom:8px;">✅ Verify Your Email</h3>
-                    <div class="info">
+                    <h3 style="font-size:18px;margin-bottom:8px;">✅ <span id="verifyTitle">Verify Your Email</span></h3>
+                    <div class="info" id="verifyInfo">
                         A <strong>6-digit verification code</strong> has been sent to your email.<br>
                         Please check your inbox and enter the code below.
                     </div>
@@ -1472,18 +1463,18 @@
                                oninput="this.value=this.value.replace(/[^0-9]/g,'').slice(0,6);" />
                     </div>
 
-                    <button onclick="verifyCode()" style="margin-top:8px;">Verify Code</button>
+                    <button onclick="verifyCode()" style="margin-top:8px;" id="verifyBtn">Verify Code</button>
 
                     <div class="error" id="verifyError"></div>
                     <div class="success" id="verifySuccess"></div>
                     <div class="loading-text" id="verifyLoading">Verifying...</div>
 
                     <div class="toggle-mode" style="margin-top:12px;">
-                        Didn't receive code? <a onclick="resendVerificationCode()">Resend</a>
+                        <span id="noCodeText">Didn't receive code?</span> <a onclick="resendVerificationCode()" id="resendLink">Resend</a>
                     </div>
 
                     <div class="toggle-mode" style="margin-top:8px;font-size:12px;">
-                        <a onclick="showCodeHint()" style="color:var(--text2);font-size:12px;cursor:pointer;">Show code (for testing)</a>
+                        <a onclick="showCodeHint()" style="color:var(--text2);font-size:12px;cursor:pointer;" id="showCodeLink">Show code (for testing)</a>
                     </div>
                 </div>
 
@@ -1497,7 +1488,7 @@
             <header class="header">
                 <h1>
                     <i class="fas fa-wallet"></i>
-                    Smart Budget
+                    <span id="appTitle">Smart Budget</span>
                     <span class="user-name" id="userNameDisplay">- User</span>
                 </h1>
                 <div class="header-actions">
@@ -1506,59 +1497,59 @@
                         <span id="syncText">Offline</span>
                     </span>
                     <span id="adminBadge" class="admin-badge hidden">👑 Admin</span>
-                    <button onclick="exportCSV()"><i class="fas fa-file-export"></i> Export</button>
-                    <button onclick="document.getElementById('csvInput').click()"><i class="fas fa-file-import"></i> Import</button>
-                    <button class="logout-btn" onclick="handleLogout()"><i class="fas fa-sign-out-alt"></i> Logout</button>
+                    <button onclick="exportCSV()"><i class="fas fa-file-export"></i> <span id="exportLabel">Export</span></button>
+                    <button onclick="document.getElementById('csvInput').click()"><i class="fas fa-file-import"></i> <span id="importLabel">Import</span></button>
+                    <button class="logout-btn" onclick="handleLogout()"><i class="fas fa-sign-out-alt"></i> <span id="logoutLabel">Logout</span></button>
                 </div>
             </header>
 
             <!-- Stats Grid -->
             <section class="stats-grid" id="statsGrid">
                 <div class="stat-card blue">
-                    <div class="label">💰 Monthly Budget</div>
+                    <div class="label" id="budgetLabel">💰 Monthly Budget</div>
                     <div class="value" id="budgetDisplay">0</div>
-                    <div class="sub"><i class="fas fa-pen" style="cursor:pointer;" onclick="editBudget()"></i> Click to edit</div>
+                    <div class="sub"><i class="fas fa-pen" style="cursor:pointer;" onclick="editBudget()"></i> <span id="budgetEditLabel">Click to edit</span></div>
                 </div>
                 <div class="stat-card green">
-                    <div class="label">✅ Total Spent</div>
+                    <div class="label" id="spentLabel">✅ Total Spent</div>
                     <div class="value" id="spentDisplay">0</div>
-                    <div class="sub">This month</div>
+                    <div class="sub" id="spentSubLabel">This month</div>
                 </div>
                 <div class="stat-card orange">
-                    <div class="label">📊 Remaining</div>
+                    <div class="label" id="remainingLabel">📊 Remaining</div>
                     <div class="value" id="remainingDisplay">0</div>
                     <div class="progress-bar"><div class="fill" id="progressFill" style="width:0%;"></div></div>
                 </div>
                 <div class="stat-card purple">
-                    <div class="label">📈 Monthly Profit</div>
+                    <div class="label" id="profitLabel">📈 Monthly Profit</div>
                     <div class="value" id="profitDisplay">0</div>
-                    <div class="sub">Budget - Spent</div>
+                    <div class="sub" id="profitSubLabel">Budget - Spent</div>
                 </div>
             </section>
 
             <!-- Tabs -->
             <div class="tabs">
-                <button class="active" data-tab="dashboard"><i class="fas fa-chart-pie"></i> Dashboard</button>
-                <button data-tab="shopping"><i class="fas fa-shopping-cart"></i> Shopping</button>
-                <button data-tab="products"><i class="fas fa-boxes"></i> Products</button>
-                <button data-tab="months"><i class="fas fa-calendar-alt"></i> Months</button>
-                <button data-tab="wishlist"><i class="fas fa-heart"></i> Wishlist</button>
-                <button data-tab="settings"><i class="fas fa-cog"></i> Settings</button>
-                <button data-tab="admin" id="adminTab" class="hidden"><i class="fas fa-user-shield"></i> Admin</button>
+                <button class="active" data-tab="dashboard"><i class="fas fa-chart-pie"></i> <span id="tabDashboard">Dashboard</span></button>
+                <button data-tab="shopping"><i class="fas fa-shopping-cart"></i> <span id="tabShopping">Shopping</span></button>
+                <button data-tab="products"><i class="fas fa-boxes"></i> <span id="tabProducts">Products</span></button>
+                <button data-tab="months"><i class="fas fa-calendar-alt"></i> <span id="tabMonths">Months</span></button>
+                <button data-tab="wishlist"><i class="fas fa-heart"></i> <span id="tabWishlist">Wishlist</span></button>
+                <button data-tab="settings"><i class="fas fa-cog"></i> <span id="tabSettings">Settings</span></button>
+                <button data-tab="admin" id="adminTab" class="hidden"><i class="fas fa-user-shield"></i> <span id="tabAdmin">Admin</span></button>
             </div>
 
             <!-- ═══════ DASHBOARD ═══════ -->
             <div class="tab-content active" id="tab-dashboard">
                 <div class="card" style="margin-bottom:24px;">
-                    <h3><i class="fas fa-table"></i> Category Summary <span class="badge">This month</span></h3>
+                    <h3><i class="fas fa-table"></i> <span id="categorySummaryTitle">Category Summary</span> <span class="badge" id="summaryBadge">This month</span></h3>
                     <div class="table-wrap">
                         <table class="category-summary-table" id="categorySummaryTable">
                             <thead>
                                 <tr>
-                                    <th>Category</th>
-                                    <th style="text-align:right;">Estimated</th>
-                                    <th style="text-align:right;">Real</th>
-                                    <th style="text-align:right;">Difference</th>
+                                    <th id="catColCategory">Category</th>
+                                    <th style="text-align:right;" id="catColEstimated">Estimated</th>
+                                    <th style="text-align:right;" id="catColReal">Real</th>
+                                    <th style="text-align:right;" id="catColDiff">Difference</th>
                                 </tr>
                             </thead>
                             <tbody id="categorySummaryBody"></tbody>
@@ -1568,13 +1559,13 @@
 
                 <div class="row">
                     <div class="card">
-                        <h3><i class="fas fa-chart-pie"></i> Spending by Category</h3>
+                        <h3><i class="fas fa-chart-pie"></i> <span id="pieChartTitle">Spending by Category</span></h3>
                         <div class="chart-container">
                             <canvas id="pieChart"></canvas>
                         </div>
                     </div>
                     <div class="card">
-                        <h3><i class="fas fa-chart-line"></i> Monthly Comparison</h3>
+                        <h3><i class="fas fa-chart-line"></i> <span id="monthlyComparisonTitle">Monthly Comparison</span></h3>
                         <div class="chart-container-large">
                             <canvas id="monthlyComparisonChart"></canvas>
                         </div>
@@ -1583,55 +1574,61 @@
 
                 <div class="row">
                     <div class="card">
-                        <h3><i class="fas fa-clock"></i> Recent Purchases</h3>
+                        <h3><i class="fas fa-clock"></i> <span id="recentTitle">Recent Purchases</span></h3>
                         <div id="recentPurchases">
-                            <div class="text-muted text-center" style="padding:20px 0;">No purchases yet.</div>
+                            <div class="text-muted text-center" style="padding:20px 0;" id="noPurchasesText">No purchases yet.</div>
                         </div>
                     </div>
                     <div class="card">
-                        <h3><i class="fas fa-bolt"></i> Quick Stats</h3>
+                        <h3><i class="fas fa-bolt"></i> <span id="quickStatsTitle">Quick Stats</span></h3>
                         <div id="quickStats">
-                            <div class="text-muted text-center" style="padding:20px 0;">Statistics will appear here.</div>
+                            <div class="text-muted text-center" style="padding:20px 0;" id="statsPlaceholder">Statistics will appear here.</div>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <!-- ═══════ SHOPPING (Daily Lists) ═══════ -->
+            <!-- ═══════ SHOPPING ═══════ -->
             <div class="tab-content" id="tab-shopping">
                 <div class="card">
-                    <h3><i class="fas fa-shopping-cart"></i> Shopping Days</h3>
-                    <button class="add-row" onclick="openShoppingModal()"><i class="fas fa-plus"></i> Add Shopping Day</button>
+                    <h3><i class="fas fa-shopping-cart"></i> <span id="shoppingTitle">Shopping Days</span></h3>
+                    <button class="add-row" onclick="openShoppingModal()"><i class="fas fa-plus"></i> <span id="addShoppingDayLabel">Add Shopping Day</span></button>
                     <div id="shoppingDaysContainer" style="margin-top:16px;"></div>
                 </div>
             </div>
 
-            <!-- ═══════ PRODUCTS (Database) ═══════ -->
+            <!-- ═══════ PRODUCTS ═══════ -->
             <div class="tab-content" id="tab-products">
                 <div class="card">
-                    <h3><i class="fas fa-boxes"></i> Product Database</h3>
+                    <h3><i class="fas fa-boxes"></i> <span id="productsTitle">Product Database</span></h3>
                     <div class="toolbar">
                         <input type="text" id="searchProducts" placeholder="🔍 Search products..." oninput="renderProducts()" />
                         <div class="filter-group">
                             <select id="categoryFilter" onchange="renderProducts()">
                                 <option value="all">All categories</option>
                             </select>
+                            <select id="priorityFilterProducts" onchange="renderProducts()">
+                                <option value="all">All priorities</option>
+                                <option value="high">High</option>
+                                <option value="medium">Medium</option>
+                                <option value="low">Low</option>
+                            </select>
                         </div>
-                        <button class="add-row" onclick="addProductToDatabase()"><i class="fas fa-plus"></i> Add product</button>
+                        <button class="add-row" onclick="addProductToDatabase()"><i class="fas fa-plus"></i> <span id="addProductDbLabel">Add product</span></button>
                     </div>
                     <div class="table-wrap">
                         <table>
                             <thead>
                                 <tr>
-                                    <th style="width:40px;">Status</th>
-                                    <th onclick="sortProducts('category')">Category <span class="sort-icon">↕</span></th>
-                                    <th onclick="sortProducts('name')">Name <span class="sort-icon">↕</span></th>
-                                    <th onclick="sortProducts('quantity')">Qty <span class="sort-icon">↕</span></th>
-                                    <th onclick="sortProducts('estimated')">Est. <span class="sort-icon">↕</span></th>
-                                    <th onclick="sortProducts('real')">Real <span class="sort-icon">↕</span></th>
-                                    <th>Diff</th>
-                                    <th onclick="sortProducts('priority')">Priority <span class="sort-icon">↕</span></th>
-                                    <th style="width:60px;">Actions</th>
+                                    <th style="width:40px;"><span id="statusCol">Status</span></th>
+                                    <th onclick="sortProducts('category')"><span id="categoryCol">Category</span> <span class="sort-icon">↕</span></th>
+                                    <th onclick="sortProducts('name')"><span id="nameCol">Name</span> <span class="sort-icon">↕</span></th>
+                                    <th onclick="sortProducts('quantity')"><span id="qtyCol">Qty</span> <span class="sort-icon">↕</span></th>
+                                    <th onclick="sortProducts('estimated')"><span id="estCol">Est.</span> <span class="sort-icon">↕</span></th>
+                                    <th onclick="sortProducts('real')"><span id="realCol">Real</span> <span class="sort-icon">↕</span></th>
+                                    <th><span id="diffCol">Diff</span></th>
+                                    <th onclick="sortProducts('priority')"><span id="priorityCol">Priority</span> <span class="sort-icon">↕</span></th>
+                                    <th style="width:60px;"><span id="actionsCol">Actions</span></th>
                                 </tr>
                             </thead>
                             <tbody id="productsBody"></tbody>
@@ -1643,8 +1640,8 @@
             <!-- ═══════ MONTHS ═══════ -->
             <div class="tab-content" id="tab-months">
                 <div class="card">
-                    <h3><i class="fas fa-calendar-alt"></i> Monthly Sheets</h3>
-                    <p class="text-muted" style="margin-bottom:16px;">Each month is saved automatically. Click a month to view details.</p>
+                    <h3><i class="fas fa-calendar-alt"></i> <span id="monthsTitle">Monthly Sheets</span></h3>
+                    <p class="text-muted" style="margin-bottom:16px;" id="monthsSubtitle">Each month is saved automatically. Click a month to view details.</p>
                     <div id="monthGrid" class="month-grid"></div>
                 </div>
             </div>
@@ -1652,20 +1649,20 @@
             <!-- ═══════ WISHLIST ═══════ -->
             <div class="tab-content" id="tab-wishlist">
                 <div class="wishlist-card">
-                    <h3><i class="fas fa-heart" style="color:var(--pink);"></i> My Wishlist</h3>
-                    <p class="text-muted" style="margin-bottom:12px;">Save your wishes and track how much you need to save!</p>
+                    <h3><i class="fas fa-heart" style="color:var(--pink);"></i> <span id="wishlistTitle">My Wishlist</span></h3>
+                    <p class="text-muted" style="margin-bottom:12px;" id="wishlistSub">Save your wishes and track how much you need to save!</p>
 
                     <div class="flex" style="gap:12px;margin-bottom:12px;flex-wrap:wrap;">
                         <input type="text" id="wishlistInput" placeholder="What do you want?" style="flex:1;padding:10px 16px;border:2px solid var(--border);border-radius:12px;background:var(--bg);color:var(--text);font-size:14px;" />
                         <input type="number" id="wishlistPrice" placeholder="Price" style="width:120px;padding:10px 16px;border:2px solid var(--border);border-radius:12px;background:var(--bg);color:var(--text);font-size:14px;" />
-                        <button onclick="addWishlistItem()" style="background:var(--pink);color:white;border:none;padding:10px 20px;border-radius:12px;cursor:pointer;font-weight:600;">Add</button>
+                        <button onclick="addWishlistItem()" style="background:var(--pink);color:white;border:none;padding:10px 20px;border-radius:12px;cursor:pointer;font-weight:600;" id="wishlistAddBtn">Add</button>
                     </div>
 
                     <div id="wishlistContainer" class="wishlist-items"></div>
 
                     <div style="margin-top:16px;padding-top:16px;border-top:2px solid var(--border);">
-                        <p class="text-muted"><strong>Total needed:</strong> <span id="wishlistTotal">0</span> <span id="wishlistCurrency">DH</span></p>
-                        <p class="text-muted"><strong>Items:</strong> <span id="wishlistCount">0</span></p>
+                        <p class="text-muted"><strong id="totalNeededLabel">Total needed:</strong> <span id="wishlistTotal">0</span> <span id="wishlistCurrency">DH</span></p>
+                        <p class="text-muted"><strong id="itemsCountLabel">Items:</strong> <span id="wishlistCount">0</span></p>
                     </div>
                 </div>
             </div>
@@ -1673,17 +1670,17 @@
             <!-- ═══════ SETTINGS ═══════ -->
             <div class="tab-content" id="tab-settings">
                 <div class="card">
-                    <h3><i class="fas fa-sliders-h"></i> Settings</h3>
+                    <h3><i class="fas fa-sliders-h"></i> <span id="settingsTitle">Settings</span></h3>
 
                     <div class="settings-row">
-                        <span><i class="fas fa-moon"></i> Dark Mode</span>
+                        <span><i class="fas fa-moon"></i> <span id="darkModeLabel">Dark Mode</span></span>
                         <div class="toggle-switch" id="darkToggle" onclick="toggleDark()">
                             <div class="knob"></div>
                         </div>
                     </div>
 
                     <div class="settings-row">
-                        <span><i class="fas fa-coins"></i> Currency</span>
+                        <span><i class="fas fa-coins"></i> <span id="currencyLabel">Currency</span></span>
                         <select id="currencySelect" onchange="updateCurrency()" class="settings-select">
                             <option value="DH">DH</option>
                             <option value="$">$</option>
@@ -1695,7 +1692,7 @@
                     </div>
 
                     <div class="settings-row">
-                        <span><i class="fas fa-language"></i> Language</span>
+                        <span><i class="fas fa-language"></i> <span id="languageLabel">Language</span></span>
                         <select id="languageSelect" onchange="updateLanguage()" class="settings-select">
                             <option value="en">🇬🇧 English</option>
                             <option value="fr">🇫🇷 Français</option>
@@ -1706,23 +1703,23 @@
                     </div>
 
                     <div class="settings-row">
-                        <span><i class="fas fa-cloud"></i> Cloud Sync</span>
+                        <span><i class="fas fa-cloud"></i> <span id="syncLabel">Cloud Sync</span></span>
                         <span class="text-muted" id="syncStatusText">Connected</span>
                     </div>
 
                     <div class="settings-row">
-                        <span><i class="fas fa-file-excel"></i> Export Excel (CSV)</span>
-                        <button onclick="exportCSV()" style="background:var(--primary);color:white;border:none;padding:6px 16px;border-radius:40px;cursor:pointer;">Export</button>
+                        <span><i class="fas fa-file-excel"></i> <span id="exportExcelLabel">Export Excel (CSV)</span></span>
+                        <button onclick="exportCSV()" style="background:var(--primary);color:white;border:none;padding:6px 16px;border-radius:40px;cursor:pointer;" id="exportBtnLabel">Export</button>
                     </div>
 
                     <div class="settings-row">
-                        <span><i class="fas fa-file-import"></i> Import CSV</span>
+                        <span><i class="fas fa-file-import"></i> <span id="importCSVLabel">Import CSV</span></span>
                         <input type="file" id="csvInput" accept=".csv" style="display:none;" onchange="handleImport(event)" />
-                        <button onclick="document.getElementById('csvInput').click()" style="background:var(--primary);color:white;border:none;padding:6px 16px;border-radius:40px;cursor:pointer;">Import</button>
+                        <button onclick="document.getElementById('csvInput').click()" style="background:var(--primary);color:white;border:none;padding:6px 16px;border-radius:40px;cursor:pointer;" id="importBtnLabel">Import</button>
                     </div>
 
                     <div class="settings-row" style="border-bottom: none; padding-top: 16px;">
-                        <span><i class="fas fa-user"></i> User</span>
+                        <span><i class="fas fa-user"></i> <span id="userLabel">User</span></span>
                         <span class="text-muted" id="userEmailDisplay">—</span>
                     </div>
                 </div>
@@ -1731,27 +1728,27 @@
             <!-- ═══════ ADMIN ═══════ -->
             <div class="tab-content" id="tab-admin">
                 <div class="admin-panel">
-                    <h3><i class="fas fa-user-shield"></i> Admin Panel</h3>
-                    <p class="text-muted" style="margin-bottom:16px;">Click on any user to see their full shopping details.</p>
+                    <h3><i class="fas fa-user-shield"></i> <span id="adminPanelTitle">Admin Panel</span></h3>
+                    <p class="text-muted" style="margin-bottom:16px;" id="adminSubtitle">Click on any user to see their full shopping details.</p>
 
                     <div id="adminUserList">
-                        <div class="text-muted text-center" style="padding:20px 0;">Loading users...</div>
+                        <div class="text-muted text-center" style="padding:20px 0;" id="adminLoading">Loading users...</div>
                     </div>
 
                     <div class="admin-user-detail" id="adminUserDetail">
-                        <button class="back-btn" onclick="closeUserDetail()"><i class="fas fa-arrow-left"></i> Back to Users</button>
+                        <button class="back-btn" onclick="closeUserDetail()"><i class="fas fa-arrow-left"></i> <span id="backToUsersLabel">Back to Users</span></button>
                         <h4 id="detailUserName" style="margin-bottom:8px;">User: —</h4>
                         <p class="text-muted" id="detailUserEmail" style="margin-bottom:16px;">—</p>
                         <div id="detailUserContent">
-                            <div class="text-muted text-center">Loading user data...</div>
+                            <div class="text-muted text-center" id="detailLoading">Loading user data...</div>
                         </div>
                     </div>
                 </div>
 
                 <div class="card">
-                    <h3><i class="fas fa-chart-bar"></i> Global Statistics</h3>
+                    <h3><i class="fas fa-chart-bar"></i> <span id="globalStatsTitle">Global Statistics</span></h3>
                     <div id="adminGlobalStats">
-                        <div class="text-muted text-center" style="padding:20px 0;">Loading global statistics...</div>
+                        <div class="text-muted text-center" style="padding:20px 0;" id="globalLoading">Loading global statistics...</div>
                     </div>
                 </div>
             </div>
@@ -1761,12 +1758,12 @@
         <!-- ═══════════ SHOPPING MODAL ═══════════ -->
         <div class="modal-overlay" id="shoppingModal">
             <div class="modal-content">
-                <h2><i class="fas fa-shopping-bag"></i> New Shopping Day</h2>
+                <h2><i class="fas fa-shopping-bag"></i> <span id="modalTitle">New Shopping Day</span></h2>
 
-                <label style="font-weight:600;font-size:14px;color:var(--text2);">Date</label>
+                <label style="font-weight:600;font-size:14px;color:var(--text2);" id="modalDateLabel">Date</label>
                 <input type="date" id="shoppingDate" value="" />
 
-                <label style="font-weight:600;font-size:14px;color:var(--text2);">Choose Category</label>
+                <label style="font-weight:600;font-size:14px;color:var(--text2);margin-top:8px;" id="modalCategoryLabel">Choose Category</label>
                 <select id="shoppingCategorySelect" onchange="updateProductList()">
                     <option value="">-- Select a category --</option>
                     <option value="Féculents">Féculents</option>
@@ -1777,7 +1774,7 @@
                     <option value="Fruits">Fruits</option>
                     <option value="Gourmandises">Gourmandises</option>
                     <option value="Boissons">Boissons</option>
-                    <option value="Epices et huiles">Epices et huiles</option>
+                    <option value="Epices et graisses">Epices et graisses</option>
                     <option value="Hygiène">Hygiène</option>
                     <option value="Transport">Transport</option>
                     <option value="Santé">Santé</option>
@@ -1786,19 +1783,19 @@
                     <option value="Perte">Perte</option>
                 </select>
 
-                <label style="font-weight:600;font-size:14px;color:var(--text2);margin-top:8px;">Select Products</label>
+                <label style="font-weight:600;font-size:14px;color:var(--text2);margin-top:8px;" id="modalProductsLabel">Select Products</label>
                 <div id="productSelectList" class="product-select-list">
-                    <div class="text-muted text-center" style="grid-column:1/-1;padding:12px;">Select a category first</div>
+                    <div class="text-muted text-center" style="grid-column:1/-1;padding:12px;" id="modalSelectCategoryMsg">Select a category first</div>
                 </div>
 
                 <div id="shoppingCartContainer" style="margin-top:12px;display:none;">
-                    <h4 style="font-size:14px;margin-bottom:8px;">🛒 Shopping Cart</h4>
+                    <h4 style="font-size:14px;margin-bottom:8px;" id="cartTitle">🛒 Shopping Cart</h4>
                     <div id="shoppingCartItems"></div>
                 </div>
 
                 <div class="modal-buttons">
-                    <button class="btn-cancel" onclick="closeShoppingModal()">Cancel</button>
-                    <button class="btn-confirm" onclick="confirmShoppingDay()">Save Shopping Day</button>
+                    <button class="btn-cancel" onclick="closeShoppingModal()" id="modalCancelBtn">Cancel</button>
+                    <button class="btn-confirm" onclick="confirmShoppingDay()" id="modalSaveBtn">Save Shopping Day</button>
                 </div>
             </div>
         </div>
@@ -1818,13 +1815,13 @@
         // ═══════════════════════════════════════════════════
 
         const firebaseConfig = {
-          apiKey: "AIzaSyBeSa90G5b_fl9HoNiDQhUJSyS_4n3x5o0",
-          authDomain: "smart-budget-55f99.firebaseapp.com",
-          projectId: "smart-budget-55f99",
-          storageBucket: "smart-budget-55f99.firebasestorage.app",
-          messagingSenderId: "386991773547",
-          appId: "1:386991773547:web:9e335b919e448f2dcfde2e",
-          measurementId: "G-M6HT37LGFK"
+            apiKey: "AIzaSyBeSa90G5b_fl9HoNiDQhUJSyS_4n3x5o0",
+            authDomain: "smart-budget-55f99.firebaseapp.com",
+            projectId: "smart-budget-55f99",
+            storageBucket: "smart-budget-55f99.firebasestorage.app",
+            messagingSenderId: "386991773547",
+            appId: "1:386991773547:web:9e335b919e448f2dcfde2e",
+            measurementId: "G-M6HT37LGFK"
         };
 
         // ─── Admin Email ───
@@ -1834,7 +1831,7 @@
         const CATEGORIES = [
             'Féculents', 'Conserves', 'Produits laitiers', 'Viandes et protéines',
             'Légumes', 'Fruits', 'Gourmandises', 'Boissons',
-            'Epices et huile', 'Hygiène', 'Transport', 'Santé',
+            'Epices et graisses', 'Hygiène', 'Transport', 'Santé',
             'Etudes', 'Epargnes', 'Perte'
         ];
 
@@ -1870,12 +1867,10 @@
         let sortProductsField = 'category';
         let sortProductsAsc = true;
         let shoppingCartItems = [];
-        let currentShoppingDayIndex = null;
 
         const STORAGE_KEY = 'smartBudgetLocal';
 
         // ──────────────── TRANSLATIONS ────────────────
-        // (Shortened for space - include all languages)
         const translations = {
             en: {
                 appTitle: 'Smart Budget',
@@ -2002,6 +1997,7 @@
                 empty: 'Empty',
                 partial: 'Partial',
                 full: 'Full',
+                over: 'Over',
                 selectCategory: '-- Select a category --',
                 selectProducts: 'Select Products',
                 shoppingCart: '🛒 Shopping Cart',
@@ -2012,23 +2008,610 @@
                 chooseCategory: 'Choose Category',
                 addToCart: 'Add to Cart',
                 cartTotal: 'Cart Total',
-                noProductsInCategory: 'No products in this category.'
+                noProductsInCategory: 'No products in this category.',
+                adjustPrice: 'Adjust price',
+                noAccount: "Don't have an account?",
+                signUp: 'Sign Up',
+                haveAccount: 'Already have an account?',
+                signIn: 'Sign In',
+                createAccount: 'Create Account',
+                registerSub: 'Join Smart Budget and track your finances',
+                noCode: "Didn't receive code?",
+                verifyTitle: 'Verify Your Email',
+                showCodeLink: 'Show code (for testing)',
+                adminPanelTitle: 'Admin Panel'
             },
             fr: {
-                // Add French translations here
-                // ...
+                appTitle: 'Budget Intelligent',
+                loginSubtitle: 'Connectez-vous pour synchroniser',
+                loginBtn: 'Se connecter',
+                registerBtn: 'Créer un compte',
+                logout: 'Déconnexion',
+                export: 'Exporter',
+                import: 'Importer',
+                budget: '💰 Budget Mensuel',
+                spent: '✅ Dépensé',
+                remaining: '📊 Restant',
+                profit: '📈 Profit Mensuel',
+                dashboard: 'Tableau de bord',
+                shopping: 'Courses',
+                products: 'Produits',
+                months: 'Mois',
+                wishlist: 'Souhaits',
+                settings: 'Paramètres',
+                admin: 'Admin',
+                categorySummary: 'Résumé par Catégorie',
+                thisMonth: 'Ce mois-ci',
+                category: 'Catégorie',
+                estimated: 'Estimé',
+                real: 'Réel',
+                difference: 'Différence',
+                spendingByCategory: 'Dépenses par Catégorie',
+                monthlyComparison: 'Comparaison Mensuelle',
+                recentPurchases: 'Achats Récents',
+                quickStats: 'Statistiques Rapides',
+                shoppingList: 'Jours de Courses',
+                addProduct: 'Ajouter un produit',
+                totalEstimated: 'Total estimé',
+                totalReal: 'Total réel',
+                bought: 'Acheté',
+                productDatabase: 'Base de Données Produits',
+                monthlySheets: 'Feuilles Mensuelles',
+                monthsSubtitle: 'Chaque mois est sauvegardé automatiquement.',
+                settingsTitle: 'Paramètres',
+                darkMode: 'Mode Sombre',
+                currency: 'Devise',
+                language: 'Langue',
+                cloudSync: 'Synchronisation Cloud',
+                exportExcel: 'Exporter Excel (CSV)',
+                importCSV: 'Importer CSV',
+                user: 'Utilisateur',
+                adminPanel: 'Panneau Admin',
+                adminSubtitle: 'Cliquez sur un utilisateur pour voir ses achats.',
+                globalStats: 'Statistiques Globales',
+                noData: 'Pas encore de données.',
+                noPurchases: 'Pas encore d\'achats.',
+                loading: 'Chargement...',
+                totalItems: 'Total articles',
+                boughtItems: 'Achetés',
+                estimatedTotal: 'Total estimé',
+                realTotal: 'Total réel',
+                topCategory: 'Catégorie principale',
+                admin: 'Admin',
+                users: 'Utilisateurs',
+                totalUsers: 'Total Utilisateurs',
+                totalSpentAll: 'Total Dépensé (Tous)',
+                avgBudget: 'Budget Moyen',
+                month: 'Mois',
+                spentLabel: 'Dépensé',
+                budgetLabel: 'Budget',
+                profitLabel: 'Profit',
+                searchProducts: 'Rechercher des produits...',
+                allCategories: 'Toutes les catégories',
+                allPriorities: 'Toutes les priorités',
+                all: 'Tous',
+                boughtFilter: 'Acheté',
+                unbought: 'Non acheté',
+                high: 'Haute',
+                medium: 'Moyenne',
+                low: 'Basse',
+                noProducts: 'Aucun produit trouvé',
+                deleteConfirm: 'Supprimer ce produit ?',
+                deleteAllConfirm: 'Supprimer de TOUTES les données ?',
+                logoutConfirm: 'Se déconnecter ?',
+                budgetPrompt: 'Définir le budget mensuel',
+                currencyUpdated: 'Devise mise à jour',
+                languageUpdated: 'Langue mise à jour',
+                exported: 'Exporté !',
+                imported: 'Importé',
+                invalidCSV: 'CSV invalide',
+                added: 'Ajouté',
+                deleted: 'Supprimé',
+                updated: 'Mis à jour',
+                synced: 'Synchronisé depuis un autre appareil',
+                offline: 'Utilisation hors ligne',
+                cloudSyncText: 'Synchronisé',
+                backToUsers: 'Retour aux utilisateurs',
+                userDetails: 'Détails de l\'utilisateur',
+                noUserData: 'Pas de données pour cet utilisateur.',
+                verifyEmail: 'Vérifiez votre email',
+                verifyInfo: 'Un code de vérification à 6 chiffres a été envoyé à votre email.',
+                verifyBtn: 'Vérifier le code',
+                resend: 'Renvoyer',
+                checkVerifying: 'Vérification...',
+                codeSent: 'Code de vérification envoyé !',
+                invalidCode: 'Code de vérification invalide.',
+                verified: 'Email vérifié ! Bienvenue !',
+                showCode: 'Afficher le code (test)',
+                enterCode: 'Entrez le code à 6 chiffres',
+                addShoppingDay: 'Ajouter un jour de courses',
+                day: 'Jour',
+                items: 'articles',
+                wishlistTitle: 'Ma Liste de Souhaits',
+                wishlistSub: 'Enregistrez vos souhaits et suivez combien vous devez économiser !',
+                wishlistAdd: 'Ajouter',
+                totalNeeded: 'Total nécessaire :',
+                whatYouWant: 'Que voulez-vous ?',
+                price: 'Prix',
+                delete: 'Supprimer',
+                noWishlist: 'Pas encore de souhaits. Ajoutez votre premier souhait !',
+                verifyCodeInstruction: 'Veuillez vérifier votre boîte de réception et entrer le code ci-dessous.',
+                status: 'Statut',
+                name: 'Nom',
+                qty: 'Qté',
+                est: 'Est.',
+                diff: 'Diff',
+                priority: 'Priorité',
+                actions: 'Actions',
+                empty: 'Vide',
+                partial: 'Partiel',
+                full: 'Plein',
+                over: 'Dépassé',
+                selectCategory: '-- Sélectionnez une catégorie --',
+                selectProducts: 'Sélectionner des produits',
+                shoppingCart: '🛒 Panier',
+                cancel: 'Annuler',
+                save: 'Enregistrer',
+                newShoppingDay: 'Nouveau jour de courses',
+                date: 'Date',
+                chooseCategory: 'Choisir une catégorie',
+                cartTotal: 'Total du panier',
+                noProductsInCategory: 'Aucun produit dans cette catégorie.',
+                adjustPrice: 'Ajuster le prix',
+                noAccount: "Vous n'avez pas de compte ?",
+                signUp: "S'inscrire",
+                haveAccount: 'Vous avez déjà un compte ?',
+                signIn: 'Se connecter',
+                createAccount: 'Créer un compte',
+                registerSub: 'Rejoignez Smart Budget et gérez vos finances',
+                noCode: "Vous n'avez pas reçu le code ?",
+                verifyTitle: 'Vérifiez votre email',
+                showCodeLink: 'Afficher le code (test)',
+                adminPanelTitle: 'Panneau Admin'
             },
             ar: {
-                // Add Arabic translations here
-                // ...
+                appTitle: 'الميزانية الذكية',
+                loginSubtitle: 'تسجيل الدخول للمزامنة بين جميع أجهزتك',
+                loginBtn: 'تسجيل الدخول',
+                registerBtn: 'إنشاء حساب',
+                logout: 'تسجيل الخروج',
+                export: 'تصدير',
+                import: 'استيراد',
+                budget: '💰 الميزانية الشهرية',
+                spent: '✅ المصروف',
+                remaining: '📊 المتبقي',
+                profit: '📈 الربح الشهري',
+                dashboard: 'لوحة التحكم',
+                shopping: 'التسوق',
+                products: 'المنتجات',
+                months: 'الأشهر',
+                wishlist: 'الأمنيات',
+                settings: 'الإعدادات',
+                admin: 'المشرف',
+                categorySummary: 'ملخص الفئات',
+                thisMonth: 'هذا الشهر',
+                category: 'الفئة',
+                estimated: 'تقديري',
+                real: 'فعلي',
+                difference: 'الفرق',
+                spendingByCategory: 'المصروفات حسب الفئة',
+                monthlyComparison: 'مقارنة شهرية',
+                recentPurchases: 'المشتريات الأخيرة',
+                quickStats: 'إحصائيات سريعة',
+                shoppingList: 'أيام التسوق',
+                addProduct: 'إضافة منتج',
+                totalEstimated: 'الإجمالي التقديري',
+                totalReal: 'الإجمالي الفعلي',
+                bought: 'تم الشراء',
+                productDatabase: 'قاعدة بيانات المنتجات',
+                monthlySheets: 'الأوراق الشهرية',
+                monthsSubtitle: 'يتم حفظ كل شهر تلقائياً.',
+                settingsTitle: 'الإعدادات',
+                darkMode: 'الوضع المظلم',
+                currency: 'العملة',
+                language: 'اللغة',
+                cloudSync: 'المزامنة السحابية',
+                exportExcel: 'تصدير Excel (CSV)',
+                importCSV: 'استيراد CSV',
+                user: 'المستخدم',
+                adminPanel: 'لوحة المشرف',
+                adminSubtitle: 'انقر على مستخدم لرؤية مشترياته.',
+                globalStats: 'إحصائيات عامة',
+                noData: 'لا توجد بيانات بعد.',
+                noPurchases: 'لا توجد مشتريات بعد.',
+                loading: 'جاري التحميل...',
+                totalItems: 'إجمالي العناصر',
+                boughtItems: 'تم الشراء',
+                estimatedTotal: 'الإجمالي التقديري',
+                realTotal: 'الإجمالي الفعلي',
+                topCategory: 'أعلى فئة',
+                admin: 'مشرف',
+                users: 'المستخدمين',
+                totalUsers: 'إجمالي المستخدمين',
+                totalSpentAll: 'إجمالي المصروف (الكل)',
+                avgBudget: 'متوسط الميزانية',
+                month: 'الشهر',
+                spentLabel: 'المصروف',
+                budgetLabel: 'الميزانية',
+                profitLabel: 'الربح',
+                searchProducts: 'البحث عن منتجات...',
+                allCategories: 'جميع الفئات',
+                allPriorities: 'جميع الأولويات',
+                all: 'الكل',
+                boughtFilter: 'تم الشراء',
+                unbought: 'لم يشتري',
+                high: 'عالية',
+                medium: 'متوسطة',
+                low: 'منخفضة',
+                noProducts: 'لم يتم العثور على منتجات',
+                deleteConfirm: 'حذف هذا المنتج؟',
+                deleteAllConfirm: 'حذف من جميع البيانات؟',
+                logoutConfirm: 'تسجيل الخروج؟',
+                budgetPrompt: 'تعيين الميزانية الشهرية',
+                currencyUpdated: 'تم تحديث العملة',
+                languageUpdated: 'تم تحديث اللغة',
+                exported: 'تم التصدير!',
+                imported: 'تم الاستيراد',
+                invalidCSV: 'ملف CSV غير صالح',
+                added: 'تمت الإضافة',
+                deleted: 'تم الحذف',
+                updated: 'تم التحديث',
+                synced: 'تمت المزامنة من جهاز آخر',
+                offline: 'استخدام البيانات دون اتصال',
+                cloudSyncText: 'متزامن',
+                backToUsers: 'العودة إلى المستخدمين',
+                userDetails: 'تفاصيل المستخدم',
+                noUserData: 'لا توجد بيانات لهذا المستخدم.',
+                verifyEmail: 'تحقق من بريدك الإلكتروني',
+                verifyInfo: 'تم إرسال رمز تحقق من 6 أرقام إلى بريدك الإلكتروني.',
+                verifyBtn: 'تحقق من الرمز',
+                resend: 'إعادة الإرسال',
+                checkVerifying: 'جاري التحقق...',
+                codeSent: 'تم إرسال رمز التحقق!',
+                invalidCode: 'رمز التحقق غير صالح.',
+                verified: 'تم التحقق من البريد الإلكتروني! مرحباً بك!',
+                showCode: 'عرض الرمز (للاختبار)',
+                enterCode: 'أدخل الرمز المكون من 6 أرقام',
+                addShoppingDay: 'إضافة يوم تسوق',
+                day: 'يوم',
+                items: 'عناصر',
+                wishlistTitle: 'قائمة أمنياتي',
+                wishlistSub: 'احفظ أمنياتك وتابع كم تحتاج لتوفيره!',
+                wishlistAdd: 'إضافة',
+                totalNeeded: 'الإجمالي المطلوب:',
+                whatYouWant: 'ماذا تريد؟',
+                price: 'السعر',
+                delete: 'حذف',
+                noWishlist: 'لا توجد أمنيات بعد. أضف أمنيتك الأولى!',
+                verifyCodeInstruction: 'يرجى التحقق من صندوق الوارد وإدخال الرمز أدناه.',
+                status: 'الحالة',
+                name: 'الاسم',
+                qty: 'الكمية',
+                est: 'تقديري',
+                diff: 'الفرق',
+                priority: 'الأولوية',
+                actions: 'إجراءات',
+                empty: 'فارغ',
+                partial: 'جزئي',
+                full: 'كامل',
+                over: 'متجاوز',
+                selectCategory: '-- اختر فئة --',
+                selectProducts: 'اختر المنتجات',
+                shoppingCart: '🛒 سلة التسوق',
+                cancel: 'إلغاء',
+                save: 'حفظ',
+                newShoppingDay: 'يوم تسوق جديد',
+                date: 'التاريخ',
+                chooseCategory: 'اختر الفئة',
+                cartTotal: 'إجمالي السلة',
+                noProductsInCategory: 'لا توجد منتجات في هذه الفئة.',
+                adjustPrice: 'تعديل السعر',
+                noAccount: 'ليس لديك حساب؟',
+                signUp: 'إنشاء حساب',
+                haveAccount: 'لديك حساب بالفعل؟',
+                signIn: 'تسجيل الدخول',
+                createAccount: 'إنشاء حساب',
+                registerSub: 'انضم إلى الميزانية الذكية وتتبع أموالك',
+                noCode: 'لم تستلم الرمز؟',
+                verifyTitle: 'تحقق من بريدك الإلكتروني',
+                showCodeLink: 'عرض الرمز (للاختبار)',
+                adminPanelTitle: 'لوحة المشرف'
             },
             tr: {
-                // Add Turkish translations here
-                // ...
+                appTitle: 'Akıllı Bütçe',
+                loginSubtitle: 'Tüm cihazlarınızda senkronize olmak için giriş yapın',
+                loginBtn: 'Giriş Yap',
+                registerBtn: 'Hesap Oluştur',
+                logout: 'Çıkış Yap',
+                export: 'Dışa Aktar',
+                import: 'İçe Aktar',
+                budget: '💰 Aylık Bütçe',
+                spent: '✅ Harcanan',
+                remaining: '📊 Kalan',
+                profit: '📈 Aylık Kar',
+                dashboard: 'Kontrol Paneli',
+                shopping: 'Alışveriş',
+                products: 'Ürünler',
+                months: 'Aylar',
+                wishlist: 'Dilek Listesi',
+                settings: 'Ayarlar',
+                admin: 'Yönetici',
+                categorySummary: 'Kategori Özeti',
+                thisMonth: 'Bu ay',
+                category: 'Kategori',
+                estimated: 'Tahmini',
+                real: 'Gerçek',
+                difference: 'Fark',
+                spendingByCategory: 'Kategoriye Göre Harcamalar',
+                monthlyComparison: 'Aylık Karşılaştırma',
+                recentPurchases: 'Son Alışverişler',
+                quickStats: 'Hızlı İstatistikler',
+                shoppingList: 'Alışveriş Günleri',
+                addProduct: 'Ürün ekle',
+                totalEstimated: 'Toplam tahmini',
+                totalReal: 'Toplam gerçek',
+                bought: 'Satın alındı',
+                productDatabase: 'Ürün Veritabanı',
+                monthlySheets: 'Aylık Sayfalar',
+                monthsSubtitle: 'Her ay otomatik olarak kaydedilir.',
+                settingsTitle: 'Ayarlar',
+                darkMode: 'Karanlık Mod',
+                currency: 'Para Birimi',
+                language: 'Dil',
+                cloudSync: 'Bulut Senkronizasyonu',
+                exportExcel: 'Excel Dışa Aktar (CSV)',
+                importCSV: 'CSV İçe Aktar',
+                user: 'Kullanıcı',
+                adminPanel: 'Yönetici Paneli',
+                adminSubtitle: 'Bir kullanıcıya tıklayarak alışveriş detaylarını görün.',
+                globalStats: 'Küresel İstatistikler',
+                noData: 'Henüz veri yok.',
+                noPurchases: 'Henüz alışveriş yok.',
+                loading: 'Yükleniyor...',
+                totalItems: 'Toplam öğe',
+                boughtItems: 'Satın alındı',
+                estimatedTotal: 'Tahmini toplam',
+                realTotal: 'Gerçek toplam',
+                topCategory: 'En çok kategori',
+                admin: 'Yönetici',
+                users: 'Kullanıcılar',
+                totalUsers: 'Toplam Kullanıcı',
+                totalSpentAll: 'Toplam Harcama (Tümü)',
+                avgBudget: 'Ortalama Bütçe',
+                month: 'Ay',
+                spentLabel: 'Harcanan',
+                budgetLabel: 'Bütçe',
+                profitLabel: 'Kar',
+                searchProducts: 'Ürünleri ara...',
+                allCategories: 'Tüm kategoriler',
+                allPriorities: 'Tüm öncelikler',
+                all: 'Tümü',
+                boughtFilter: 'Satın alındı',
+                unbought: 'Satın alınmadı',
+                high: 'Yüksek',
+                medium: 'Orta',
+                low: 'Düşük',
+                noProducts: 'Ürün bulunamadı',
+                deleteConfirm: 'Bu ürünü sil?',
+                deleteAllConfirm: 'TÜM verilerden sil?',
+                logoutConfirm: 'Çıkış yap?',
+                budgetPrompt: 'Aylık bütçeyi belirleyin',
+                currencyUpdated: 'Para birimi güncellendi',
+                languageUpdated: 'Dil güncellendi',
+                exported: 'Dışa aktarıldı!',
+                imported: 'İçe aktarıldı',
+                invalidCSV: 'Geçersiz CSV',
+                added: 'Eklendi',
+                deleted: 'Silindi',
+                updated: 'Güncellendi',
+                synced: 'Başka bir cihazdan senkronize edildi',
+                offline: 'Çevrimdışı veri kullanımı',
+                cloudSyncText: 'Senkronize',
+                backToUsers: 'Kullanıcılara Dön',
+                userDetails: 'Kullanıcı Detayları',
+                noUserData: 'Bu kullanıcı için veri yok.',
+                verifyEmail: 'E-postanızı Doğrulayın',
+                verifyInfo: 'E-posta adresinize 6 haneli doğrulama kodu gönderildi.',
+                verifyBtn: 'Kodu Doğrula',
+                resend: 'Yeniden Gönder',
+                checkVerifying: 'Kontrol ediliyor...',
+                codeSent: 'Doğrulama kodu gönderildi!',
+                invalidCode: 'Geçersiz doğrulama kodu.',
+                verified: 'E-posta doğrulandı! Hoş geldiniz!',
+                showCode: 'Kodu göster (test)',
+                enterCode: '6 haneli kodu girin',
+                addShoppingDay: 'Alışveriş Günü Ekle',
+                day: 'Gün',
+                items: 'öğe',
+                wishlistTitle: 'Dilek Listem',
+                wishlistSub: 'Dileklerinizi kaydedin ve ne kadar biriktirmeniz gerektiğini takip edin!',
+                wishlistAdd: 'Ekle',
+                totalNeeded: 'Toplam gerekli:',
+                whatYouWant: 'Ne istiyorsunuz?',
+                price: 'Fiyat',
+                delete: 'Sil',
+                noWishlist: 'Henüz dilek yok. İlk dileğinizi ekleyin!',
+                verifyCodeInstruction: 'Lütfen gelen kutunuzu kontrol edin ve kodu girin.',
+                status: 'Durum',
+                name: 'İsim',
+                qty: 'Miktar',
+                est: 'Tahmini',
+                diff: 'Fark',
+                priority: 'Öncelik',
+                actions: 'İşlemler',
+                empty: 'Boş',
+                partial: 'Kısmi',
+                full: 'Tam',
+                over: 'Aşıldı',
+                selectCategory: '-- Kategori seçin --',
+                selectProducts: 'Ürünleri seçin',
+                shoppingCart: '🛒 Alışveriş Sepeti',
+                cancel: 'İptal',
+                save: 'Kaydet',
+                newShoppingDay: 'Yeni Alışveriş Günü',
+                date: 'Tarih',
+                chooseCategory: 'Kategori Seçin',
+                cartTotal: 'Sepet Toplamı',
+                noProductsInCategory: 'Bu kategoride ürün yok.',
+                adjustPrice: 'Fiyatı ayarla',
+                noAccount: 'Hesabınız yok mu?',
+                signUp: 'Kayıt Ol',
+                haveAccount: 'Zaten hesabınız var mı?',
+                signIn: 'Giriş Yap',
+                createAccount: 'Hesap Oluştur',
+                registerSub: 'Akıllı Bütçe\'ye katılın ve finanslarınızı takip edin',
+                noCode: 'Kodu almadınız mı?',
+                verifyTitle: 'E-postanızı Doğrulayın',
+                showCodeLink: 'Kodu göster (test)',
+                adminPanelTitle: 'Yönetici Paneli'
             },
             ja: {
-                // Add Japanese translations here
-                // ...
+                appTitle: 'スマートバジェット',
+                loginSubtitle: 'すべてのデバイスで同期するにはサインイン',
+                loginBtn: 'サインイン',
+                registerBtn: 'アカウント作成',
+                logout: 'ログアウト',
+                export: 'エクスポート',
+                import: 'インポート',
+                budget: '💰 月次予算',
+                spent: '✅ 支出合計',
+                remaining: '📊 残り',
+                profit: '📈 月次利益',
+                dashboard: 'ダッシュボード',
+                shopping: 'ショッピング',
+                products: '製品',
+                months: '月次',
+                wishlist: 'ウィッシュリスト',
+                settings: '設定',
+                admin: '管理者',
+                categorySummary: 'カテゴリー概要',
+                thisMonth: '今月',
+                category: 'カテゴリー',
+                estimated: '見積もり',
+                real: '実績',
+                difference: '差額',
+                spendingByCategory: 'カテゴリー別支出',
+                monthlyComparison: '月次比較',
+                recentPurchases: '最近の購入',
+                quickStats: 'クイック統計',
+                shoppingList: 'ショッピングデイ',
+                addProduct: '製品を追加',
+                totalEstimated: '見積もり合計',
+                totalReal: '実績合計',
+                bought: '購入済み',
+                productDatabase: '製品データベース',
+                monthlySheets: '月次シート',
+                monthsSubtitle: '各月は自動的に保存されます。',
+                settingsTitle: '設定',
+                darkMode: 'ダークモード',
+                currency: '通貨',
+                language: '言語',
+                cloudSync: 'クラウド同期',
+                exportExcel: 'Excelエクスポート (CSV)',
+                importCSV: 'CSVインポート',
+                user: 'ユーザー',
+                adminPanel: '管理者パネル',
+                adminSubtitle: 'ユーザーをクリックして買い物の詳細を表示します。',
+                globalStats: 'グローバル統計',
+                noData: 'データがまだありません。',
+                noPurchases: '購入がまだありません。',
+                loading: '読み込み中...',
+                totalItems: '合計アイテム',
+                boughtItems: '購入済み',
+                estimatedTotal: '見積もり合計',
+                realTotal: '実績合計',
+                topCategory: 'トップカテゴリー',
+                admin: '管理者',
+                users: 'ユーザー',
+                totalUsers: '合計ユーザー',
+                totalSpentAll: '総支出 (全ユーザー)',
+                avgBudget: '平均予算',
+                month: '月',
+                spentLabel: '支出',
+                budgetLabel: '予算',
+                profitLabel: '利益',
+                searchProducts: '製品を検索...',
+                allCategories: 'すべてのカテゴリー',
+                allPriorities: 'すべての優先度',
+                all: 'すべて',
+                boughtFilter: '購入済み',
+                unbought: '未購入',
+                high: '高',
+                medium: '中',
+                low: '低',
+                noProducts: '製品が見つかりません',
+                deleteConfirm: 'この製品を削除しますか？',
+                deleteAllConfirm: 'すべてのデータから削除しますか？',
+                logoutConfirm: 'ログアウトしますか？',
+                budgetPrompt: '月次予算を設定',
+                currencyUpdated: '通貨が更新されました',
+                languageUpdated: '言語が更新されました',
+                exported: 'エクスポート完了！',
+                imported: 'インポート完了',
+                invalidCSV: '無効なCSV',
+                added: '追加されました',
+                deleted: '削除されました',
+                updated: '更新されました',
+                synced: '別のデバイスから同期されました',
+                offline: 'オフラインデータ使用',
+                cloudSyncText: '同期済み',
+                backToUsers: 'ユーザーに戻る',
+                userDetails: 'ユーザー詳細',
+                noUserData: 'このユーザーのデータはありません。',
+                verifyEmail: 'メールを認証する',
+                verifyInfo: '6桁の認証コードがメールに送信されました。',
+                verifyBtn: 'コードを認証',
+                resend: '再送信',
+                checkVerifying: '確認中...',
+                codeSent: '認証コードを送信しました！',
+                invalidCode: '無効な認証コードです。',
+                verified: 'メールが認証されました！ようこそ！',
+                showCode: 'コードを表示 (テスト用)',
+                enterCode: '6桁のコードを入力',
+                addShoppingDay: 'ショッピングデイを追加',
+                day: '日',
+                items: 'アイテム',
+                wishlistTitle: 'ウィッシュリスト',
+                wishlistSub: '欲しいものを保存して、いくら貯める必要があるか確認しましょう！',
+                wishlistAdd: '追加',
+                totalNeeded: '合計必要額:',
+                whatYouWant: '何が欲しいですか？',
+                price: '価格',
+                delete: '削除',
+                noWishlist: 'まだウィッシュはありません。最初のウィッシュを追加しましょう！',
+                verifyCodeInstruction: '受信トレイを確認し、以下のコードを入力してください。',
+                status: 'ステータス',
+                name: '名前',
+                qty: '数量',
+                est: '見積もり',
+                diff: '差額',
+                priority: '優先度',
+                actions: 'アクション',
+                empty: '空',
+                partial: '部分的',
+                full: '完了',
+                over: '超過',
+                selectCategory: '-- カテゴリーを選択 --',
+                selectProducts: '製品を選択',
+                shoppingCart: '🛒 ショッピングカート',
+                cancel: 'キャンセル',
+                save: '保存',
+                newShoppingDay: '新しいショッピングデイ',
+                date: '日付',
+                chooseCategory: 'カテゴリーを選択',
+                cartTotal: 'カート合計',
+                noProductsInCategory: 'このカテゴリーに製品はありません。',
+                adjustPrice: '価格を調整',
+                noAccount: 'アカウントをお持ちでない方',
+                signUp: 'サインアップ',
+                haveAccount: 'すでにアカウントをお持ちの方',
+                signIn: 'サインイン',
+                createAccount: 'アカウント作成',
+                registerSub: 'スマートバジェットに参加して家計を管理しましょう',
+                noCode: 'コードが届きませんでしたか？',
+                verifyTitle: 'メールを認証する',
+                showCodeLink: 'コードを表示 (テスト用)',
+                adminPanelTitle: '管理者パネル'
             }
         };
 
@@ -2066,6 +2649,7 @@
             document.getElementById('registerSuccess').style.display = 'none';
             document.getElementById('verifyError').style.display = 'none';
             document.getElementById('verifySuccess').style.display = 'none';
+            applyTranslations();
         }
 
         function showLogin() {
@@ -2073,6 +2657,7 @@
             document.getElementById('registerForm').style.display = 'none';
             document.getElementById('verifySection').classList.remove('active');
             document.getElementById('loginError').style.display = 'none';
+            applyTranslations();
         }
 
         function generateVerificationCode() {
@@ -2393,57 +2978,151 @@
             const lang = getLang();
             t = translations[lang] || translations.en;
 
-            document.querySelectorAll('[data-i18n]').forEach(el => {
-                const key = el.dataset.i18n;
-                if (t[key] !== undefined) el.textContent = t[key];
-            });
+            // Update all text elements with data-i18n or specific IDs
+            const elements = {
+                appTitle: document.getElementById('appTitle'),
+                loginSubtitle: document.getElementById('loginSubtitle'),
+                loginBtn: document.getElementById('loginBtn'),
+                registerBtn: document.getElementById('registerBtn'),
+                logoutLabel: document.getElementById('logoutLabel'),
+                exportLabel: document.getElementById('exportLabel'),
+                importLabel: document.getElementById('importLabel'),
+                budgetLabel: document.getElementById('budgetLabel'),
+                budgetEditLabel: document.getElementById('budgetEditLabel'),
+                spentLabel: document.getElementById('spentLabel'),
+                spentSubLabel: document.getElementById('spentSubLabel'),
+                remainingLabel: document.getElementById('remainingLabel'),
+                profitLabel: document.getElementById('profitLabel'),
+                profitSubLabel: document.getElementById('profitSubLabel'),
+                tabDashboard: document.getElementById('tabDashboard'),
+                tabShopping: document.getElementById('tabShopping'),
+                tabProducts: document.getElementById('tabProducts'),
+                tabMonths: document.getElementById('tabMonths'),
+                tabWishlist: document.getElementById('tabWishlist'),
+                tabSettings: document.getElementById('tabSettings'),
+                tabAdmin: document.getElementById('tabAdmin'),
+                categorySummaryTitle: document.getElementById('categorySummaryTitle'),
+                summaryBadge: document.getElementById('summaryBadge'),
+                catColCategory: document.getElementById('catColCategory'),
+                catColEstimated: document.getElementById('catColEstimated'),
+                catColReal: document.getElementById('catColReal'),
+                catColDiff: document.getElementById('catColDiff'),
+                pieChartTitle: document.getElementById('pieChartTitle'),
+                monthlyComparisonTitle: document.getElementById('monthlyComparisonTitle'),
+                recentTitle: document.getElementById('recentTitle'),
+                noPurchasesText: document.getElementById('noPurchasesText'),
+                quickStatsTitle: document.getElementById('quickStatsTitle'),
+                statsPlaceholder: document.getElementById('statsPlaceholder'),
+                shoppingTitle: document.getElementById('shoppingTitle'),
+                addShoppingDayLabel: document.getElementById('addShoppingDayLabel'),
+                productsTitle: document.getElementById('productsTitle'),
+                addProductDbLabel: document.getElementById('addProductDbLabel'),
+                monthsTitle: document.getElementById('monthsTitle'),
+                monthsSubtitle: document.getElementById('monthsSubtitle'),
+                settingsTitle: document.getElementById('settingsTitle'),
+                darkModeLabel: document.getElementById('darkModeLabel'),
+                currencyLabel: document.getElementById('currencyLabel'),
+                languageLabel: document.getElementById('languageLabel'),
+                syncLabel: document.getElementById('syncLabel'),
+                exportExcelLabel: document.getElementById('exportExcelLabel'),
+                exportBtnLabel: document.getElementById('exportBtnLabel'),
+                importCSVLabel: document.getElementById('importCSVLabel'),
+                importBtnLabel: document.getElementById('importBtnLabel'),
+                userLabel: document.getElementById('userLabel'),
+                adminPanelTitle: document.getElementById('adminPanelTitle'),
+                adminSubtitle: document.getElementById('adminSubtitle'),
+                adminLoading: document.getElementById('adminLoading'),
+                globalStatsTitle: document.getElementById('globalStatsTitle'),
+                globalLoading: document.getElementById('globalLoading'),
+                backToUsersLabel: document.getElementById('backToUsersLabel'),
+                detailLoading: document.getElementById('detailLoading'),
+                statusCol: document.getElementById('statusCol'),
+                categoryCol: document.getElementById('categoryCol'),
+                nameCol: document.getElementById('nameCol'),
+                qtyCol: document.getElementById('qtyCol'),
+                estCol: document.getElementById('estCol'),
+                realCol: document.getElementById('realCol'),
+                diffCol: document.getElementById('diffCol'),
+                priorityCol: document.getElementById('priorityCol'),
+                actionsCol: document.getElementById('actionsCol'),
+                wishlistTitle: document.getElementById('wishlistTitle'),
+                wishlistSub: document.getElementById('wishlistSub'),
+                wishlistAddBtn: document.getElementById('wishlistAddBtn'),
+                totalNeededLabel: document.getElementById('totalNeededLabel'),
+                itemsCountLabel: document.getElementById('itemsCountLabel'),
+                noWishlist: document.getElementById('noWishlist'),
+                // Auth
+                noAccountText: document.getElementById('noAccountText'),
+                signUpLink: document.getElementById('signUpLink'),
+                haveAccountText: document.getElementById('haveAccountText'),
+                signInLink: document.getElementById('signInLink'),
+                createAccountTitle: document.getElementById('createAccountTitle'),
+                registerSubtitle: document.getElementById('registerSubtitle'),
+                verifyTitle: document.getElementById('verifyTitle'),
+                verifyInfo: document.getElementById('verifyInfo'),
+                verifyBtn: document.getElementById('verifyBtn'),
+                noCodeText: document.getElementById('noCodeText'),
+                resendLink: document.getElementById('resendLink'),
+                showCodeLink: document.getElementById('showCodeLink'),
+                // Modal
+                modalTitle: document.getElementById('modalTitle'),
+                modalDateLabel: document.getElementById('modalDateLabel'),
+                modalCategoryLabel: document.getElementById('modalCategoryLabel'),
+                modalProductsLabel: document.getElementById('modalProductsLabel'),
+                modalSelectCategoryMsg: document.getElementById('modalSelectCategoryMsg'),
+                cartTitle: document.getElementById('cartTitle'),
+                modalCancelBtn: document.getElementById('modalCancelBtn'),
+                modalSaveBtn: document.getElementById('modalSaveBtn'),
+            };
 
-            document.getElementById('loginBtn').textContent = _( 'loginBtn');
-            document.getElementById('registerBtn').textContent = _( 'registerBtn');
-            document.getElementById('searchProducts').placeholder = _( 'searchProducts');
+            for (const [key, el] of Object.entries(elements)) {
+                if (el && t[key] !== undefined) {
+                    el.textContent = t[key];
+                }
+            }
 
-            // Category filter
+            // Update placeholders
+            const searchProducts = document.getElementById('searchProducts');
+            if (searchProducts) searchProducts.placeholder = _( 'searchProducts');
+
+            const wishlistInput = document.getElementById('wishlistInput');
+            if (wishlistInput) wishlistInput.placeholder = _( 'whatYouWant');
+
+            const wishlistPrice = document.getElementById('wishlistPrice');
+            if (wishlistPrice) wishlistPrice.placeholder = _( 'price');
+
+            const verifyCodeInput = document.getElementById('verifyCodeInput');
+            if (verifyCodeInput) verifyCodeInput.placeholder = _( 'enterCode');
+
+            // Update category filter options
             const catFilter = document.getElementById('categoryFilter');
             if (catFilter) {
                 catFilter.options[0].textContent = _( 'allCategories');
             }
 
-            // Priority filter
-            document.querySelectorAll('select[id*="priority"] option').forEach(opt => {
-                if (opt.value === 'all') opt.textContent = _( 'allPriorities');
-                if (opt.value === 'high') opt.textContent = _( 'high');
-                if (opt.value === 'medium') opt.textContent = _( 'medium');
-                if (opt.value === 'low') opt.textContent = _( 'low');
-            });
+            // Update priority filter options
+            const priorityFilter = document.getElementById('priorityFilterProducts');
+            if (priorityFilter) {
+                priorityFilter.options[0].textContent = _( 'allPriorities');
+                priorityFilter.options[1].textContent = _( 'high');
+                priorityFilter.options[2].textContent = _( 'medium');
+                priorityFilter.options[3].textContent = _( 'low');
+            }
 
+            // Update language dropdown
             document.getElementById('languageSelect').value = data.language || 'en';
+            document.getElementById('currencySelect').value = data.currency || 'DH';
 
-            // Wishlist
-            document.querySelector('#tab-wishlist .wishlist-card h3').innerHTML = '<i class="fas fa-heart" style="color:var(--pink);"></i> ' + _(
-                'wishlistTitle');
-            document.querySelector('#tab-wishlist .wishlist-card .text-muted').textContent = _( 'wishlistSub');
-            document.getElementById('wishlistInput').placeholder = _( 'whatYouWant');
-            document.getElementById('wishlistPrice').placeholder = _( 'price');
-            document.querySelector('#tab-wishlist .wishlist-card .flex button').textContent = _( 'wishlistAdd');
-
-            // Verify section
-            document.querySelector('#verifySection h3').textContent = '✅ ' + _( 'verifyEmail');
-            document.querySelector('#verifySection .info').innerHTML = _( 'verifyInfo') + '<br>' + _( 'verifyCodeInstruction');
-            document.querySelector('#verifySection button').textContent = _( 'verifyBtn');
-            document.querySelector('#verifySection .toggle-mode a').textContent = _( 'resend');
-            document.querySelector('#verifySection .code-hint + .toggle-mode a').textContent = _( 'showCode');
-            document.getElementById('verifyCodeInput').placeholder = _( 'enterCode');
-
-            // Shopping modal
-            document.querySelector('#shoppingModal h2').textContent = '🛒 ' + _( 'newShoppingDay');
-            document.querySelector('#shoppingModal label[for="shoppingDate"]').textContent = _( 'date');
-            document.querySelector('#shoppingModal .modal-buttons .btn-cancel').textContent = _( 'cancel');
-            document.querySelector('#shoppingModal .modal-buttons .btn-confirm').textContent = _( 'save');
+            // Update wishlist currency
+            document.getElementById('wishlistCurrency').textContent = getCurrencySymbol();
 
             // Re-render
             renderWishlist();
             renderShoppingDays();
             renderProducts();
+            renderDashboard();
+            renderCategorySummary();
+            renderStats();
         }
 
         function updateLanguage() {
@@ -2497,33 +3176,32 @@
             return db.collection('users');
         }
 
-        // ──────────────── 3-STATE CHECKBOX ────────────────
-
-        function getStatusText(status) {
-            if (status === 'partial') return '◯';
-            if (status === 'full') return '✓';
-            return ' ';
-        }
-
-        function getStatusClass(status) {
-            if (status === 'partial') return 'partial';
-            if (status === 'full') return 'full';
-            return 'empty';
-        }
-
-        function cycleStatus(currentStatus) {
-            if (currentStatus === 'empty') return 'partial';
-            if (currentStatus === 'partial') return 'full';
-            return 'empty';
-        }
-
-        // ──────────────── PRODUCTS ────────────────
+        // ──────────────── STATUS CHECKBOX ────────────────
 
         function getProductStatus(productId) {
             const p = data.products.find(pr => pr.id === productId);
             if (!p) return 'empty';
-            if (p.bought === true) return 'full';
-            if (p.bought === 'partial') return 'partial';
+
+            const est = parseFloat(p.estimated) || 0;
+            const real = parseFloat(p.real) || 0;
+
+            if (real === 0) return 'empty';
+            if (real > est + 0.01) return 'over';
+            if (Math.abs(real - est) <= 0.5) return 'full';
+            return 'partial';
+        }
+
+        function getStatusDisplay(status) {
+            if (status === 'full') return '✓';
+            if (status === 'partial') return '◯';
+            if (status === 'over') return '●';
+            return '';
+        }
+
+        function getStatusClass(status) {
+            if (status === 'full') return 'full';
+            if (status === 'partial') return 'partial';
+            if (status === 'over') return 'over';
             return 'empty';
         }
 
@@ -2531,36 +3209,43 @@
             const p = data.products.find(pr => pr.id === productId);
             if (!p) return;
 
-            const current = p.bought === true ? 'full' : (p.bought === 'partial' ? 'partial' : 'empty');
-            const next = cycleStatus(current);
+            const est = parseFloat(p.estimated) || 0;
+            const currentReal = parseFloat(p.real) || 0;
 
-            if (next === 'full') {
-                p.bought = true;
-                // Add real price if not set
-                if (p.real === 0 && p.estimated > 0) {
-                    p.real = p.estimated;
-                }
-            } else if (next === 'partial') {
-                p.bought = 'partial';
-                // Don't add to real price for partial
+            // Cycle: empty -> partial -> full -> empty
+            const currentStatus = getProductStatus(productId);
+            let newReal;
+
+            if (currentStatus === 'empty') {
+                // Partial: set to half of estimated
+                newReal = est / 2;
+            } else if (currentStatus === 'partial') {
+                // Full: set to estimated
+                newReal = est;
             } else {
-                p.bought = false;
-                // Don't remove real price - user might have entered it manually
+                // Full or over -> empty
+                newReal = 0;
             }
 
-            // Also update in month products
+            p.real = newReal;
+
+            // Update in month products
             const monthProducts = getCurrentMonthProducts();
             const monthP = monthProducts.find(m => m.id === productId);
             if (monthP) {
-                monthP.bought = p.bought;
-                if (next === 'full' && monthP.real === 0 && monthP.estimated > 0) {
-                    monthP.real = monthP.estimated;
-                }
+                monthP.real = newReal;
             }
 
             saveToFirebase();
             refreshAll();
-            showToast('Status updated to: ' + next);
+            const status = getProductStatus(productId);
+            const statusNames = {
+                'empty': _( 'empty'),
+                'partial': _( 'partial'),
+                'full': _( 'full'),
+                'over': _( 'over')
+            };
+            showToast('Status: ' + statusNames[status]);
         }
 
         // ──────────────── RENDER PRODUCTS ────────────────
@@ -2568,6 +3253,7 @@
         function renderProducts() {
             const search = document.getElementById('searchProducts').value.toLowerCase();
             const catFilter = document.getElementById('categoryFilter').value;
+            const priorityFilter = document.getElementById('priorityFilterProducts').value;
 
             // Populate category filter with predefined categories
             const catSelect = document.getElementById('categoryFilter');
@@ -2580,7 +3266,8 @@
                 const matchSearch = p.name.toLowerCase().includes(search) || (p.category || '').toLowerCase()
                     .includes(search);
                 const matchCat = catFilter === 'all' ? true : p.category === catFilter;
-                return matchSearch && matchCat;
+                const matchPriority = priorityFilter === 'all' ? true : p.priority === priorityFilter;
+                return matchSearch && matchCat && matchPriority;
             });
 
             filtered.sort((a, b) => {
@@ -2600,13 +3287,13 @@
             } else {
                 tbody.innerHTML = filtered.map(p => {
                     const status = getProductStatus(p.id);
-                    const statusDisplay = status === 'full' ? '✓' : (status === 'partial' ? '◯' : '');
+                    const statusDisplay = getStatusDisplay(status);
                     const statusClass = getStatusClass(status);
 
                     return `
                     <tr>
                         <td>
-                            <div class="status-checkbox ${statusClass}" onclick="toggleProductStatus('${p.id}')" title="Click to change status">
+                            <div class="status-checkbox ${statusClass}" onclick="toggleProductStatus('${p.id}')" title="${_( 'status')}: ${status}">
                                 ${statusDisplay}
                             </div>
                         </td>
@@ -2616,10 +3303,10 @@
                             </select>
                         </td>
                         <td><input type="text" value="${p.name}" onchange="updateProductField('${p.id}','name',this.value)" /></td>
-                        <td><input type="text" value="${p.quantity}" onchange="updateProductField('${p.id}','quantity',this.value)" /></td>
+                        <td><input type="number" value="${p.quantity || 1}" onchange="updateProductField('${p.id}','quantity',parseFloat(this.value)||0)" style="width:50px;" /></td>
                         <td><input type="number" value="${p.estimated || 0}" onchange="updateProductField('${p.id}','estimated',parseFloat(this.value)||0)" style="width:60px;" /></td>
                         <td><input type="number" value="${p.real || 0}" onchange="updateProductField('${p.id}','real',parseFloat(this.value)||0)" style="width:60px;" /></td>
-                        <td style="font-weight:600;color:${(p.real||0) > (p.estimated||0) ? 'var(--red)' : 'var(--green)'};">${fmt((p.real||0) - (p.estimated||0))}</td>
+                        <td style="font-weight:600;color:${(p.real||0) > (p.estimated||0) ? 'var(--red)' : (p.real||0) < (p.estimated||0) ? 'var(--orange)' : 'var(--green)'};">${fmt((p.real||0) - (p.estimated||0))}</td>
                         <td>
                             <select onchange="updateProductField('${p.id}','priority',this.value)" style="background:transparent;border:1px solid var(--border);border-radius:6px;padding:2px 6px;color:var(--text);">
                                 <option value="low" ${p.priority === 'low' ? 'selected' : ''}>${_( 'low')}</option>
@@ -2649,13 +3336,14 @@
             const name = prompt(_( 'addProduct') + ' name:');
             if (!name) return;
 
-            // Show category selection
+            // Show category selection with numbers
             const catOptions = CATEGORIES.map((c, i) => `${i+1}. ${c}`).join('\n');
             const catChoice = prompt('Choose category:\n' + catOptions);
             const catIndex = parseInt(catChoice) - 1;
             const cat = (catIndex >= 0 && catIndex < CATEGORIES.length) ? CATEGORIES[catIndex] : 'Féculents';
-            const qty = prompt(' Quantity:');
+
             const price = parseFloat(prompt('Estimated price (' + getCurrencySymbol() + '):')) || 0;
+            const qty = parseFloat(prompt('Quantity:')) || 1;
 
             const newProduct = {
                 id: 'p' + Date.now() + Math.random().toString(36).slice(2, 6),
@@ -2742,22 +3430,16 @@
                 return;
             }
 
-            container.innerHTML = products.map(p => `
-                <div class="product-select-item" onclick="toggleProductSelection('${p.id}')" id="psel_${p.id}">
-                    <input type="checkbox" id="cb_${p.id}" onchange="toggleProductSelection('${p.id}')" />
-                    <label for="cb_${p.id}" style="cursor:pointer;flex:1;">${p.name}</label>
-                    <span style="font-size:12px;color:var(--text2);">${p.estimated || 0} ${getCurrencySymbol()}</span>
-                </div>
-            `).join('');
-
-            // Check if any items are already in cart
-            container.querySelectorAll('.product-select-item').forEach(el => {
-                const id = el.id.replace('psel_', '');
-                if (shoppingCartItems.find(item => item.id === id)) {
-                    el.classList.add('selected');
-                    document.getElementById('cb_' + id).checked = true;
-                }
-            });
+            container.innerHTML = products.map(p => {
+                const inCart = shoppingCartItems.find(item => item.id === p.id);
+                return `
+                    <div class="product-select-item ${inCart ? 'selected' : ''}" onclick="toggleProductSelection('${p.id}')" id="psel_${p.id}">
+                        <input type="checkbox" id="cb_${p.id}" ${inCart ? 'checked' : ''} onchange="toggleProductSelection('${p.id}')" />
+                        <label for="cb_${p.id}" style="cursor:pointer;flex:1;">${p.name}</label>
+                        <span style="font-size:12px;color:var(--text2);">${p.estimated || 0} ${getCurrencySymbol()}</span>
+                    </div>
+                `;
+            }).join('');
         }
 
         function toggleProductSelection(productId) {
@@ -2773,14 +3455,14 @@
                         name: product.name,
                         category: product.category,
                         estimated: product.estimated || 0,
-                        price: 0 // User will enter price manually
+                        price: 0
                     });
-                    el.classList.add('selected');
+                    if (el) el.classList.add('selected');
                 }
             } else {
                 // Remove from cart
                 shoppingCartItems = shoppingCartItems.filter(item => item.id !== productId);
-                el.classList.remove('selected');
+                if (el) el.classList.remove('selected');
             }
 
             updateShoppingCartDisplay();
@@ -2805,26 +3487,29 @@
                     <div class="cart-item">
                         <span class="cart-name">${item.name}</span>
                         <span style="font-size:12px;color:var(--text2);">${item.category}</span>
-                        <input type="number" class="cart-price-input" value="${price}" 
-                               onchange="updateCartPrice(${index}, this.value)" 
-                               placeholder="0" step="0.01" />
+                        <div class="cart-price-controls">
+                            <button onclick="adjustCartPrice(${index}, -1)" title="${_( 'adjustPrice')}">-</button>
+                            <span class="price-display">${price.toFixed(0)}</span>
+                            <button onclick="adjustCartPrice(${index}, 1)" title="${_( 'adjustPrice')}">+</button>
+                        </div>
                         <span style="font-size:12px;color:var(--text2);">${getCurrencySymbol()}</span>
                         <button class="btn-icon danger" onclick="removeFromCart(${index})"><i class="fas fa-times"></i></button>
                     </div>
                 `;
             }).join('');
 
-            // Add total
             itemsContainer.innerHTML += `
-                <div class="cart-total">
+                <div class="cart-total" style="font-weight:600;text-align:right;padding-top:8px;border-top:1px solid var(--border);margin-top:8px;">
                     ${_( 'cartTotal')}: ${total.toFixed(0)} ${getCurrencySymbol()}
                 </div>
             `;
         }
 
-        function updateCartPrice(index, value) {
+        function adjustCartPrice(index, delta) {
             if (shoppingCartItems[index]) {
-                shoppingCartItems[index].price = parseFloat(value) || 0;
+                const current = parseFloat(shoppingCartItems[index].price) || 0;
+                const newPrice = Math.max(0, current + delta);
+                shoppingCartItems[index].price = newPrice;
                 updateShoppingCartDisplay();
             }
         }
@@ -2856,7 +3541,6 @@
             // Create shopping day
             if (!data.shoppingDays) data.shoppingDays = [];
 
-            // Group by category
             const categories = {};
             shoppingCartItems.forEach(item => {
                 if (!categories[item.category]) {
@@ -2866,35 +3550,28 @@
                     id: item.id,
                     name: item.name,
                     price: item.price || 0,
-                    checked: true // Mark as bought in this shopping day
+                    checked: true
                 });
 
-                // Update the product's real price (add to existing)
+                // Update the product's real price (ADD to existing)
                 const product = data.products.find(p => p.id === item.id);
                 if (product) {
                     const currentReal = parseFloat(product.real) || 0;
                     const newReal = currentReal + (parseFloat(item.price) || 0);
                     product.real = newReal;
 
-                    // Also update in month
                     const monthProducts = getCurrentMonthProducts();
                     const monthP = monthProducts.find(m => m.id === item.id);
                     if (monthP) {
                         monthP.real = newReal;
-                        monthP.bought = true;
-                    }
-
-                    // Mark as full if all items are bought
-                    if (product.bought !== 'full') {
-                        product.bought = 'full';
-                        if (monthP) monthP.bought = 'full';
                     }
                 }
             });
 
             const newDay = {
                 date: date,
-                categories: categories
+                categories: categories,
+                createdAt: new Date().toISOString()
             };
 
             data.shoppingDays.push(newDay);
@@ -2929,12 +3606,25 @@
                         items.forEach(item => {
                             const price = parseFloat(item.price) || 0;
                             total += price;
+                            // Find the product to get its current status
+                            const product = data.products.find(p => p.id === item.id);
+                            const status = product ? getProductStatus(item.id) : 'empty';
+                            const statusDisplay = getStatusDisplay(status);
+                            const statusClass = getStatusClass(status);
+
                             cartHtml += `
                                 <div class="cart-item">
+                                    <div class="status-checkbox ${statusClass}" style="width:20px;height:20px;font-size:11px;cursor:default;margin:0;">
+                                        ${statusDisplay}
+                                    </div>
                                     <span class="cart-name">${item.name}</span>
                                     <span style="font-size:12px;color:var(--text2);">${catName}</span>
-                                    <span style="font-weight:600;">${price} ${getCurrencySymbol()}</span>
-                                    <span style="font-size:12px;color:var(--green);">✅</span>
+                                    <div class="cart-price-controls">
+                                        <button onclick="adjustDayItemPrice(${index}, '${item.id}', -1)" title="${_( 'adjustPrice')}">-</button>
+                                        <span class="price-display" style="min-width:40px;font-size:13px;">${price.toFixed(0)}</span>
+                                        <button onclick="adjustDayItemPrice(${index}, '${item.id}', 1)" title="${_( 'adjustPrice')}">+</button>
+                                    </div>
+                                    <span style="font-size:12px;color:var(--text2);">${getCurrencySymbol()}</span>
                                 </div>
                             `;
                         });
@@ -2949,13 +3639,13 @@
                                 <span class="text-muted" style="margin-left:12px;">${dateStr}</span>
                             </div>
                             <div>
-                                <span class="text-muted" style="margin-right:12px;">${shoppingCartItems.length || 0} ${_( 'items')}</span>
+                                <span class="text-muted" style="margin-right:12px;">${cartHtml.split('cart-item').length - 1 || 0} ${_( 'items')}</span>
                                 <button class="btn-icon" onclick="deleteShoppingDay(${index})"><i class="fas fa-trash danger"></i></button>
                             </div>
                         </div>
                         <div class="day-cart">
                             ${cartHtml || '<div class="text-muted">No items in this shopping day.</div>'}
-                            <div class="cart-total">
+                            <div class="cart-total" style="font-weight:600;text-align:right;padding-top:8px;border-top:1px solid var(--border);margin-top:8px;">
                                 ${_( 'cartTotal')}: ${total.toFixed(0)} ${getCurrencySymbol()}
                             </div>
                         </div>
@@ -2964,11 +3654,91 @@
             }).join('');
         }
 
+        function adjustDayItemPrice(dayIndex, itemId, delta) {
+            const day = data.shoppingDays[dayIndex];
+            if (!day || !day.categories) return;
+
+            // Find the item in all categories
+            let found = false;
+            for (const catName in day.categories) {
+                const items = day.categories[catName];
+                const itemIndex = items.findIndex(i => i.id === itemId);
+                if (itemIndex !== -1) {
+                    const current = parseFloat(items[itemIndex].price) || 0;
+                    const newPrice = Math.max(0, current + delta);
+                    items[itemIndex].price = newPrice;
+                    found = true;
+                    break;
+                }
+            }
+
+            if (found) {
+                // Also update the product's real price
+                const product = data.products.find(p => p.id === itemId);
+                if (product) {
+                    // Recalculate total real from all shopping days
+                    let totalReal = 0;
+                    for (const d of data.shoppingDays) {
+                        if (d.categories) {
+                            for (const catName in d.categories) {
+                                for (const item of d.categories[catName]) {
+                                    if (item.id === itemId) {
+                                        totalReal += parseFloat(item.price) || 0;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    product.real = totalReal;
+
+                    const monthProducts = getCurrentMonthProducts();
+                    const monthP = monthProducts.find(m => m.id === itemId);
+                    if (monthP) {
+                        monthP.real = totalReal;
+                    }
+                }
+                saveToFirebase();
+                refreshAll();
+            }
+        }
+
         function deleteShoppingDay(index) {
             if (!confirm('Delete this shopping day?')) return;
+            // Remove all items from this day from real totals
+            const day = data.shoppingDays[index];
+            if (day && day.categories) {
+                for (const catName in day.categories) {
+                    for (const item of day.categories[catName]) {
+                        const product = data.products.find(p => p.id === item.id);
+                        if (product) {
+                            // Recalculate total real from remaining shopping days
+                            let totalReal = 0;
+                            for (let i = 0; i < data.shoppingDays.length; i++) {
+                                if (i === index) continue;
+                                const d = data.shoppingDays[i];
+                                if (d.categories) {
+                                    for (const cName in d.categories) {
+                                        for (const it of d.categories[cName]) {
+                                            if (it.id === item.id) {
+                                                totalReal += parseFloat(it.price) || 0;
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                            product.real = totalReal;
+                            const monthProducts = getCurrentMonthProducts();
+                            const monthP = monthProducts.find(m => m.id === item.id);
+                            if (monthP) {
+                                monthP.real = totalReal;
+                            }
+                        }
+                    }
+                }
+            }
             data.shoppingDays.splice(index, 1);
             saveToFirebase();
-            renderShoppingDays();
+            refreshAll();
             showToast('🗑️ Deleted');
         }
 
@@ -2979,7 +3749,7 @@
             const wishlist = data.wishlist || [];
 
             if (wishlist.length === 0) {
-                container.innerHTML = `<div class="text-muted text-center" style="padding:20px 0;">${_( 'noWishlist')}</div>`;
+                container.innerHTML = `<div class="text-muted text-center" style="padding:20px 0;" id="noWishlistMsg">${_( 'noWishlist')}</div>`;
             } else {
                 container.innerHTML = wishlist.map((item, index) => `
                     <div class="wishlist-item">
@@ -3022,10 +3792,6 @@
             showToast('🗑️ Removed');
         }
 
-        // ──────────────── REST OF FUNCTIONS ────────────────
-        // (Stats, Dashboard, Months, Admin, Settings, Export/Import, etc.)
-        // These are the same as before - shortened for space
-
         // ──────────────── STATS ────────────────
 
         function renderStats() {
@@ -3033,12 +3799,16 @@
             const budget = getCurrentMonthBudget();
             let totalReal = 0,
                 totalEst = 0;
+
             for (const p of monthProducts) {
-                if (p.bought === true || p.bought === 'full') {
+                const status = getProductStatus(p.id);
+                // Add real to total if status is not empty (partial, full, or over)
+                if (status !== 'empty') {
                     totalReal += parseFloat(p.real) || 0;
                 }
                 totalEst += parseFloat(p.estimated) || 0;
             }
+
             const remaining = budget - totalReal;
             const profit = budget - totalReal;
 
@@ -3057,7 +3827,11 @@
 
         function renderDashboard() {
             const monthProducts = getCurrentMonthProducts();
-            const bought = monthProducts.filter(p => p.bought === true || p.bought === 'full');
+            // Include all products with real > 0 (partial, full, over)
+            const bought = monthProducts.filter(p => {
+                const status = getProductStatus(p.id);
+                return status !== 'empty';
+            });
 
             const catMap = {};
             for (const p of bought) {
@@ -3093,25 +3867,39 @@
                 });
             }
 
-            const recent = monthProducts.filter(p => p.bought === true || p.bought === 'full').sort((a, b) => new Date(b
-                .date) - new Date(a.date)).slice(0, 5);
+            const recent = monthProducts.filter(p => {
+                const status = getProductStatus(p.id);
+                return status !== 'empty';
+            }).sort((a, b) => new Date(b.date) - new Date(a.date)).slice(0, 5);
+
             const recentEl = document.getElementById('recentPurchases');
             if (recent.length === 0) {
                 recentEl.innerHTML =
                     `<div class="text-muted text-center" style="padding:20px 0;">${_( 'noPurchases')}</div>`;
             } else {
-                recentEl.innerHTML = recent.map(p => `
+                recentEl.innerHTML = recent.map(p => {
+                    const status = getProductStatus(p.id);
+                    const statusDisplay = getStatusDisplay(status);
+                    const statusClass = getStatusClass(status);
+                    return `
                     <div class="category-item">
-                        <span class="name">${p.name}</span>
+                        <span class="name">
+                            <span class="status-checkbox ${statusClass}" style="width:20px;height:20px;font-size:11px;cursor:default;margin:0;">${statusDisplay}</span>
+                            ${p.name}
+                        </span>
                         <span class="amount">${fmt(p.real)}</span>
                     </div>
-                `).join('');
+                `}).join('');
             }
 
             const totalItems = monthProducts.length;
-            const boughtItems = monthProducts.filter(p => p.bought === true || p.bought === 'full').length;
+            const boughtItems = monthProducts.filter(p => {
+                const status = getProductStatus(p.id);
+                return status !== 'empty';
+            }).length;
             const totalEst = monthProducts.reduce((s, p) => s + (parseFloat(p.estimated) || 0), 0);
             const totalReal = monthProducts.reduce((s, p) => s + (parseFloat(p.real) || 0), 0);
+
             document.getElementById('quickStats').innerHTML = `
                 <div class="category-item"><span class="name">📦 ${_( 'totalItems')}</span><span>${totalItems}</span></div>
                 <div class="category-item"><span class="name">✅ ${_( 'boughtItems')}</span><span>${boughtItems}</span></div>
@@ -3123,7 +3911,10 @@
 
         function renderCategorySummary() {
             const monthProducts = getCurrentMonthProducts();
-            const bought = monthProducts.filter(p => p.bought === true || p.bought === 'full');
+            const bought = monthProducts.filter(p => {
+                const status = getProductStatus(p.id);
+                return status !== 'empty';
+            });
 
             const catMap = {};
             for (const p of bought) {
@@ -3205,8 +3996,10 @@
 
             const spentData = keys.map(k => {
                 const month = data.months[k];
-                return (month.products || []).reduce((s, p) => s + (p.bought === true || p.bought === 'full' ? (
-                    parseFloat(p.real) || 0) : 0), 0);
+                return (month.products || []).reduce((s, p) => {
+                    const status = getProductStatus(p.id);
+                    return s + (status !== 'empty' ? (parseFloat(p.real) || 0) : 0);
+                }, 0);
             });
 
             const budgetData = keys.map(k => {
@@ -3283,8 +4076,10 @@
             }
             grid.innerHTML = keys.map(key => {
                 const month = data.months[key];
-                const totalReal = (month.products || []).reduce((s, p) => s + (p.bought === true || p.bought ===
-                    'full' ? (parseFloat(p.real) || 0) : 0), 0);
+                const totalReal = (month.products || []).reduce((s, p) => {
+                    const status = getProductStatus(p.id);
+                    return s + (status !== 'empty' ? (parseFloat(p.real) || 0) : 0);
+                }, 0);
                 const date = new Date(key + '-01');
                 const name = date.toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
                 return `
@@ -3356,8 +4151,11 @@
                                 const monthData = userData.months[currentMonth];
                                 userBudget = monthData.budget || 0;
                                 if (monthData.products) {
-                                    userSpent = monthData.products.reduce((s, p) => s + (p.bought === true || p
-                                        .bought === 'full' ? (parseFloat(p.real) || 0) : 0), 0);
+                                    userSpent = monthData.products.reduce((s, p) => {
+                                        const status = p.real > 0 ? (p.real >= p.estimated ? 'full' :
+                                            'partial') : 'empty';
+                                        return s + (status !== 'empty' ? (parseFloat(p.real) || 0) : 0);
+                                    }, 0);
                                 }
                             }
                         }
@@ -3467,7 +4265,10 @@
                     let html = `
                         <div style="margin-bottom:16px;">
                             <strong>${_( 'totalItems')}:</strong> ${allProducts.length} |
-                            <strong>${_( 'boughtItems')}:</strong> ${allProducts.filter(p => p.bought === true || p.bought === 'full').length}
+                            <strong>${_( 'boughtItems')}:</strong> ${allProducts.filter(p => {
+                                const status = p.real > 0 ? (p.real >= p.estimated ? 'full' : 'partial') : 'empty';
+                                return status !== 'empty';
+                            }).length}
                         </div>
                         <div class="table-wrap">
                             <table>
@@ -3487,15 +4288,18 @@
                     allProducts.sort((a, b) => new Date(b.date) - new Date(a.date)).slice(0, 50).forEach(p => {
                         const date = new Date(p.date);
                         const monthLabel = date.toLocaleDateString('en-US', { month: 'short', year: 'numeric' });
-                        const statusDisplay = p.bought === 'full' ? '✓' : (p.bought === 'partial' ? '◯' : '');
+                        const status = p.real > 0 ? (p.real >= p.estimated ? 'full' : 'partial') : 'empty';
+                        const statusDisplay = status === 'full' ? '✓' : (status === 'partial' ? '◯' : '');
+                        const statusClass = status === 'full' ? 'full' : (status === 'partial' ? 'partial' :
+                            'empty');
                         html += `
                             <tr>
                                 <td>${monthLabel}</td>
                                 <td>${p.category || '—'}</td>
                                 <td>${p.name}</td>
                                 <td>${p.estimated || 0} ${userData.currency || 'DH'}</td>
-                                <td style="font-weight:600;color:${p.bought === 'full' || p.bought === true ? 'var(--green)' : 'var(--text2)'};">${p.bought === 'full' || p.bought === true ? (p.real || 0) : '—'} ${userData.currency || 'DH'}</td>
-                                <td>${statusDisplay || '○'}</td>
+                                <td style="font-weight:600;color:${status === 'full' ? 'var(--green)' : status === 'partial' ? 'var(--orange)' : 'var(--text2)'};">${status !== 'empty' ? (p.real || 0) : '—'} ${userData.currency || 'DH'}</td>
+                                <td><span class="status-checkbox ${statusClass}" style="width:24px;height:24px;font-size:12px;cursor:default;margin:0;">${statusDisplay}</span></td>
                             </tr>
                         `;
                     });
@@ -3582,12 +4386,16 @@
                 showToast(_( 'noData'));
                 return;
             }
-            const headers = ['Name', 'Category', 'Quantity', 'Unit', 'Estimated', 'Real', 'Bought', 'Priority', 'Notes'];
-            const rows = monthProducts.map(p => [
-                p.name, p.category || '', p.quantity || 1, p.unit || '',
-                p.estimated || 0, p.real || 0, p.bought === 'full' || p.bought === true ? 'Yes' : (p.bought ===
-                    'partial' ? 'Partial' : 'No'), p.priority || '', p.notes || ''
-            ]);
+            const headers = ['Name', 'Category', 'Quantity', 'Unit', 'Estimated', 'Real', 'Status', 'Priority', 'Notes'];
+            const rows = monthProducts.map(p => {
+                const status = getProductStatus(p.id);
+                const statusLabels = { 'empty': 'Empty', 'partial': 'Partial', 'full': 'Full', 'over': 'Over' };
+                return [
+                    p.name, p.category || '', p.quantity || 1, p.unit || '',
+                    p.estimated || 0, p.real || 0, statusLabels[status] || 'Empty',
+                    p.priority || '', p.notes || ''
+                ];
+            });
             const csv = [headers.join(','), ...rows.map(r => r.join(','))].join('\n');
             const blob = new Blob(['\uFEFF' + csv], { type: 'text/csv;charset=utf-8;' });
             const link = document.createElement('a');
@@ -3616,8 +4424,6 @@
                     if (existing) {
                         existing.estimated = parseFloat(obj.estimated) || 0;
                         existing.real = parseFloat(obj.real) || 0;
-                        existing.bought = obj.bought?.toLowerCase() === 'yes' ? 'full' : (obj.bought
-                            ?.toLowerCase() === 'partial' ? 'partial' : false);
                         existing.quantity = parseFloat(obj.quantity) || 1;
                         existing.unit = obj.unit || '';
                         existing.priority = obj.priority || 'medium';
@@ -3629,8 +4435,6 @@
                             defaultPrice: parseFloat(obj.estimated) || 0,
                             unit: obj.unit || '',
                             priority: obj.priority || 'medium',
-                            bought: obj.bought?.toLowerCase() === 'yes' ? 'full' : (obj.bought
-                                ?.toLowerCase() === 'partial' ? 'partial' : false),
                             quantity: parseFloat(obj.quantity) || 1,
                             estimated: parseFloat(obj.estimated) || 0,
                             real: parseFloat(obj.real) || 0,
@@ -3816,22 +4620,22 @@
             const monthKey = getMonthKey(now);
             data.products = [
                 { id: 'p1', name: 'Riz', category: 'Féculents', defaultPrice: 25, unit: 'Kg',
-                    priority: 'medium', bought: false, quantity: 1, estimated: 25, real: 0, notes: '', date: now
-                        .toISOString() },
+                    priority: 'medium', quantity: 1, estimated: 25, real: 0, notes: '', date: now
+                    .toISOString() },
                 { id: 'p2', name: 'Lait', category: 'Produits laitiers', defaultPrice: 8, unit: 'L',
-                    priority: 'high', bought: false, quantity: 3, estimated: 24, real: 0, notes: '', date: now
-                        .toISOString() },
+                    priority: 'high', quantity: 3, estimated: 24, real: 0, notes: '', date: now
+                    .toISOString() },
                 { id: 'p3', name: 'Poulet', category: 'Viandes et protéines', defaultPrice: 25, unit: 'Kg',
-                    priority: 'high', bought: false, quantity: 2, estimated: 50, real: 0, notes: '', date: now
-                        .toISOString() },
+                    priority: 'high', quantity: 2, estimated: 50, real: 0, notes: '', date: now
+                    .toISOString() },
                 { id: 'p4', name: 'Œufs', category: 'Viandes et protéines', defaultPrice: 30, unit: 'pièce',
-                    priority: 'medium', bought: false, quantity: 30, estimated: 30, real: 0, notes: '', date: now
-                        .toISOString() },
+                    priority: 'medium', quantity: 30, estimated: 30, real: 0, notes: '', date: now
+                    .toISOString() },
                 { id: 'p5', name: 'Pâtes', category: 'Féculents', defaultPrice: 20, unit: 'Kg',
-                    priority: 'low', bought: false, quantity: 1, estimated: 20, real: 0, notes: '', date: now
-                        .toISOString() },
+                    priority: 'low', quantity: 1, estimated: 20, real: 0, notes: '', date: now
+                    .toISOString() },
                 { id: 'p6', name: 'Fromage', category: 'Produits laitiers', defaultPrice: 40,
-                    unit: 'boîte', priority: 'medium', bought: false, quantity: 1, estimated: 40, real: 0, notes: '',
+                    unit: 'boîte', priority: 'medium', quantity: 1, estimated: 40, real: 0, notes: '',
                     date: now.toISOString() },
             ];
             data.months[monthKey] = {
@@ -3873,7 +4677,6 @@
             document.getElementById('currencySelect').value = data.currency || 'DH';
             document.getElementById('languageSelect').value = data.language || 'en';
             applyTranslations();
-            // Set today's date in modal
             document.getElementById('shoppingDate').value = new Date().toISOString().split('T')[0];
         }
 
@@ -3914,9 +4717,9 @@
             }, 500);
         };
 
-        console.log('🚀 Smart Budget v4.0');
+        console.log('🚀 Smart Budget v5.0');
         console.log('👑 Admin: ' + ADMIN_EMAIL);
-        console.log('📝 Features: 3-state Checkbox, Category Dropdown, Shopping Modal, Wishlist');
+        console.log('📝 Features: Auto Status, Filter by Priority, Full Translation, Shopping Day Price Adjust');
         console.log('📂 Categories: ' + CATEGORIES.join(', '));
     </script>
 </body>
