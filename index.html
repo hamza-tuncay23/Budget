@@ -2654,9 +2654,8 @@
             const catChoice = prompt('Choose category:\n' + catOptions);
             const catIndex = parseInt(catChoice) - 1;
             const cat = (catIndex >= 0 && catIndex < CATEGORIES.length) ? CATEGORIES[catIndex] : 'Féculents';
-
+            const qty = prompt(_( 'Quantity:') + ' Quantity:');
             const price = parseFloat(prompt('Estimated price (' + getCurrencySymbol() + '):')) || 0;
-            const qty = parseFloat(prompt('Quantity:')) || 1;
 
             const newProduct = {
                 id: 'p' + Date.now() + Math.random().toString(36).slice(2, 6),
