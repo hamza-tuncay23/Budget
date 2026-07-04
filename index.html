@@ -1205,7 +1205,7 @@
 
         .admin-user-list {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
             gap: 12px;
             margin-top: 12px;
         }
@@ -1236,6 +1236,15 @@
             margin-top: 4px;
         }
 
+        .admin-user-card .badge-admin {
+            background: var(--purple);
+            color: white;
+            padding: 1px 10px;
+            border-radius: 40px;
+            font-size: 10px;
+            font-weight: 600;
+        }
+
         .admin-user-detail {
             background: var(--card);
             border-radius: var(--radius);
@@ -1264,6 +1273,44 @@
 
         .admin-user-detail .back-btn:hover {
             text-decoration: underline;
+        }
+
+        /* Admin detail tabs */
+        .admin-detail-tabs {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 12px;
+            flex-wrap: wrap;
+        }
+
+        .admin-detail-tabs button {
+            padding: 6px 16px;
+            border: 2px solid var(--border);
+            border-radius: 40px;
+            background: transparent;
+            color: var(--text2);
+            cursor: pointer;
+            font-size: 13px;
+            font-weight: 500;
+            transition: all var(--transition);
+        }
+
+        .admin-detail-tabs button.active {
+            border-color: var(--primary);
+            background: var(--primary-light);
+            color: var(--primary);
+        }
+
+        .admin-detail-tabs button:hover {
+            border-color: var(--primary);
+        }
+
+        .admin-detail-content {
+            display: none;
+        }
+
+        .admin-detail-content.active {
+            display: block;
         }
 
         /* ───────────── CATEGORY ITEM ───────────── */
@@ -1333,6 +1380,9 @@
             .modal-content .product-select-list {
                 grid-template-columns: 1fr;
             }
+            .admin-user-list {
+                grid-template-columns: 1fr;
+            }
         }
 
         @media (max-width: 400px) {
@@ -1399,7 +1449,7 @@
 <body>
 
     <div class="app-container">
-<!-- ═══════════ Fin Blaaaaaaaaaaaaaaaaaaaaaa ═══════════ -->
+
         <!-- ═══════════ AUTH SCREEN ═══════════ -->
         <div id="authScreen">
             <div class="auth-box" id="authBox">
@@ -1729,7 +1779,7 @@
             <div class="tab-content" id="tab-admin">
                 <div class="admin-panel">
                     <h3><i class="fas fa-user-shield"></i> <span id="adminPanelTitle">Admin Panel</span></h3>
-                    <p class="text-muted" style="margin-bottom:16px;" id="adminSubtitle">Click on any user to see their full shopping details.</p>
+                    <p class="text-muted" style="margin-bottom:16px;" id="adminSubtitle">Click on any user to see all their data.</p>
 
                     <div id="adminUserList">
                         <div class="text-muted text-center" style="padding:20px 0;" id="adminLoading">Loading users...</div>
@@ -1739,8 +1789,21 @@
                         <button class="back-btn" onclick="closeUserDetail()"><i class="fas fa-arrow-left"></i> <span id="backToUsersLabel">Back to Users</span></button>
                         <h4 id="detailUserName" style="margin-bottom:8px;">User: —</h4>
                         <p class="text-muted" id="detailUserEmail" style="margin-bottom:16px;">—</p>
-                        <div id="detailUserContent">
-                            <div class="text-muted text-center" id="detailLoading">Loading user data...</div>
+
+                        <div class="admin-detail-tabs">
+                            <button class="active" data-detail-tab="products" onclick="switchDetailTab('products')">📦 Products</button>
+                            <button data-detail-tab="shopping" onclick="switchDetailTab('shopping')">🛒 Shopping</button>
+                            <button data-detail-tab="wishlist" onclick="switchDetailTab('wishlist')">❤️ Wishlist</button>
+                        </div>
+
+                        <div id="detailProducts" class="admin-detail-content active">
+                            <div id="detailProductsContent"><div class="text-muted text-center">Loading...</div></div>
+                        </div>
+                        <div id="detailShopping" class="admin-detail-content">
+                            <div id="detailShoppingContent"><div class="text-muted text-center">Loading...</div></div>
+                        </div>
+                        <div id="detailWishlist" class="admin-detail-content">
+                            <div id="detailWishlistContent"><div class="text-muted text-center">Loading...</div></div>
                         </div>
                     </div>
                 </div>
@@ -1803,6 +1866,16 @@
         <!-- Toast -->
         <div id="toast" class="toast hidden"></div>
 
+        <!-- Audio elements -->
+        <audio id="soundClick" preload="auto">
+            <source src="data:audio/wav;base64,UklGRlQAAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQoAAACBhYqFhYqFhYqFhYqFhYqFhYqFhYqFhYqFhYqFhYqFhYqFhYqFhYqFhYqFhYqFhYqFhYqFhYqFhYqFhYqFhYqFhYqFhYqFhYqFhYqFhYqF" type="audio/wav">
+        </audio>
+        <audio id="soundBuy" preload="auto">
+            <source src="data:audio/wav;base64,UklGRlQAAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQoAAACBhYqFhYqFhYqFhYqFhYqFhYqFhYqFhYqFhYqFhYqFhYqFhYqFhYqFhYqFhYqFhYqFhYqFhYqFhYqFhYqFhYqFhYqFhYqFhYqFhYqFhYqF" type="audio/wav">
+        </audio>
+        <audio id="soundNotification" preload="auto">
+            <source src="data:audio/wav;base64,UklGRlQAAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQoAAACBhYqFhYqFhYqFhYqFhYqFhYqFhYqFhYqFhYqFhYqFhYqFhYqFhYqFhYqFhYqFhYqFhYqFhYqFhYqFhYqFhYqFhYqFhYqFhYqFhYqFhYqF" type="audio/wav">
+        </audio>
     </div>
 
     <!-- ──────────────────────────────────────────────── -->
@@ -1811,7 +1884,7 @@
 
     <script>
         // ═══════════════════════════════════════════════════
-        //  🔥 FIREBASE CONFIG — PASTE YOUR CONFIG HERE
+        //  🔥 FIREBASE CONFIG
         // ═══════════════════════════════════════════════════
 
         const firebaseConfig = {
@@ -1844,6 +1917,23 @@
             .then(() => console.log('🔥 Offline persistence enabled'))
             .catch(err => console.warn('Persistence error:', err));
 
+        // ──────────────── SOUND EFFECTS ────────────────
+
+        function playSound(type) {
+            try {
+                const sounds = {
+                    click: document.getElementById('soundClick'),
+                    buy: document.getElementById('soundBuy'),
+                    notification: document.getElementById('soundNotification')
+                };
+                const audio = sounds[type];
+                if (audio) {
+                    audio.currentTime = 0;
+                    audio.play().catch(() => {});
+                }
+            } catch (e) {}
+        }
+
         // ──────────────── STATE ────────────────
         let currentUser = null;
         let isAdmin = false;
@@ -1862,6 +1952,7 @@
         let pieChartInstance = null;
         let monthlyChartInstance = null;
         let viewingUserEmail = null;
+        let viewingUserData = null;
         let pendingVerificationCode = '';
         let pendingVerificationEmail = '';
         let sortProductsField = 'category';
@@ -1871,6 +1962,7 @@
         const STORAGE_KEY = 'smartBudgetLocal';
 
         // ──────────────── TRANSLATIONS ────────────────
+        // (Shortened for space - keep the full translations from previous version)
         const translations = {
             en: {
                 appTitle: 'Smart Budget',
@@ -1918,7 +2010,7 @@
                 importCSV: 'Import CSV',
                 user: 'User',
                 adminPanel: 'Admin Panel',
-                adminSubtitle: 'Click on any user to see their full shopping details.',
+                adminSubtitle: 'Click on any user to see all their data.',
                 globalStats: 'Global Statistics',
                 noData: 'No data yet.',
                 noPurchases: 'No purchases yet.',
@@ -1948,7 +2040,6 @@
                 low: 'Low',
                 noProducts: 'No products found',
                 deleteConfirm: 'Delete this product?',
-                deleteAllConfirm: 'Delete this product from ALL data?',
                 logoutConfirm: 'Logout?',
                 budgetPrompt: 'Set monthly budget',
                 currencyUpdated: 'Currency updated',
@@ -2019,7 +2110,13 @@
                 noCode: "Didn't receive code?",
                 verifyTitle: 'Verify Your Email',
                 showCodeLink: 'Show code (for testing)',
-                adminPanelTitle: 'Admin Panel'
+                adminPanelTitle: 'Admin Panel',
+                productsTab: 'Products',
+                shoppingTab: 'Shopping',
+                wishlistTab: 'Wishlist',
+                itemsCount: 'Items',
+                totalPrice: 'Total Price',
+                wishlistEmpty: 'No wishes yet.'
             },
             fr: {
                 appTitle: 'Budget Intelligent',
@@ -2067,7 +2164,7 @@
                 importCSV: 'Importer CSV',
                 user: 'Utilisateur',
                 adminPanel: 'Panneau Admin',
-                adminSubtitle: 'Cliquez sur un utilisateur pour voir ses achats.',
+                adminSubtitle: 'Cliquez sur un utilisateur pour voir toutes ses données.',
                 globalStats: 'Statistiques Globales',
                 noData: 'Pas encore de données.',
                 noPurchases: 'Pas encore d\'achats.',
@@ -2097,7 +2194,6 @@
                 low: 'Basse',
                 noProducts: 'Aucun produit trouvé',
                 deleteConfirm: 'Supprimer ce produit ?',
-                deleteAllConfirm: 'Supprimer de TOUTES les données ?',
                 logoutConfirm: 'Se déconnecter ?',
                 budgetPrompt: 'Définir le budget mensuel',
                 currencyUpdated: 'Devise mise à jour',
@@ -2167,7 +2263,13 @@
                 noCode: "Vous n'avez pas reçu le code ?",
                 verifyTitle: 'Vérifiez votre email',
                 showCodeLink: 'Afficher le code (test)',
-                adminPanelTitle: 'Panneau Admin'
+                adminPanelTitle: 'Panneau Admin',
+                productsTab: 'Produits',
+                shoppingTab: 'Courses',
+                wishlistTab: 'Souhaits',
+                itemsCount: 'Articles',
+                totalPrice: 'Prix Total',
+                wishlistEmpty: 'Pas encore de souhaits.'
             },
             ar: {
                 appTitle: 'الميزانية الذكية',
@@ -2215,7 +2317,7 @@
                 importCSV: 'استيراد CSV',
                 user: 'المستخدم',
                 adminPanel: 'لوحة المشرف',
-                adminSubtitle: 'انقر على مستخدم لرؤية مشترياته.',
+                adminSubtitle: 'انقر على مستخدم لرؤية جميع بياناته.',
                 globalStats: 'إحصائيات عامة',
                 noData: 'لا توجد بيانات بعد.',
                 noPurchases: 'لا توجد مشتريات بعد.',
@@ -2245,7 +2347,6 @@
                 low: 'منخفضة',
                 noProducts: 'لم يتم العثور على منتجات',
                 deleteConfirm: 'حذف هذا المنتج؟',
-                deleteAllConfirm: 'حذف من جميع البيانات؟',
                 logoutConfirm: 'تسجيل الخروج؟',
                 budgetPrompt: 'تعيين الميزانية الشهرية',
                 currencyUpdated: 'تم تحديث العملة',
@@ -2315,7 +2416,13 @@
                 noCode: 'لم تستلم الرمز؟',
                 verifyTitle: 'تحقق من بريدك الإلكتروني',
                 showCodeLink: 'عرض الرمز (للاختبار)',
-                adminPanelTitle: 'لوحة المشرف'
+                adminPanelTitle: 'لوحة المشرف',
+                productsTab: 'المنتجات',
+                shoppingTab: 'التسوق',
+                wishlistTab: 'الأمنيات',
+                itemsCount: 'العناصر',
+                totalPrice: 'السعر الإجمالي',
+                wishlistEmpty: 'لا توجد أمنيات بعد.'
             },
             tr: {
                 appTitle: 'Akıllı Bütçe',
@@ -2363,7 +2470,7 @@
                 importCSV: 'CSV İçe Aktar',
                 user: 'Kullanıcı',
                 adminPanel: 'Yönetici Paneli',
-                adminSubtitle: 'Bir kullanıcıya tıklayarak alışveriş detaylarını görün.',
+                adminSubtitle: 'Bir kullanıcıya tıklayarak tüm verilerini görün.',
                 globalStats: 'Küresel İstatistikler',
                 noData: 'Henüz veri yok.',
                 noPurchases: 'Henüz alışveriş yok.',
@@ -2393,7 +2500,6 @@
                 low: 'Düşük',
                 noProducts: 'Ürün bulunamadı',
                 deleteConfirm: 'Bu ürünü sil?',
-                deleteAllConfirm: 'TÜM verilerden sil?',
                 logoutConfirm: 'Çıkış yap?',
                 budgetPrompt: 'Aylık bütçeyi belirleyin',
                 currencyUpdated: 'Para birimi güncellendi',
@@ -2463,7 +2569,13 @@
                 noCode: 'Kodu almadınız mı?',
                 verifyTitle: 'E-postanızı Doğrulayın',
                 showCodeLink: 'Kodu göster (test)',
-                adminPanelTitle: 'Yönetici Paneli'
+                adminPanelTitle: 'Yönetici Paneli',
+                productsTab: 'Ürünler',
+                shoppingTab: 'Alışveriş',
+                wishlistTab: 'Dilek Listesi',
+                itemsCount: 'Öğeler',
+                totalPrice: 'Toplam Fiyat',
+                wishlistEmpty: 'Henüz dilek yok.'
             },
             ja: {
                 appTitle: 'スマートバジェット',
@@ -2511,7 +2623,7 @@
                 importCSV: 'CSVインポート',
                 user: 'ユーザー',
                 adminPanel: '管理者パネル',
-                adminSubtitle: 'ユーザーをクリックして買い物の詳細を表示します。',
+                adminSubtitle: 'ユーザーをクリックしてすべてのデータを表示します。',
                 globalStats: 'グローバル統計',
                 noData: 'データがまだありません。',
                 noPurchases: '購入がまだありません。',
@@ -2541,7 +2653,6 @@
                 low: '低',
                 noProducts: '製品が見つかりません',
                 deleteConfirm: 'この製品を削除しますか？',
-                deleteAllConfirm: 'すべてのデータから削除しますか？',
                 logoutConfirm: 'ログアウトしますか？',
                 budgetPrompt: '月次予算を設定',
                 currencyUpdated: '通貨が更新されました',
@@ -2611,7 +2722,13 @@
                 noCode: 'コードが届きませんでしたか？',
                 verifyTitle: 'メールを認証する',
                 showCodeLink: 'コードを表示 (テスト用)',
-                adminPanelTitle: '管理者パネル'
+                adminPanelTitle: '管理者パネル',
+                productsTab: '製品',
+                shoppingTab: 'ショッピング',
+                wishlistTab: 'ウィッシュリスト',
+                itemsCount: 'アイテム',
+                totalPrice: '合計金額',
+                wishlistEmpty: 'まだウィッシュはありません。'
             }
         };
 
@@ -2650,6 +2767,7 @@
             document.getElementById('verifyError').style.display = 'none';
             document.getElementById('verifySuccess').style.display = 'none';
             applyTranslations();
+            playSound('click');
         }
 
         function showLogin() {
@@ -2658,6 +2776,7 @@
             document.getElementById('verifySection').classList.remove('active');
             document.getElementById('loginError').style.display = 'none';
             applyTranslations();
+            playSound('click');
         }
 
         function generateVerificationCode() {
@@ -2685,6 +2804,7 @@
             errorEl.style.display = 'none';
             loadingEl.style.display = 'block';
             btn.disabled = true;
+            playSound('click');
 
             auth.signInWithEmailAndPassword(email, password)
                 .then(userCredential => {
@@ -2714,6 +2834,7 @@
 
                     loadUserData();
                     initializeApp();
+                    playSound('notification');
                     showToast('✅ Welcome!');
                 })
                 .catch(error => {
@@ -2739,6 +2860,7 @@
             successEl.style.display = 'none';
             loadingEl.style.display = 'block';
             btn.disabled = true;
+            playSound('click');
 
             if (!name || !surname) {
                 errorEl.textContent = 'Please enter your name and surname.';
@@ -2790,6 +2912,7 @@
                     document.getElementById('sentCodeValue').textContent = pendingVerificationCode;
                     document.getElementById('codeDisplay').style.display = 'block';
                     applyTranslations();
+                    playSound('notification');
                     showToast('📧 Verification code sent to ' + email);
                 })
                 .catch(error => {
@@ -2811,6 +2934,7 @@
             successEl.style.display = 'none';
             loadingEl.style.display = 'block';
             btn.disabled = true;
+            playSound('click');
 
             if (codeInput.length !== 6 || !/^\d{6}$/.test(codeInput)) {
                 errorEl.textContent = 'Please enter a valid 6-digit code.';
@@ -2851,6 +2975,7 @@
 
                     loadUserData();
                     initializeApp();
+                    playSound('notification');
                     showToast('✅ ' + _( 'verified'));
                 })
                 .catch(err => {
@@ -2884,6 +3009,7 @@
                     document.getElementById('codeDisplay').style.display = 'block';
                     document.getElementById('verifySection').classList.add('active');
                     applyTranslations();
+                    playSound('notification');
                     showToast('📧 New code sent to ' + email);
                 });
         }
@@ -2894,12 +3020,14 @@
                 showToast('❌ No email found.');
                 return;
             }
+            playSound('click');
             sendNewVerificationCode(email);
         }
 
         function showCodeHint() {
             const display = document.getElementById('codeDisplay');
             display.style.display = display.style.display === 'none' ? 'block' : 'none';
+            playSound('click');
         }
 
         function loadUserData() {
@@ -2920,6 +3048,7 @@
 
         function handleLogout() {
             if (confirm(_( 'logoutConfirm'))) {
+                playSound('click');
                 auth.signOut().then(() => {
                     currentUser = null;
                     isAdmin = false;
@@ -2978,7 +3107,6 @@
             const lang = getLang();
             t = translations[lang] || translations.en;
 
-            // Update all text elements with data-i18n or specific IDs
             const elements = {
                 appTitle: document.getElementById('appTitle'),
                 loginSubtitle: document.getElementById('loginSubtitle'),
@@ -3050,8 +3178,6 @@
                 wishlistAddBtn: document.getElementById('wishlistAddBtn'),
                 totalNeededLabel: document.getElementById('totalNeededLabel'),
                 itemsCountLabel: document.getElementById('itemsCountLabel'),
-                noWishlist: document.getElementById('noWishlist'),
-                // Auth
                 noAccountText: document.getElementById('noAccountText'),
                 signUpLink: document.getElementById('signUpLink'),
                 haveAccountText: document.getElementById('haveAccountText'),
@@ -3064,7 +3190,6 @@
                 noCodeText: document.getElementById('noCodeText'),
                 resendLink: document.getElementById('resendLink'),
                 showCodeLink: document.getElementById('showCodeLink'),
-                // Modal
                 modalTitle: document.getElementById('modalTitle'),
                 modalDateLabel: document.getElementById('modalDateLabel'),
                 modalCategoryLabel: document.getElementById('modalCategoryLabel'),
@@ -3082,25 +3207,15 @@
             }
 
             // Update placeholders
-            const searchProducts = document.getElementById('searchProducts');
-            if (searchProducts) searchProducts.placeholder = _( 'searchProducts');
+            document.getElementById('searchProducts').placeholder = _( 'searchProducts');
+            document.getElementById('wishlistInput').placeholder = _( 'whatYouWant');
+            document.getElementById('wishlistPrice').placeholder = _( 'price');
+            document.getElementById('verifyCodeInput').placeholder = _( 'enterCode');
 
-            const wishlistInput = document.getElementById('wishlistInput');
-            if (wishlistInput) wishlistInput.placeholder = _( 'whatYouWant');
-
-            const wishlistPrice = document.getElementById('wishlistPrice');
-            if (wishlistPrice) wishlistPrice.placeholder = _( 'price');
-
-            const verifyCodeInput = document.getElementById('verifyCodeInput');
-            if (verifyCodeInput) verifyCodeInput.placeholder = _( 'enterCode');
-
-            // Update category filter options
+            // Update filters
             const catFilter = document.getElementById('categoryFilter');
-            if (catFilter) {
-                catFilter.options[0].textContent = _( 'allCategories');
-            }
+            if (catFilter) catFilter.options[0].textContent = _( 'allCategories');
 
-            // Update priority filter options
             const priorityFilter = document.getElementById('priorityFilterProducts');
             if (priorityFilter) {
                 priorityFilter.options[0].textContent = _( 'allPriorities');
@@ -3109,14 +3224,18 @@
                 priorityFilter.options[3].textContent = _( 'low');
             }
 
-            // Update language dropdown
             document.getElementById('languageSelect').value = data.language || 'en';
             document.getElementById('currencySelect').value = data.currency || 'DH';
-
-            // Update wishlist currency
             document.getElementById('wishlistCurrency').textContent = getCurrencySymbol();
 
-            // Re-render
+            // Admin detail tabs
+            document.querySelectorAll('.admin-detail-tabs button').forEach(btn => {
+                const tab = btn.dataset.detailTab;
+                if (tab === 'products') btn.innerHTML = '📦 ' + _( 'productsTab');
+                else if (tab === 'shopping') btn.innerHTML = '🛒 ' + _( 'shoppingTab');
+                else if (tab === 'wishlist') btn.innerHTML = '❤️ ' + _( 'wishlistTab');
+            });
+
             renderWishlist();
             renderShoppingDays();
             renderProducts();
@@ -3131,6 +3250,7 @@
             saveToFirebase();
             applyTranslations();
             refreshAll();
+            playSound('click');
             showToast('✅ ' + _( 'languageUpdated'));
         }
 
@@ -3165,6 +3285,7 @@
             data.budget = data.months[key].budget;
             saveToFirebase();
             refreshAll();
+            playSound('click');
         }
 
         function getUserDocRef() {
@@ -3212,24 +3333,22 @@
             const est = parseFloat(p.estimated) || 0;
             const currentReal = parseFloat(p.real) || 0;
 
-            // Cycle: empty -> partial -> full -> empty
             const currentStatus = getProductStatus(productId);
             let newReal;
 
             if (currentStatus === 'empty') {
-                // Partial: set to half of estimated
                 newReal = est / 2;
+                playSound('click');
             } else if (currentStatus === 'partial') {
-                // Full: set to estimated
                 newReal = est;
+                playSound('buy');
             } else {
-                // Full or over -> empty
                 newReal = 0;
+                playSound('click');
             }
 
             p.real = newReal;
 
-            // Update in month products
             const monthProducts = getCurrentMonthProducts();
             const monthP = monthProducts.find(m => m.id === productId);
             if (monthP) {
@@ -3255,7 +3374,6 @@
             const catFilter = document.getElementById('categoryFilter').value;
             const priorityFilter = document.getElementById('priorityFilterProducts').value;
 
-            // Populate category filter with predefined categories
             const catSelect = document.getElementById('categoryFilter');
             const currentCat = catSelect.value;
             catSelect.innerHTML = '<option value="all">' + _( 'allCategories') + '</option>' +
@@ -3303,7 +3421,7 @@
                             </select>
                         </td>
                         <td><input type="text" value="${p.name}" onchange="updateProductField('${p.id}','name',this.value)" /></td>
-                        <td><input type="text" value="${p.quantity}" onchange="updateProductField('${p.id}','quantity',this.value)" /></td>
+                        <td><input type="text" value="${p.quantity || 1}" onchange="updateProductField('${p.id}','quantity',this.value)" style="width:50px;" /></td>
                         <td><input type="number" value="${p.estimated || 0}" onchange="updateProductField('${p.id}','estimated',parseFloat(this.value)||0)" style="width:60px;" /></td>
                         <td><input type="number" value="${p.real || 0}" onchange="updateProductField('${p.id}','real',parseFloat(this.value)||0)" style="width:60px;" /></td>
                         <td style="font-weight:600;color:${(p.real||0) > (p.estimated||0) ? 'var(--red)' : (p.real||0) < (p.estimated||0) ? 'var(--orange)' : 'var(--green)'};">${fmt((p.real||0) - (p.estimated||0))}</td>
@@ -3330,19 +3448,20 @@
                 sortProductsAsc = true;
             }
             renderProducts();
+            playSound('click');
         }
 
         function addProductToDatabase() {
             const name = prompt(_( 'addProduct') + ' name:');
             if (!name) return;
 
-            // Show category selection with numbers
             const catOptions = CATEGORIES.map((c, i) => `${i+1}. ${c}`).join('\n');
             const catChoice = prompt('Choose category:\n' + catOptions);
             const catIndex = parseInt(catChoice) - 1;
             const cat = (catIndex >= 0 && catIndex < CATEGORIES.length) ? CATEGORIES[catIndex] : 'Féculents';
-            const qty = prompt('Quantity:');
+
             const price = parseFloat(prompt('Estimated price (' + getCurrencySymbol() + '):')) || 0;
+            const qty = prompt('Quantity:') || '1';
 
             const newProduct = {
                 id: 'p' + Date.now() + Math.random().toString(36).slice(2, 6),
@@ -3351,7 +3470,6 @@
                 defaultPrice: price,
                 unit: 'piece',
                 priority: 'medium',
-                bought: false,
                 quantity: qty,
                 estimated: price,
                 real: 0,
@@ -3363,6 +3481,7 @@
             monthProducts.push(JSON.parse(JSON.stringify(newProduct)));
             saveToFirebase();
             refreshAll();
+            playSound('buy');
             showToast('✅ ' + _( 'added') + ': ' + name);
         }
 
@@ -3375,6 +3494,7 @@
                 if (master) master[field] = value;
                 saveToFirebase();
                 refreshAll();
+                playSound('click');
             }
         }
 
@@ -3386,6 +3506,7 @@
             data.products = data.products.filter(p => p.id !== id);
             saveToFirebase();
             refreshAll();
+            playSound('click');
             showToast('🗑️ ' + _( 'deleted'));
         }
 
@@ -3402,11 +3523,13 @@
                 '</div>';
             document.getElementById('shoppingModal').classList.add('active');
             applyTranslations();
+            playSound('click');
         }
 
         function closeShoppingModal() {
             document.getElementById('shoppingModal').classList.remove('active');
             shoppingCartItems = [];
+            playSound('click');
         }
 
         function updateProductList() {
@@ -3446,7 +3569,6 @@
             const el = document.getElementById('psel_' + productId);
 
             if (cb.checked) {
-                // Add to cart
                 const product = data.products.find(p => p.id === productId);
                 if (product && !shoppingCartItems.find(item => item.id === productId)) {
                     shoppingCartItems.push({
@@ -3457,11 +3579,12 @@
                         price: 0
                     });
                     if (el) el.classList.add('selected');
+                    playSound('click');
                 }
             } else {
-                // Remove from cart
                 shoppingCartItems = shoppingCartItems.filter(item => item.id !== productId);
                 if (el) el.classList.remove('selected');
+                playSound('click');
             }
 
             updateShoppingCartDisplay();
@@ -3510,6 +3633,7 @@
                 const newPrice = Math.max(0, current + delta);
                 shoppingCartItems[index].price = newPrice;
                 updateShoppingCartDisplay();
+                playSound('click');
             }
         }
 
@@ -3522,6 +3646,7 @@
                 if (el) el.classList.remove('selected');
                 shoppingCartItems.splice(index, 1);
                 updateShoppingCartDisplay();
+                playSound('click');
             }
         }
 
@@ -3537,7 +3662,6 @@
                 return;
             }
 
-            // Create shopping day
             if (!data.shoppingDays) data.shoppingDays = [];
 
             const categories = {};
@@ -3552,7 +3676,6 @@
                     checked: true
                 });
 
-                // Update the product's real price (ADD to existing)
                 const product = data.products.find(p => p.id === item.id);
                 if (product) {
                     const currentReal = parseFloat(product.real) || 0;
@@ -3577,6 +3700,7 @@
             saveToFirebase();
             closeShoppingModal();
             refreshAll();
+            playSound('buy');
             showToast('✅ Shopping day saved! ' + shoppingCartItems.length + ' items added.');
             shoppingCartItems = [];
         }
@@ -3605,7 +3729,6 @@
                         items.forEach(item => {
                             const price = parseFloat(item.price) || 0;
                             total += price;
-                            // Find the product to get its current status
                             const product = data.products.find(p => p.id === item.id);
                             const status = product ? getProductStatus(item.id) : 'empty';
                             const statusDisplay = getStatusDisplay(status);
@@ -3657,7 +3780,6 @@
             const day = data.shoppingDays[dayIndex];
             if (!day || !day.categories) return;
 
-            // Find the item in all categories
             let found = false;
             for (const catName in day.categories) {
                 const items = day.categories[catName];
@@ -3672,10 +3794,8 @@
             }
 
             if (found) {
-                // Also update the product's real price
                 const product = data.products.find(p => p.id === itemId);
                 if (product) {
-                    // Recalculate total real from all shopping days
                     let totalReal = 0;
                     for (const d of data.shoppingDays) {
                         if (d.categories) {
@@ -3698,19 +3818,18 @@
                 }
                 saveToFirebase();
                 refreshAll();
+                playSound('click');
             }
         }
 
         function deleteShoppingDay(index) {
             if (!confirm('Delete this shopping day?')) return;
-            // Remove all items from this day from real totals
             const day = data.shoppingDays[index];
             if (day && day.categories) {
                 for (const catName in day.categories) {
                     for (const item of day.categories[catName]) {
                         const product = data.products.find(p => p.id === item.id);
                         if (product) {
-                            // Recalculate total real from remaining shopping days
                             let totalReal = 0;
                             for (let i = 0; i < data.shoppingDays.length; i++) {
                                 if (i === index) continue;
@@ -3738,6 +3857,7 @@
             data.shoppingDays.splice(index, 1);
             saveToFirebase();
             refreshAll();
+            playSound('click');
             showToast('🗑️ Deleted');
         }
 
@@ -3780,6 +3900,7 @@
             document.getElementById('wishlistPrice').value = '';
             saveToFirebase();
             renderWishlist();
+            playSound('buy');
             showToast('✅ Added to wishlist!');
         }
 
@@ -3788,6 +3909,7 @@
             data.wishlist.splice(index, 1);
             saveToFirebase();
             renderWishlist();
+            playSound('click');
             showToast('🗑️ Removed');
         }
 
@@ -3801,7 +3923,6 @@
 
             for (const p of monthProducts) {
                 const status = getProductStatus(p.id);
-                // Add real to total if status is not empty (partial, full, or over)
                 if (status !== 'empty') {
                     totalReal += parseFloat(p.real) || 0;
                 }
@@ -3826,7 +3947,6 @@
 
         function renderDashboard() {
             const monthProducts = getCurrentMonthProducts();
-            // Include all products with real > 0 (partial, full, over)
             const bought = monthProducts.filter(p => {
                 const status = getProductStatus(p.id);
                 return status !== 'empty';
@@ -4109,11 +4229,15 @@
                 saveToFirebase();
                 refreshAll();
                 switchTab('shopping');
+                playSound('click');
                 showToast('📅 Loaded ' + key);
             }
         }
 
         // ──────────────── ADMIN PANEL ────────────────
+
+        let currentDetailUserEmail = null;
+        let currentDetailTab = 'products';
 
         function renderAdminPanel() {
             if (!isAdmin) return;
@@ -4215,115 +4339,230 @@
 
         function viewUserDetail(email) {
             if (!isAdmin) return;
+            playSound('click');
 
             const detailEl = document.getElementById('adminUserDetail');
             detailEl.classList.add('active');
 
+            currentDetailUserEmail = email;
             document.getElementById('detailUserName').textContent = '👤 ' + email;
             document.getElementById('detailUserEmail').textContent = '';
 
-            const contentEl = document.getElementById('detailUserContent');
-            contentEl.innerHTML = `<div class="text-muted">${_( 'loading')}</div>`;
-
-            viewingUserEmail = email;
-
+            // Load user data
             getUsersCollectionRef().doc(email).get()
                 .then(doc => {
                     if (!doc || !doc.exists) {
-                        contentEl.innerHTML = `<div class="text-muted">${_( 'noUserData')}</div>`;
+                        document.getElementById('detailProductsContent').innerHTML =
+                            `<div class="text-muted">${_( 'noUserData')}</div>`;
+                        document.getElementById('detailShoppingContent').innerHTML =
+                            `<div class="text-muted">${_( 'noUserData')}</div>`;
+                        document.getElementById('detailWishlistContent').innerHTML =
+                            `<div class="text-muted">${_( 'noUserData')}</div>`;
                         return;
                     }
 
-                    const userData = doc.data();
+                    viewingUserData = doc.data();
+                    const userData = viewingUserData;
                     const name = userData.name || '';
                     const surname = userData.surname || '';
                     document.getElementById('detailUserName').textContent = '👤 ' + (name + ' ' + surname).trim() || email;
                     document.getElementById('detailUserEmail').textContent = '📧 ' + email;
 
-                    const months = userData.months || {};
-                    const allProducts = [];
+                    renderUserDetailProducts(userData);
+                    renderUserDetailShopping(userData);
+                    renderUserDetailWishlist(userData);
 
-                    for (const monthKey in months) {
-                        const month = months[monthKey];
-                        if (month.products) {
-                            month.products.forEach(p => {
-                                allProducts.push({
-                                    ...p,
-                                    month: monthKey,
-                                    budget: month.budget || 0
-                                });
-                            });
-                        }
-                    }
-
-                    if (allProducts.length === 0) {
-                        contentEl.innerHTML = `<div class="text-muted">${_( 'noUserData')}</div>`;
-                        return;
-                    }
-
-                    let html = `
-                        <div style="margin-bottom:16px;">
-                            <strong>${_( 'totalItems')}:</strong> ${allProducts.length} |
-                            <strong>${_( 'boughtItems')}:</strong> ${allProducts.filter(p => {
-                                const status = p.real > 0 ? (p.real >= p.estimated ? 'full' : 'partial') : 'empty';
-                                return status !== 'empty';
-                            }).length}
-                        </div>
-                        <div class="table-wrap">
-                            <table>
-                                <thead>
-                                    <tr>
-                                        <th>${_( 'month')}</th>
-                                        <th>${_( 'category')}</th>
-                                        <th>${_( 'name')}</th>
-                                        <th>${_( 'estimated')}</th>
-                                        <th>${_( 'real')}</th>
-                                        <th>${_( 'status')}</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                    `;
-
-                    allProducts.sort((a, b) => new Date(b.date) - new Date(a.date)).slice(0, 50).forEach(p => {
-                        const date = new Date(p.date);
-                        const monthLabel = date.toLocaleDateString('en-US', { month: 'short', year: 'numeric' });
-                        const status = p.real > 0 ? (p.real >= p.estimated ? 'full' : 'partial') : 'empty';
-                        const statusDisplay = status === 'full' ? '✓' : (status === 'partial' ? '◯' : '');
-                        const statusClass = status === 'full' ? 'full' : (status === 'partial' ? 'partial' :
-                            'empty');
-                        html += `
-                            <tr>
-                                <td>${monthLabel}</td>
-                                <td>${p.category || '—'}</td>
-                                <td>${p.name}</td>
-                                <td>${p.estimated || 0} ${userData.currency || 'DH'}</td>
-                                <td style="font-weight:600;color:${status === 'full' ? 'var(--green)' : status === 'partial' ? 'var(--orange)' : 'var(--text2)'};">${status !== 'empty' ? (p.real || 0) : '—'} ${userData.currency || 'DH'}</td>
-                                <td><span class="status-checkbox ${statusClass}" style="width:24px;height:24px;font-size:12px;cursor:default;margin:0;">${statusDisplay}</span></td>
-                            </tr>
-                        `;
-                    });
-
-                    html += `
-                                </tbody>
-                            </table>
-                        </div>
-                        <div class="text-muted" style="margin-top:12px;font-size:12px;">
-                            Showing last 50 items. Total: ${allProducts.length} items.
-                        </div>
-                    `;
-
-                    contentEl.innerHTML = html;
+                    // Show current tab
+                    switchDetailTab(currentDetailTab);
                 })
                 .catch(err => {
                     console.warn('Error loading user detail:', err);
-                    contentEl.innerHTML =
+                    document.getElementById('detailProductsContent').innerHTML =
+                        `<div class="text-muted" style="color:var(--red);">Error: ${err.message}</div>`;
+                    document.getElementById('detailShoppingContent').innerHTML =
+                        `<div class="text-muted" style="color:var(--red);">Error: ${err.message}</div>`;
+                    document.getElementById('detailWishlistContent').innerHTML =
                         `<div class="text-muted" style="color:var(--red);">Error: ${err.message}</div>`;
                 });
         }
 
+        function renderUserDetailProducts(userData) {
+            const container = document.getElementById('detailProductsContent');
+
+            const months = userData.months || {};
+            let allProducts = [];
+
+            for (const monthKey in months) {
+                const month = months[monthKey];
+                if (month.products) {
+                    month.products.forEach(p => {
+                        allProducts.push({
+                            ...p,
+                            month: monthKey,
+                            budget: month.budget || 0
+                        });
+                    });
+                }
+            }
+
+            if (allProducts.length === 0) {
+                container.innerHTML = `<div class="text-muted">${_( 'noUserData')}</div>`;
+                return;
+            }
+
+            let html = `
+                <div style="margin-bottom:12px;font-size:13px;color:var(--text2);">
+                    <strong>${_( 'totalItems')}:</strong> ${allProducts.length} |
+                    <strong>${_( 'boughtItems')}:</strong> ${allProducts.filter(p => {
+                        const status = p.real > 0 ? (p.real >= p.estimated ? 'full' : 'partial') : 'empty';
+                        return status !== 'empty';
+                    }).length}
+                </div>
+                <div class="table-wrap">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>${_( 'month')}</th>
+                                <th>${_( 'category')}</th>
+                                <th>${_( 'name')}</th>
+                                <th>${_( 'qty')}</th>
+                                <th>${_( 'estimated')}</th>
+                                <th>${_( 'real')}</th>
+                                <th>${_( 'status')}</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+            `;
+
+            allProducts.sort((a, b) => new Date(b.date) - new Date(a.date)).forEach(p => {
+                const date = new Date(p.date);
+                const monthLabel = date.toLocaleDateString('en-US', { month: 'short', year: 'numeric' });
+                const status = p.real > 0 ? (p.real >= p.estimated ? 'full' : 'partial') : 'empty';
+                const statusDisplay = status === 'full' ? '✓' : (status === 'partial' ? '◯' : '');
+                const statusClass = status === 'full' ? 'full' : (status === 'partial' ? 'partial' : 'empty');
+                html += `
+                    <tr>
+                        <td>${monthLabel}</td>
+                        <td>${p.category || '—'}</td>
+                        <td>${p.name}</td>
+                        <td>${p.quantity || 1}</td>
+                        <td>${p.estimated || 0} ${userData.currency || 'DH'}</td>
+                        <td style="font-weight:600;color:${status === 'full' ? 'var(--green)' : status === 'partial' ? 'var(--orange)' : 'var(--text2)'};">${status !== 'empty' ? (p.real || 0) : '—'} ${userData.currency || 'DH'}</td>
+                        <td><span class="status-checkbox ${statusClass}" style="width:24px;height:24px;font-size:12px;cursor:default;margin:0;">${statusDisplay}</span></td>
+                    </tr>
+                `;
+            });
+
+            html += `
+                        </tbody>
+                    </table>
+                </div>
+                <div class="text-muted" style="margin-top:12px;font-size:12px;">
+                    Total: ${allProducts.length} items.
+                </div>
+            `;
+
+            container.innerHTML = html;
+        }
+
+        function renderUserDetailShopping(userData) {
+            const container = document.getElementById('detailShoppingContent');
+
+            const shoppingDays = userData.shoppingDays || [];
+
+            if (shoppingDays.length === 0) {
+                container.innerHTML = `<div class="text-muted">No shopping days.</div>`;
+                return;
+            }
+
+            let html = '';
+            shoppingDays.forEach((day, index) => {
+                const date = new Date(day.date);
+                const dateStr = date.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric',
+                    year: 'numeric' });
+
+                let itemsHtml = '';
+                let total = 0;
+                if (day.categories) {
+                    for (const [catName, items] of Object.entries(day.categories)) {
+                        items.forEach(item => {
+                            const price = parseFloat(item.price) || 0;
+                            total += price;
+                            itemsHtml += `
+                                <div class="cart-item" style="padding:4px 8px;">
+                                    <span class="cart-name" style="font-size:13px;">${item.name}</span>
+                                    <span style="font-size:11px;color:var(--text2);">${catName}</span>
+                                    <span style="font-weight:600;font-size:13px;">${price} ${userData.currency || 'DH'}</span>
+                                </div>
+                            `;
+                        });
+                    }
+                }
+
+                html += `
+                    <div class="day-card" style="margin-bottom:12px;padding:12px 16px;">
+                        <div class="day-header" style="margin-bottom:8px;">
+                            <span class="day-title" style="font-size:14px;">🛒 ${_( 'day')} ${index + 1}</span>
+                            <span class="text-muted" style="font-size:12px;">${dateStr}</span>
+                        </div>
+                        <div class="day-cart" style="padding:4px 8px;">
+                            ${itemsHtml || '<div class="text-muted" style="font-size:12px;">No items.</div>'}
+                            <div class="cart-total" style="font-size:13px;">
+                                ${_( 'cartTotal')}: ${total.toFixed(0)} ${userData.currency || 'DH'}
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+
+            container.innerHTML = html;
+        }
+
+        function renderUserDetailWishlist(userData) {
+            const container = document.getElementById('detailWishlistContent');
+
+            const wishlist = userData.wishlist || [];
+
+            if (wishlist.length === 0) {
+                container.innerHTML = `<div class="text-muted">${_( 'noWishlist')}</div>`;
+                return;
+            }
+
+            let html = `
+                <div style="margin-bottom:8px;font-size:13px;color:var(--text2);">
+                    <strong>${_( 'itemsCount')}:</strong> ${wishlist.length} |
+                    <strong>${_( 'totalPrice')}:</strong> ${wishlist.reduce((s, item) => s + (parseFloat(item.price) || 0), 0)} ${userData.currency || 'DH'}
+                </div>
+            `;
+
+            wishlist.forEach((item, index) => {
+                html += `
+                    <div class="wishlist-item" style="padding:6px 0;">
+                        <span class="text">${item.name}</span>
+                        <span class="price-tag">${item.price || 0} ${userData.currency || 'DH'}</span>
+                    </div>
+                `;
+            });
+
+            container.innerHTML = html;
+        }
+
+        function switchDetailTab(tab) {
+            currentDetailTab = tab;
+            document.querySelectorAll('.admin-detail-tabs button').forEach(b => {
+                b.classList.toggle('active', b.dataset.detailTab === tab);
+            });
+            document.querySelectorAll('.admin-detail-content').forEach(el => {
+                el.classList.toggle('active', el.id === 'detail' + tab.charAt(0).toUpperCase() + tab.slice(1));
+            });
+            playSound('click');
+        }
+
         function closeUserDetail() {
             document.getElementById('adminUserDetail').classList.remove('active');
-            viewingUserEmail = null;
+            currentDetailUserEmail = null;
+            viewingUserData = null;
+            playSound('click');
         }
 
         // ──────────────── TABS ────────────────
@@ -4331,6 +4570,7 @@
         document.querySelectorAll('.tabs button').forEach(btn => {
             btn.addEventListener('click', function() {
                 switchTab(this.dataset.tab);
+                playSound('click');
             });
         });
 
@@ -4354,6 +4594,7 @@
             document.body.classList.toggle('dark');
             updateDarkToggle();
             localStorage.setItem('darkMode', document.body.classList.contains('dark') ? 'true' : 'false');
+            playSound('click');
         }
 
         function updateDarkToggle() {
@@ -4374,6 +4615,7 @@
             data.currency = sel.value;
             saveToFirebase();
             refreshAll();
+            playSound('click');
             showToast('✅ ' + _( 'currencyUpdated'));
         }
 
@@ -4401,6 +4643,7 @@
             link.href = URL.createObjectURL(blob);
             link.download = `budget_${getMonthKey()}.csv`;
             link.click();
+            playSound('click');
             showToast('✅ ' + _( 'exported'));
         }
 
@@ -4423,7 +4666,7 @@
                     if (existing) {
                         existing.estimated = parseFloat(obj.estimated) || 0;
                         existing.real = parseFloat(obj.real) || 0;
-                        existing.quantity = parseFloat(obj.quantity) || 1;
+                        existing.quantity = obj.quantity || '1';
                         existing.unit = obj.unit || '';
                         existing.priority = obj.priority || 'medium';
                     } else {
@@ -4434,7 +4677,7 @@
                             defaultPrice: parseFloat(obj.estimated) || 0,
                             unit: obj.unit || '',
                             priority: obj.priority || 'medium',
-                            quantity: parseFloat(obj.quantity) || 1,
+                            quantity: obj.quantity || '1',
                             estimated: parseFloat(obj.estimated) || 0,
                             real: parseFloat(obj.real) || 0,
                             notes: obj.notes || '',
@@ -4449,6 +4692,7 @@
                 }
                 saveToFirebase();
                 refreshAll();
+                playSound('click');
                 showToast('✅ ' + _( 'imported') + ' ' + (monthProducts.length) + ' products');
             };
             reader.readAsText(file);
@@ -4460,6 +4704,7 @@
             const newBudget = prompt(_( 'budgetPrompt') + ' (' + getCurrencySymbol() + '):', current);
             if (newBudget !== null && !isNaN(parseFloat(newBudget))) {
                 setCurrentMonthBudget(parseFloat(newBudget));
+                playSound('click');
                 showToast('✅ ' + _( 'updated') + ' ' + fmt(parseFloat(newBudget)));
             }
         }
@@ -4582,6 +4827,7 @@
                         data.wishlist = fbData.wishlist || [];
                         localStorage.setItem(STORAGE_KEY + '_' + currentUser.uid, JSON.stringify(data));
                         refreshAll();
+                        playSound('notification');
                         showToast('🔄 ' + _( 'synced'));
                     }
                 }
@@ -4619,22 +4865,22 @@
             const monthKey = getMonthKey(now);
             data.products = [
                 { id: 'p1', name: 'Riz', category: 'Féculents', defaultPrice: 25, unit: 'Kg',
-                    priority: 'medium', quantity: 1, estimated: 25, real: 0, notes: '', date: now
+                    priority: 'medium', quantity: '1 kg', estimated: 25, real: 0, notes: '', date: now
                     .toISOString() },
                 { id: 'p2', name: 'Lait', category: 'Produits laitiers', defaultPrice: 8, unit: 'L',
-                    priority: 'high', quantity: 3, estimated: 24, real: 0, notes: '', date: now
+                    priority: 'high', quantity: '3 L', estimated: 24, real: 0, notes: '', date: now
                     .toISOString() },
                 { id: 'p3', name: 'Poulet', category: 'Viandes et protéines', defaultPrice: 25, unit: 'Kg',
-                    priority: 'high', quantity: 2, estimated: 50, real: 0, notes: '', date: now
+                    priority: 'high', quantity: '2 kg', estimated: 50, real: 0, notes: '', date: now
                     .toISOString() },
                 { id: 'p4', name: 'Œufs', category: 'Viandes et protéines', defaultPrice: 30, unit: 'pièce',
-                    priority: 'medium', quantity: 30, estimated: 30, real: 0, notes: '', date: now
+                    priority: 'medium', quantity: '30 pièces', estimated: 30, real: 0, notes: '', date: now
                     .toISOString() },
                 { id: 'p5', name: 'Pâtes', category: 'Féculents', defaultPrice: 20, unit: 'Kg',
-                    priority: 'low', quantity: 1, estimated: 20, real: 0, notes: '', date: now
+                    priority: 'low', quantity: '1 kg', estimated: 20, real: 0, notes: '', date: now
                     .toISOString() },
                 { id: 'p6', name: 'Fromage', category: 'Produits laitiers', defaultPrice: 40,
-                    unit: 'boîte', priority: 'medium', quantity: 1, estimated: 40, real: 0, notes: '',
+                    unit: 'boîte', priority: 'medium', quantity: '1 boîte', estimated: 40, real: 0, notes: '',
                     date: now.toISOString() },
             ];
             data.months[monthKey] = {
@@ -4703,6 +4949,7 @@
             el.classList.remove('hidden');
             clearTimeout(el._timeout);
             el._timeout = setTimeout(() => el.classList.add('hidden'), 3000);
+            playSound('notification');
         }
 
         // ──────────────── START ────────────────
@@ -4716,9 +4963,9 @@
             }, 500);
         };
 
-        console.log('🚀 Smart Budget v5.0');
+        console.log('🚀 Smart Budget v6.0');
         console.log('👑 Admin: ' + ADMIN_EMAIL);
-        console.log('📝 Features: Auto Status, Filter by Priority, Full Translation, Shopping Day Price Adjust');
+        console.log('📝 Features: Admin sees all user data, Sound effects, Category "Epices et huile", Quantity = text');
         console.log('📂 Categories: ' + CATEGORIES.join(', '));
     </script>
 </body>
