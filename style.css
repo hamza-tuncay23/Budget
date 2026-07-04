@@ -1,0 +1,7 @@
+body{margin:0;font-family:Arial;display:flex;background:#f4f6fb}
+aside{width:220px;background:#2563eb;color:#fff;padding:20px;height:100vh}
+nav button{display:block;width:100%;margin:8px 0;padding:10px;border:none;border-radius:8px}
+main{flex:1;padding:24px}
+.cards{display:flex;gap:15px}
+.card{background:#fff;padding:16px;border-radius:12px;box-shadow:0 2px 8px rgba(0,0,0,.1)}
+li{background:#fff;margin:8px 0;padding:10px;border-radius:8px}

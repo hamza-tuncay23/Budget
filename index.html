@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>BudgetFlow</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<aside>
+<h2>BudgetFlow</h2>
+<nav>
+<button data-page="dashboard">Dashboard</button>
+<button data-page="shopping">Shopping</button>
+<button data-page="products">Products</button>
+<button data-page="budget">Budget</button>
+<button data-page="statistics">Statistics</button>
+<button data-page="goals">Goals</button>
+<button data-page="inventory">Inventory</button>
+<button data-page="bills">Bills</button>
+<button data-page="ai">AI</button>
+<button data-page="settings">Settings</button>
+</nav>
+</aside>
+<main id="content">
+<h1>Dashboard</h1>
+<div class="cards">
+<div class="card"><h3>Remaining</h3><p id="remaining">2000 DH</p></div>
+<div class="card"><h3>Spent</h3><p id="spent">0 DH</p></div>
+<div class="card"><h3>Estimated</h3><p id="estimated">0 DH</p></div>
+</div>
+<h2>Shopping</h2>
+<input id="product" placeholder="Product">
+<input id="price" type="number" placeholder="Price">
+<button id="add">Add</button>
+<ul id="list"></ul>
+</main>
+<script src="script.js"></script>
+</body>
+</html>
