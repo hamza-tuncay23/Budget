@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>💰 Smart Budget - Hamza</title>
+    <title>💰 Smart Budget</title>
 
     <!-- Firebase SDKs -->
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js">
@@ -59,14 +59,12 @@
         body {
             background: var(--bg);
             color: var(--text);
-            padding: 20px;
             min-height: 100vh;
             transition: background var(--transition), color var(--transition);
-            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
         }
 
-        /* ───────────── LOGIN SCREEN ───────────── */
-        #loginScreen {
+        /* ───────────── LOGIN/REGISTER SCREEN ───────────── */
+        #authScreen {
             position: fixed;
             top: 0;
             left: 0;
@@ -78,35 +76,57 @@
             align-items: center;
             z-index: 9999;
             transition: opacity 0.5s ease;
+            padding: 20px;
+            overflow-y: auto;
         }
 
-        #loginScreen.hidden {
+        #authScreen.hidden {
             opacity: 0;
             pointer-events: none;
         }
 
-        .login-box {
+        .auth-box {
             background: var(--card);
             padding: 40px 36px;
             border-radius: var(--radius);
             box-shadow: var(--shadow);
             border: 1px solid var(--border);
-            max-width: 420px;
+            max-width: 440px;
             width: 100%;
+            max-height: 95vh;
+            overflow-y: auto;
         }
 
-        .login-box h2 {
+        .auth-box h2 {
             font-size: 24px;
             margin-bottom: 4px;
         }
 
-        .login-box .subtitle {
+        .auth-box .subtitle {
             color: var(--text2);
             margin-bottom: 24px;
             font-size: 14px;
         }
 
-        .login-box input {
+        .auth-box .toggle-mode {
+            text-align: center;
+            font-size: 14px;
+            color: var(--text2);
+            margin-top: 16px;
+        }
+
+        .auth-box .toggle-mode a {
+            color: var(--primary);
+            cursor: pointer;
+            font-weight: 600;
+            text-decoration: none;
+        }
+
+        .auth-box .toggle-mode a:hover {
+            text-decoration: underline;
+        }
+
+        .auth-box input {
             width: 100%;
             padding: 12px 16px;
             border: 1px solid var(--border);
@@ -118,12 +138,18 @@
             transition: border var(--transition);
         }
 
-        .login-box input:focus {
+        .auth-box input:focus {
             outline: none;
             border-color: var(--primary);
         }
 
-        .login-box button {
+        .auth-box .input-group {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+        }
+
+        .auth-box button {
             width: 100%;
             padding: 12px;
             background: var(--primary);
@@ -136,25 +162,40 @@
             transition: opacity var(--transition);
         }
 
-        .login-box button:hover {
+        .auth-box button:hover {
             opacity: 0.85;
         }
 
-        .login-box .error {
+        .auth-box button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .auth-box .error {
             color: var(--red);
             font-size: 13px;
             margin-top: 8px;
             display: none;
+            text-align: center;
         }
 
-        .login-box .loading-text {
+        .auth-box .success {
+            color: var(--green);
+            font-size: 13px;
+            margin-top: 8px;
+            display: none;
+            text-align: center;
+        }
+
+        .auth-box .loading-text {
             color: var(--text2);
             font-size: 13px;
             text-align: center;
             margin-top: 8px;
+            display: none;
         }
 
-        .login-box .admin-note {
+        .auth-box .admin-note {
             margin-top: 16px;
             font-size: 12px;
             color: var(--text2);
@@ -163,11 +204,30 @@
             padding-top: 16px;
         }
 
+        .auth-box .verify-section {
+            display: none;
+            margin-top: 16px;
+            padding-top: 16px;
+            border-top: 1px solid var(--border);
+        }
+
+        .auth-box .verify-section.active {
+            display: block;
+        }
+
+        .auth-box .verify-section .info {
+            font-size: 13px;
+            color: var(--text2);
+            text-align: center;
+            margin-bottom: 12px;
+        }
+
         /* ───────────── APP ───────────── */
         #app {
             display: none;
             max-width: 1400px;
             margin: 0 auto;
+            padding: 20px;
         }
 
         #app.visible {
@@ -271,6 +331,12 @@
             letter-spacing: 0.5px;
         }
 
+        .user-name-display {
+            font-weight: 500;
+            color: var(--text2);
+            font-size: 14px;
+        }
+
         @keyframes pulse {
             0%,
             100% {
@@ -281,7 +347,7 @@
             }
         }
 
-        /* ───────────── STATS GRID ───────────── */
+        /* ───────────── REST OF STYLES (same as before) ───────────── */
         .stats-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
@@ -354,7 +420,6 @@
             color: var(--purple);
         }
 
-        /* ───────────── ROW LAYOUT ───────────── */
         .row {
             display: grid;
             grid-template-columns: 1fr 1fr;
@@ -414,7 +479,6 @@
             position: relative;
         }
 
-        /* ───────────── CATEGORY TABLE ───────────── */
         .category-summary-table {
             width: 100%;
             border-collapse: collapse;
@@ -453,7 +517,6 @@
             border-bottom: none;
         }
 
-        /* ───────────── TABLE STYLES ───────────── */
         .table-wrap {
             overflow-x: auto;
         }
@@ -561,7 +624,6 @@
             background: var(--primary-light);
         }
 
-        /* ───────────── TOOLBAR ───────────── */
         .toolbar {
             display: flex;
             flex-wrap: wrap;
@@ -595,7 +657,6 @@
             align-items: center;
         }
 
-        /* ───────────── TABS ───────────── */
         .tabs {
             display: flex;
             gap: 4px;
@@ -636,7 +697,6 @@
             display: block;
         }
 
-        /* ───────────── MONTH GRID ───────────── */
         .month-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
@@ -676,7 +736,6 @@
             color: var(--text);
         }
 
-        /* ───────────── SETTINGS ───────────── */
         .settings-row {
             display: flex;
             justify-content: space-between;
@@ -730,7 +789,6 @@
             min-width: 120px;
         }
 
-        /* ───────────── ADMIN PANEL ───────────── */
         .admin-panel {
             background: var(--card);
             border-radius: var(--radius);
@@ -774,7 +832,36 @@
             color: var(--text2);
         }
 
-        /* ───────────── RESPONSIVE ───────────── */
+        .category-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 0;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .category-item:last-child {
+            border-bottom: none;
+        }
+
+        .category-item .name {
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .category-item .name .dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            display: inline-block;
+        }
+
+        .category-item .amount {
+            font-weight: 600;
+        }
+
         @media (max-width: 600px) {
             .header h1 {
                 font-size: 20px;
@@ -800,9 +887,11 @@
             .stats-grid {
                 grid-template-columns: 1fr 1fr;
             }
-            .login-box {
+            .auth-box {
                 padding: 24px 20px;
-                margin: 16px;
+            }
+            .auth-box .input-group {
+                grid-template-columns: 1fr;
             }
         }
 
@@ -812,7 +901,6 @@
             }
         }
 
-        /* ───────────── UTILITIES ───────────── */
         .mt-16 {
             margin-top: 16px;
         }
@@ -864,20 +952,69 @@
 </head>
 <body>
 
-    <!-- ═══════════ LOGIN SCREEN ═══════════ -->
-    <div id="loginScreen">
-        <div class="login-box">
-            <h2>🔐 Smart Budget</h2>
-            <p class="subtitle" id="loginSubtitle">Sign in to sync across all your devices</p>
-            <form id="loginForm" onsubmit="handleLogin(event)">
+    <!-- ═══════════ AUTH SCREEN ═══════════ -->
+    <div id="authScreen">
+        <div class="auth-box" id="authBox">
+            <!-- Login Form -->
+            <div id="loginForm">
+                <h2>🔐 Smart Budget</h2>
+                <p class="subtitle">Sign in to sync across all your devices</p>
+
                 <input type="email" id="loginEmail" placeholder="Email" required />
                 <input type="password" id="loginPassword" placeholder="Password" required />
-                <button type="submit" id="loginBtn">Sign In</button>
+
+                <button id="loginBtn" onclick="handleLogin()">Sign In</button>
+
                 <div class="error" id="loginError">Invalid email or password</div>
                 <div class="loading-text" id="loginLoading">Connecting...</div>
-            </form>
-            <div class="admin-note">
-                <i class="fas fa-shield-alt"></i> Admin: Hamza Margal
+
+                <div class="toggle-mode">
+                    Don't have an account? <a onclick="showRegister()">Sign Up</a>
+                </div>
+
+                <div class="admin-note">
+                    <i class="fas fa-shield-alt"></i> Admin: Hamza Margal
+                </div>
+            </div>
+
+            <!-- Register Form -->
+            <div id="registerForm" style="display:none;">
+                <h2>📝 Create Account</h2>
+                <p class="subtitle">Join Smart Budget and track your finances</p>
+
+                <div class="input-group">
+                    <input type="text" id="regName" placeholder="Name" required />
+                    <input type="text" id="regSurname" placeholder="Surname" required />
+                </div>
+                <input type="email" id="regEmail" placeholder="Email" required />
+                <input type="password" id="regPassword" placeholder="Password (min 6 chars)" required />
+                <input type="password" id="regConfirmPassword" placeholder="Confirm Password" required />
+
+                <button id="registerBtn" onclick="handleRegister()">Create Account</button>
+
+                <div class="error" id="registerError"></div>
+                <div class="success" id="registerSuccess"></div>
+                <div class="loading-text" id="registerLoading">Creating account...</div>
+
+                <div class="toggle-mode">
+                    Already have an account? <a onclick="showLogin()">Sign In</a>
+                </div>
+            </div>
+
+            <!-- Verification Section -->
+            <div class="verify-section" id="verifySection">
+                <h3>✅ Verify Your Email</h3>
+                <div class="info">
+                    A verification code has been sent to your email.<br>
+                    Please enter it below to complete registration.
+                </div>
+                <input type="text" id="verifyCode" placeholder="Enter verification code" />
+                <button onclick="verifyEmail()">Verify</button>
+                <div class="error" id="verifyError"></div>
+                <div class="loading-text" id="verifyLoading">Verifying...</div>
+                <div class="toggle-mode" style="margin-top:12px;">
+                    Didn't receive code? <a onclick="resendVerification()">Resend</a>
+                </div>
             </div>
         </div>
     </div>
@@ -887,83 +1024,82 @@
 
         <!-- Header -->
         <header class="header">
-            <h1><i class="fas fa-wallet"></i> <span id="appTitle">Smart Budget</span></h1>
+            <h1><i class="fas fa-wallet"></i> Smart Budget</h1>
             <div class="header-actions">
+                <span class="user-name-display" id="userNameDisplay">👤 User</span>
                 <span class="sync-status" id="syncStatus">
                     <span class="dot offline" id="syncDot"></span>
                     <span id="syncText">Offline</span>
                 </span>
                 <span id="adminBadge" class="admin-badge hidden">Admin</span>
-                <button onclick="exportCSV()"><i class="fas fa-file-export"></i> <span id="exportLabel">Export</span></button>
-                <button onclick="document.getElementById('csvInput').click()"><i class="fas fa-file-import"></i> <span id="importLabel">Import</span></button>
-                <button class="logout-btn" onclick="handleLogout()"><i class="fas fa-sign-out-alt"></i> <span id="logoutLabel">Logout</span></button>
+                <button onclick="exportCSV()"><i class="fas fa-file-export"></i> Export</button>
+                <button onclick="document.getElementById('csvInput').click()"><i class="fas fa-file-import"></i> Import</button>
+                <button class="logout-btn" onclick="handleLogout()"><i class="fas fa-sign-out-alt"></i> Logout</button>
             </div>
         </header>
 
         <!-- Stats Grid -->
         <section class="stats-grid" id="statsGrid">
             <div class="stat-card blue">
-                <div class="label" id="labelBudget">💰 Monthly Budget</div>
+                <div class="label">💰 Monthly Budget</div>
                 <div class="value" id="budgetDisplay">0</div>
-                <div class="sub"><i class="fas fa-pen" style="cursor:pointer;" onclick="editBudget()"></i> <span id="budgetEditLabel">Click to edit</span></div>
+                <div class="sub"><i class="fas fa-pen" style="cursor:pointer;" onclick="editBudget()"></i> Click to edit</div>
             </div>
             <div class="stat-card green">
-                <div class="label" id="labelSpent">✅ Total Spent</div>
+                <div class="label">✅ Total Spent</div>
                 <div class="value" id="spentDisplay">0</div>
-                <div class="sub" id="spentSubLabel">This month</div>
+                <div class="sub">This month</div>
             </div>
             <div class="stat-card orange">
-                <div class="label" id="labelRemaining">📊 Remaining</div>
+                <div class="label">📊 Remaining</div>
                 <div class="value" id="remainingDisplay">0</div>
                 <div class="progress-bar"><div class="fill" id="progressFill" style="width:0%;"></div></div>
             </div>
             <div class="stat-card purple">
-                <div class="label" id="labelProfit">📈 Monthly Profit</div>
+                <div class="label">📈 Monthly Profit</div>
                 <div class="value" id="profitDisplay">0</div>
-                <div class="sub" id="profitSubLabel">Budget - Spent</div>
+                <div class="sub">Budget - Spent</div>
             </div>
         </section>
 
         <!-- Tabs -->
         <div class="tabs">
-            <button class="active" data-tab="dashboard"><i class="fas fa-chart-pie"></i> <span id="tabDashboard">Dashboard</span></button>
-            <button data-tab="shopping"><i class="fas fa-shopping-cart"></i> <span id="tabShopping">Shopping</span></button>
-            <button data-tab="products"><i class="fas fa-boxes"></i> <span id="tabProducts">Products</span></button>
-            <button data-tab="months"><i class="fas fa-calendar-alt"></i> <span id="tabMonths">Months</span></button>
-            <button data-tab="settings"><i class="fas fa-cog"></i> <span id="tabSettings">Settings</span></button>
-            <button data-tab="admin" id="adminTab" class="hidden"><i class="fas fa-user-shield"></i> <span id="tabAdmin">Admin</span></button>
+            <button class="active" data-tab="dashboard"><i class="fas fa-chart-pie"></i> Dashboard</button>
+            <button data-tab="shopping"><i class="fas fa-shopping-cart"></i> Shopping</button>
+            <button data-tab="products"><i class="fas fa-boxes"></i> Products</button>
+            <button data-tab="months"><i class="fas fa-calendar-alt"></i> Months</button>
+            <button data-tab="settings"><i class="fas fa-cog"></i> Settings</button>
+            <button data-tab="admin" id="adminTab" class="hidden"><i class="fas fa-user-shield"></i> Admin</button>
         </div>
 
         <!-- ═══════ DASHBOARD ═══════ -->
         <div class="tab-content active" id="tab-dashboard">
-            <!-- Category Summary Table -->
             <div class="card" style="margin-bottom:24px;">
-                <h3><i class="fas fa-table"></i> <span id="categorySummaryTitle">Category Summary</span> <span class="badge" id="summaryMonthBadge">This month</span></h3>
+                <h3><i class="fas fa-table"></i> Category Summary <span class="badge">This month</span></h3>
                 <div class="table-wrap">
                     <table class="category-summary-table" id="categorySummaryTable">
                         <thead>
                             <tr>
-                                <th id="catColCategory">Category</th>
-                                <th style="text-align:right;" id="catColEstimated">Estimated (DH)</th>
-                                <th style="text-align:right;" id="catColReal">Real (DH)</th>
-                                <th style="text-align:right;" id="catColDiff">Difference (DH)</th>
+                                <th>Category</th>
+                                <th style="text-align:right;">Estimated</th>
+                                <th style="text-align:right;">Real</th>
+                                <th style="text-align:right;">Difference</th>
                             </tr>
                         </thead>
-                        <tbody id="categorySummaryBody">
-                        </tbody>
+                        <tbody id="categorySummaryBody"></tbody>
                     </table>
                 </div>
             </div>
 
             <div class="row">
                 <div class="card">
-                    <h3><i class="fas fa-chart-pie"></i> <span id="pieChartTitle">Spending by Category</span></h3>
+                    <h3><i class="fas fa-chart-pie"></i> Spending by Category</h3>
                     <div class="chart-container">
                         <canvas id="pieChart"></canvas>
                     </div>
                 </div>
                 <div class="card">
-                    <h3><i class="fas fa-chart-line"></i> <span id="monthlyComparisonTitle">Monthly Comparison</span></h3>
+                    <h3><i class="fas fa-chart-line"></i> Monthly Comparison</h3>
                     <div class="chart-container-large">
                         <canvas id="monthlyComparisonChart"></canvas>
                     </div>
@@ -972,13 +1108,13 @@
 
             <div class="row">
                 <div class="card">
-                    <h3><i class="fas fa-clock"></i> <span id="recentTitle">Recent Purchases</span></h3>
+                    <h3><i class="fas fa-clock"></i> Recent Purchases</h3>
                     <div id="recentPurchases">
                         <div class="text-muted text-center" style="padding:20px 0;">No purchases yet.</div>
                     </div>
                 </div>
                 <div class="card">
-                    <h3><i class="fas fa-bolt"></i> <span id="quickStatsTitle">Quick Stats</span></h3>
+                    <h3><i class="fas fa-bolt"></i> Quick Stats</h3>
                     <div id="quickStats">
                         <div class="text-muted text-center" style="padding:20px 0;">Statistics will appear here.</div>
                     </div>
@@ -989,7 +1125,7 @@
         <!-- ═══════ SHOPPING ═══════ -->
         <div class="tab-content" id="tab-shopping">
             <div class="card">
-                <h3><i class="fas fa-shopping-list"></i> <span id="shoppingTitle">Shopping Checklist</span></h3>
+                <h3><i class="fas fa-shopping-list"></i> Shopping Checklist</h3>
                 <div class="toolbar">
                     <input type="text" id="searchShopping" placeholder="🔍 Search products..." oninput="renderShopping()" />
                     <div class="filter-group">
@@ -1008,16 +1144,16 @@
                             <option value="low">Low</option>
                         </select>
                     </div>
-                    <button class="add-row" onclick="addProduct()"><i class="fas fa-plus"></i> <span id="addProductLabel">Add product</span></button>
+                    <button class="add-row" onclick="addProduct()"><i class="fas fa-plus"></i> Add product</button>
                 </div>
                 <div class="table-wrap">
                     <table>
                         <thead>
                             <tr>
                                 <th style="width:30px;">✔</th>
-                                <th onclick="sortShopping('name')">Product <span class="sort-icon">↕</span></th>
                                 <th onclick="sortShopping('category')">Category <span class="sort-icon">↕</span></th>
                                 <th onclick="sortShopping('subcategory')">Subcategory <span class="sort-icon">↕</span></th>
+                                <th onclick="sortShopping('name')">Product <span class="sort-icon">↕</span></th>
                                 <th onclick="sortShopping('quantity')">Qty <span class="sort-icon">↕</span></th>
                                 <th onclick="sortShopping('estimated')">Est. <span class="sort-icon">↕</span></th>
                                 <th onclick="sortShopping('real')">Real <span class="sort-icon">↕</span></th>
@@ -1030,9 +1166,9 @@
                     </table>
                 </div>
                 <div style="margin-top:12px; display:flex; gap:12px; flex-wrap:wrap;">
-                    <span class="text-muted"><span id="totalEstLabel">Total estimated</span>: <strong id="shoppingEstTotal">0</strong></span>
-                    <span class="text-muted"><span id="totalRealLabel">Total real</span>: <strong id="shoppingRealTotal">0</strong></span>
-                    <span class="text-muted"><span id="boughtLabel">Bought</span>: <strong id="shoppingBoughtCount">0</strong> / <span id="shoppingTotalCount">0</span></span>
+                    <span class="text-muted">Total estimated: <strong id="shoppingEstTotal">0</strong></span>
+                    <span class="text-muted">Total real: <strong id="shoppingRealTotal">0</strong></span>
+                    <span class="text-muted">Bought: <strong id="shoppingBoughtCount">0</strong> / <span id="shoppingTotalCount">0</span></span>
                 </div>
             </div>
         </div>
@@ -1040,7 +1176,7 @@
         <!-- ═══════ PRODUCTS ═══════ -->
         <div class="tab-content" id="tab-products">
             <div class="card">
-                <h3><i class="fas fa-box"></i> <span id="productsTitle">Product Database</span></h3>
+                <h3><i class="fas fa-box"></i> Product Database</h3>
                 <div class="toolbar">
                     <input type="text" id="searchProducts" placeholder="🔍 Search products..." oninput="renderProducts()" />
                     <div class="filter-group">
@@ -1051,15 +1187,15 @@
                             <option value="all">All subcategories</option>
                         </select>
                     </div>
-                    <button class="add-row" onclick="addProduct()"><i class="fas fa-plus"></i> <span id="addProductDbLabel">Add product</span></button>
+                    <button class="add-row" onclick="addProduct()"><i class="fas fa-plus"></i> Add product</button>
                 </div>
                 <div class="table-wrap">
                     <table>
                         <thead>
                             <tr>
-                                <th onclick="sortProducts('name')">Product <span class="sort-icon">↕</span></th>
                                 <th onclick="sortProducts('category')">Category <span class="sort-icon">↕</span></th>
                                 <th onclick="sortProducts('subcategory')">Subcategory <span class="sort-icon">↕</span></th>
+                                <th onclick="sortProducts('name')">Product <span class="sort-icon">↕</span></th>
                                 <th onclick="sortProducts('defaultPrice')">Default price <span class="sort-icon">↕</span></th>
                                 <th onclick="sortProducts('unit')">Unit <span class="sort-icon">↕</span></th>
                                 <th style="width:60px;">Actions</th>
@@ -1074,8 +1210,8 @@
         <!-- ═══════ MONTHS ═══════ -->
         <div class="tab-content" id="tab-months">
             <div class="card">
-                <h3><i class="fas fa-calendar-alt"></i> <span id="monthsTitle">Monthly Sheets</span></h3>
-                <p class="text-muted" id="monthsSubtitle" style="margin-bottom:16px;">Each month is saved automatically. Click a month to view details.</p>
+                <h3><i class="fas fa-calendar-alt"></i> Monthly Sheets</h3>
+                <p class="text-muted" style="margin-bottom:16px;">Each month is saved automatically. Click a month to view details.</p>
                 <div id="monthGrid" class="month-grid"></div>
             </div>
         </div>
@@ -1083,17 +1219,17 @@
         <!-- ═══════ SETTINGS ═══════ -->
         <div class="tab-content" id="tab-settings">
             <div class="card">
-                <h3><i class="fas fa-sliders-h"></i> <span id="settingsTitle">Settings</span></h3>
+                <h3><i class="fas fa-sliders-h"></i> Settings</h3>
 
                 <div class="settings-row">
-                    <span><i class="fas fa-moon"></i> <span id="darkModeLabel">Dark Mode</span></span>
+                    <span><i class="fas fa-moon"></i> Dark Mode</span>
                     <div class="toggle-switch" id="darkToggle" onclick="toggleDark()">
                         <div class="knob"></div>
                     </div>
                 </div>
 
                 <div class="settings-row">
-                    <span><i class="fas fa-coins"></i> <span id="currencyLabel">Currency</span></span>
+                    <span><i class="fas fa-coins"></i> Currency</span>
                     <select id="currencySelect" onchange="updateCurrency()" class="settings-select">
                         <option value="DH">DH</option>
                         <option value="$">$</option>
@@ -1105,34 +1241,23 @@
                 </div>
 
                 <div class="settings-row">
-                    <span><i class="fas fa-language"></i> <span id="languageLabel">Language</span></span>
-                    <select id="languageSelect" onchange="updateLanguage()" class="settings-select">
-                        <option value="en">🇬🇧 English</option>
-                        <option value="fr">🇫🇷 Français</option>
-                        <option value="ar">🇸🇦 العربية</option>
-                        <option value="tr">🇹🇷 Türkçe</option>
-                        <option value="ja">🇯🇵 日本語</option>
-                    </select>
-                </div>
-
-                <div class="settings-row">
-                    <span><i class="fas fa-cloud"></i> <span id="syncLabel">Cloud Sync</span></span>
+                    <span><i class="fas fa-cloud"></i> Cloud Sync</span>
                     <span class="text-muted" id="syncStatusText">Connected</span>
                 </div>
 
                 <div class="settings-row">
-                    <span><i class="fas fa-file-excel"></i> <span id="exportExcelLabel">Export Excel (CSV)</span></span>
-                    <button onclick="exportCSV()" style="background:var(--primary);color:white;border:none;padding:6px 16px;border-radius:40px;cursor:pointer;"><span id="exportBtnLabel">Export</span></button>
+                    <span><i class="fas fa-file-excel"></i> Export Excel (CSV)</span>
+                    <button onclick="exportCSV()" style="background:var(--primary);color:white;border:none;padding:6px 16px;border-radius:40px;cursor:pointer;">Export</button>
                 </div>
 
                 <div class="settings-row">
-                    <span><i class="fas fa-file-import"></i> <span id="importExcelLabel">Import CSV</span></span>
+                    <span><i class="fas fa-file-import"></i> Import CSV</span>
                     <input type="file" id="csvInput" accept=".csv" style="display:none;" onchange="handleImport(event)" />
-                    <button onclick="document.getElementById('csvInput').click()" style="background:var(--primary);color:white;border:none;padding:6px 16px;border-radius:40px;cursor:pointer;"><span id="importBtnLabel">Import</span></button>
+                    <button onclick="document.getElementById('csvInput').click()" style="background:var(--primary);color:white;border:none;padding:6px 16px;border-radius:40px;cursor:pointer;">Import</button>
                 </div>
 
                 <div class="settings-row" style="border-bottom: none; padding-top: 16px;">
-                    <span><i class="fas fa-user"></i> <span id="userLabel">User</span></span>
+                    <span><i class="fas fa-user"></i> User</span>
                     <span class="text-muted" id="userEmailDisplay">—</span>
                 </div>
             </div>
@@ -1141,8 +1266,8 @@
         <!-- ═══════ ADMIN ═══════ -->
         <div class="tab-content" id="tab-admin">
             <div class="admin-panel">
-                <h3><i class="fas fa-user-shield"></i> <span id="adminPanelTitle">Admin Panel — Hamza Margal</span></h3>
-                <p class="text-muted" style="margin-bottom:16px;" id="adminSubtitle">View all users and their data. You can see everything but cannot modify other users' data.</p>
+                <h3><i class="fas fa-user-shield"></i> Admin Panel — Hamza Margal</h3>
+                <p class="text-muted" style="margin-bottom:16px;">View all users and their data. You can see everything but cannot modify other users' data.</p>
 
                 <div id="adminUserList">
                     <div class="text-muted text-center" style="padding:20px 0;">Loading users...</div>
@@ -1150,7 +1275,7 @@
             </div>
 
             <div class="card">
-                <h3><i class="fas fa-chart-bar"></i> <span id="adminStatsTitle">Global Statistics</span></h3>
+                <h3><i class="fas fa-chart-bar"></i> Global Statistics</h3>
                 <div id="adminGlobalStats">
                     <div class="text-muted text-center" style="padding:20px 0;">Loading global statistics...</div>
                 </div>
@@ -1172,17 +1297,17 @@
         // ═══════════════════════════════════════════════════
 
         const firebaseConfig = {
-            apiKey: "YOUR_API_KEY",
-            authDomain: "YOUR_PROJECT.firebaseapp.com",
-            projectId: "YOUR_PROJECT_ID",
-            storageBucket: "YOUR_PROJECT.appspot.com",
-            messagingSenderId: "YOUR_SENDER_ID",
-            appId: "YOUR_APP_ID"
-        };
+  apiKey: "AIzaSyBeSa90G5b_fl9HoNiDQhUJSyS_4n3x5o0",
+  authDomain: "smart-budget-55f99.firebaseapp.com",
+  projectId: "smart-budget-55f99",
+  storageBucket: "smart-budget-55f99.firebasestorage.app",
+  messagingSenderId: "386991773547",
+  appId: "1:386991773547:web:9e335b919e448f2dcfde2e",
+  measurementId: "G-M6HT37LGFK"
+};
 
         // ─── Admin Credentials ───
-        const ADMIN_EMAIL = "hamza.margal@admin.com";
-        const ADMIN_PASSWORD = "Hamza2005";
+        const ADMIN_EMAIL = "hamzamp2026@gmail.com";
 
         // ─── Initialize Firebase ───
         firebase.initializeApp(firebaseConfig);
@@ -1196,10 +1321,10 @@
         // ──────────────── STATE ────────────────
         let currentUser = null;
         let isAdmin = false;
+        let currentUserName = '';
         let data = {
-            budget: 1500,
+            budget: 0000,
             currency: 'DH',
-            language: 'en',
             products: [],
             months: {}
         };
@@ -1207,523 +1332,31 @@
         let syncTimeout = null;
         let pieChartInstance = null;
         let monthlyChartInstance = null;
+        let pendingVerificationEmail = '';
 
         const STORAGE_KEY = 'smartBudgetLocal';
+        const USER_DATA_KEY = 'smartBudgetUser';
 
-        // ──────────────── TRANSLATIONS ────────────────
-        const translations = {
-            en: {
-                appTitle: 'Smart Budget',
-                loginSubtitle: 'Sign in to sync across all your devices',
-                loginBtn: 'Sign In',
-                loginError: 'Invalid email or password',
-                loginLoading: 'Connecting...',
-                logoutLabel: 'Logout',
-                exportLabel: 'Export',
-                importLabel: 'Import',
-                labelBudget: '💰 Monthly Budget',
-                budgetEditLabel: 'Click to edit',
-                labelSpent: '✅ Total Spent',
-                spentSubLabel: 'This month',
-                labelRemaining: '📊 Remaining',
-                labelProfit: '📈 Monthly Profit',
-                profitSubLabel: 'Budget - Spent',
-                tabDashboard: 'Dashboard',
-                tabShopping: 'Shopping',
-                tabProducts: 'Products',
-                tabMonths: 'Months',
-                tabSettings: 'Settings',
-                tabAdmin: 'Admin',
-                categorySummaryTitle: 'Category Summary',
-                summaryMonthBadge: 'This month',
-                catColCategory: 'Category',
-                catColEstimated: 'Estimated',
-                catColReal: 'Real',
-                catColDiff: 'Difference',
-                pieChartTitle: 'Spending by Category',
-                monthlyComparisonTitle: 'Monthly Comparison',
-                recentTitle: 'Recent Purchases',
-                quickStatsTitle: 'Quick Stats',
-                shoppingTitle: 'Shopping Checklist',
-                addProductLabel: 'Add product',
-                totalEstLabel: 'Total estimated',
-                totalRealLabel: 'Total real',
-                boughtLabel: 'Bought',
-                productsTitle: 'Product Database',
-                addProductDbLabel: 'Add product',
-                monthsTitle: 'Monthly Sheets',
-                monthsSubtitle: 'Each month is saved automatically. Click a month to view details.',
-                settingsTitle: 'Settings',
-                darkModeLabel: 'Dark Mode',
-                currencyLabel: 'Currency',
-                languageLabel: 'Language',
-                syncLabel: 'Cloud Sync',
-                exportExcelLabel: 'Export Excel (CSV)',
-                exportBtnLabel: 'Export',
-                importExcelLabel: 'Import CSV',
-                importBtnLabel: 'Import',
-                userLabel: 'User',
-                adminPanelTitle: 'Admin Panel — Hamza Margal',
-                adminSubtitle: 'View all users and their data.',
-                adminStatsTitle: 'Global Statistics',
-                noData: 'No data yet.',
-                noPurchases: 'No purchases yet.',
-                statisticsWillAppear: 'Statistics will appear here.',
-                loading: 'Loading...',
-                deleteConfirm: 'Delete this product from current month?',
-                deleteAllConfirm: 'Delete this product from ALL data?',
-                logoutConfirm: 'Logout?',
-                budgetPrompt: 'Set monthly budget',
-                currencyUpdated: 'Currency updated',
-                languageUpdated: 'Language updated',
-                exported: 'Exported!',
-                imported: 'Imported',
-                invalidCSV: 'Invalid CSV',
-                added: 'Added',
-                deleted: 'Deleted',
-                updated: 'Updated',
-                synced: 'Synced from another device',
-                offline: 'Using offline data',
-                cloudSync: 'Synced',
-                loadingMonth: 'Loading month...',
-                totalItems: 'Total items',
-                boughtItems: 'Bought',
-                estimatedTotal: 'Estimated total',
-                realTotal: 'Real total',
-                topCategory: 'Top category',
-                admin: 'Admin',
-                users: 'Users',
-                totalUsers: 'Total Users',
-                totalSpentAll: 'Total Spent (All Users)',
-                avgBudget: 'Average Budget',
-                month: 'Month',
-                spent: 'Spent',
-                budget: 'Budget',
-                profit: 'Profit',
-                searchProducts: 'Search products...',
-                allCategories: 'All categories',
-                allSubcategories: 'All subcategories',
-                allPriorities: 'All priorities',
-                all: 'All',
-                bought: 'Bought',
-                unbought: 'Unbought',
-                high: 'High',
-                medium: 'Medium',
-                low: 'Low',
-                noProductsFound: 'No products found',
-            },
-            fr: {
-                appTitle: 'Budget Intelligent',
-                loginSubtitle: 'Connectez-vous pour synchroniser tous vos appareils',
-                loginBtn: 'Se connecter',
-                loginError: 'Email ou mot de passe invalide',
-                loginLoading: 'Connexion...',
-                logoutLabel: 'Déconnexion',
-                exportLabel: 'Exporter',
-                importLabel: 'Importer',
-                labelBudget: '💰 Budget Mensuel',
-                budgetEditLabel: 'Cliquez pour modifier',
-                labelSpent: '✅ Dépensé',
-                spentSubLabel: 'Ce mois-ci',
-                labelRemaining: '📊 Restant',
-                labelProfit: '📈 Profit Mensuel',
-                profitSubLabel: 'Budget - Dépensé',
-                tabDashboard: 'Tableau de bord',
-                tabShopping: 'Courses',
-                tabProducts: 'Produits',
-                tabMonths: 'Mois',
-                tabSettings: 'Paramètres',
-                tabAdmin: 'Admin',
-                categorySummaryTitle: 'Résumé par Catégorie',
-                summaryMonthBadge: 'Ce mois-ci',
-                catColCategory: 'Catégorie',
-                catColEstimated: 'Estimé',
-                catColReal: 'Réel',
-                catColDiff: 'Différence',
-                pieChartTitle: 'Dépenses par Catégorie',
-                monthlyComparisonTitle: 'Comparaison Mensuelle',
-                recentTitle: 'Achats Récents',
-                quickStatsTitle: 'Statistiques Rapides',
-                shoppingTitle: 'Liste de Courses',
-                addProductLabel: 'Ajouter un produit',
-                totalEstLabel: 'Total estimé',
-                totalRealLabel: 'Total réel',
-                boughtLabel: 'Acheté',
-                productsTitle: 'Base de Données Produits',
-                addProductDbLabel: 'Ajouter un produit',
-                monthsTitle: 'Feuilles Mensuelles',
-                monthsSubtitle: 'Chaque mois est sauvegardé automatiquement. Cliquez sur un mois pour voir les détails.',
-                settingsTitle: 'Paramètres',
-                darkModeLabel: 'Mode Sombre',
-                currencyLabel: 'Devise',
-                languageLabel: 'Langue',
-                syncLabel: 'Synchronisation Cloud',
-                exportExcelLabel: 'Exporter Excel (CSV)',
-                exportBtnLabel: 'Exporter',
-                importExcelLabel: 'Importer CSV',
-                importBtnLabel: 'Importer',
-                userLabel: 'Utilisateur',
-                adminPanelTitle: 'Panneau Admin — Hamza Margal',
-                adminSubtitle: 'Voir tous les utilisateurs et leurs données.',
-                adminStatsTitle: 'Statistiques Globales',
-                noData: 'Pas encore de données.',
-                noPurchases: 'Pas encore d\'achats.',
-                statisticsWillAppear: 'Les statistiques apparaîtront ici.',
-                loading: 'Chargement...',
-                deleteConfirm: 'Supprimer ce produit du mois en cours ?',
-                deleteAllConfirm: 'Supprimer ce produit de TOUTES les données ?',
-                logoutConfirm: 'Se déconnecter ?',
-                budgetPrompt: 'Définir le budget mensuel',
-                currencyUpdated: 'Devise mise à jour',
-                languageUpdated: 'Langue mise à jour',
-                exported: 'Exporté !',
-                imported: 'Importé',
-                invalidCSV: 'CSV invalide',
-                added: 'Ajouté',
-                deleted: 'Supprimé',
-                updated: 'Mis à jour',
-                synced: 'Synchronisé depuis un autre appareil',
-                offline: 'Utilisation hors ligne',
-                cloudSync: 'Synchronisé',
-                loadingMonth: 'Chargement du mois...',
-                totalItems: 'Total articles',
-                boughtItems: 'Achetés',
-                estimatedTotal: 'Total estimé',
-                realTotal: 'Total réel',
-                topCategory: 'Catégorie principale',
-                admin: 'Admin',
-                users: 'Utilisateurs',
-                totalUsers: 'Total Utilisateurs',
-                totalSpentAll: 'Total Dépensé (Tous)',
-                avgBudget: 'Budget Moyen',
-                month: 'Mois',
-                spent: 'Dépensé',
-                budget: 'Budget',
-                profit: 'Profit',
-                searchProducts: 'Rechercher des produits...',
-                allCategories: 'Toutes les catégories',
-                allSubcategories: 'Toutes les sous-catégories',
-                allPriorities: 'Toutes les priorités',
-                all: 'Tous',
-                bought: 'Acheté',
-                unbought: 'Non acheté',
-                high: 'Haute',
-                medium: 'Moyenne',
-                low: 'Basse',
-                noProductsFound: 'Aucun produit trouvé',
-            },
-            ar: {
-                appTitle: 'الميزانية الذكية',
-                loginSubtitle: 'تسجيل الدخول للمزامنة بين جميع أجهزتك',
-                loginBtn: 'تسجيل الدخول',
-                loginError: 'البريد الإلكتروني أو كلمة المرور غير صحيحة',
-                loginLoading: 'جاري الاتصال...',
-                logoutLabel: 'تسجيل الخروج',
-                exportLabel: 'تصدير',
-                importLabel: 'استيراد',
-                labelBudget: '💰 الميزانية الشهرية',
-                budgetEditLabel: 'انقر للتعديل',
-                labelSpent: '✅ المصروف',
-                spentSubLabel: 'هذا الشهر',
-                labelRemaining: '📊 المتبقي',
-                labelProfit: '📈 الربح الشهري',
-                profitSubLabel: 'الميزانية - المصروف',
-                tabDashboard: 'لوحة التحكم',
-                tabShopping: 'التسوق',
-                tabProducts: 'المنتجات',
-                tabMonths: 'الأشهر',
-                tabSettings: 'الإعدادات',
-                tabAdmin: 'المشرف',
-                categorySummaryTitle: 'ملخص الفئات',
-                summaryMonthBadge: 'هذا الشهر',
-                catColCategory: 'الفئة',
-                catColEstimated: 'تقديري',
-                catColReal: 'فعلي',
-                catColDiff: 'الفرق',
-                pieChartTitle: 'المصروفات حسب الفئة',
-                monthlyComparisonTitle: 'مقارنة شهرية',
-                recentTitle: 'المشتريات الأخيرة',
-                quickStatsTitle: 'إحصائيات سريعة',
-                shoppingTitle: 'قائمة التسوق',
-                addProductLabel: 'إضافة منتج',
-                totalEstLabel: 'الإجمالي التقديري',
-                totalRealLabel: 'الإجمالي الفعلي',
-                boughtLabel: 'تم الشراء',
-                productsTitle: 'قاعدة بيانات المنتجات',
-                addProductDbLabel: 'إضافة منتج',
-                monthsTitle: 'الأوراق الشهرية',
-                monthsSubtitle: 'يتم حفظ كل شهر تلقائياً. انقر على شهر لعرض التفاصيل.',
-                settingsTitle: 'الإعدادات',
-                darkModeLabel: 'الوضع المظلم',
-                currencyLabel: 'العملة',
-                languageLabel: 'اللغة',
-                syncLabel: 'المزامنة السحابية',
-                exportExcelLabel: 'تصدير Excel (CSV)',
-                exportBtnLabel: 'تصدير',
-                importExcelLabel: 'استيراد CSV',
-                importBtnLabel: 'استيراد',
-                userLabel: 'المستخدم',
-                adminPanelTitle: 'لوحة المشرف — حمراء مرقال',
-                adminSubtitle: 'عرض جميع المستخدمين وبياناتهم.',
-                adminStatsTitle: 'إحصائيات عامة',
-                noData: 'لا توجد بيانات بعد.',
-                noPurchases: 'لا توجد مشتريات بعد.',
-                statisticsWillAppear: 'ستظهر الإحصائيات هنا.',
-                loading: 'جاري التحميل...',
-                deleteConfirm: 'حذف هذا المنتج من الشهر الحالي؟',
-                deleteAllConfirm: 'حذف هذا المنتج من جميع البيانات؟',
-                logoutConfirm: 'تسجيل الخروج؟',
-                budgetPrompt: 'تعيين الميزانية الشهرية',
-                currencyUpdated: 'تم تحديث العملة',
-                languageUpdated: 'تم تحديث اللغة',
-                exported: 'تم التصدير!',
-                imported: 'تم الاستيراد',
-                invalidCSV: 'ملف CSV غير صالح',
-                added: 'تمت الإضافة',
-                deleted: 'تم الحذف',
-                updated: 'تم التحديث',
-                synced: 'تمت المزامنة من جهاز آخر',
-                offline: 'استخدام البيانات دون اتصال',
-                cloudSync: 'متزامن',
-                loadingMonth: 'جاري تحميل الشهر...',
-                totalItems: 'إجمالي العناصر',
-                boughtItems: 'تم الشراء',
-                estimatedTotal: 'الإجمالي التقديري',
-                realTotal: 'الإجمالي الفعلي',
-                topCategory: 'أعلى فئة',
-                admin: 'مشرف',
-                users: 'المستخدمين',
-                totalUsers: 'إجمالي المستخدمين',
-                totalSpentAll: 'إجمالي المصروف (الكل)',
-                avgBudget: 'متوسط الميزانية',
-                month: 'الشهر',
-                spent: 'المصروف',
-                budget: 'الميزانية',
-                profit: 'الربح',
-                searchProducts: 'البحث عن منتجات...',
-                allCategories: 'جميع الفئات',
-                allSubcategories: 'جميع الفئات الفرعية',
-                allPriorities: 'جميع الأولويات',
-                all: 'الكل',
-                bought: 'تم الشراء',
-                unbought: 'لم يشتري',
-                high: 'عالية',
-                medium: 'متوسطة',
-                low: 'منخفضة',
-                noProductsFound: 'لم يتم العثور على منتجات',
-            },
-            tr: {
-                appTitle: 'Akıllı Bütçe',
-                loginSubtitle: 'Tüm cihazlarınızda senkronize olmak için giriş yapın',
-                loginBtn: 'Giriş Yap',
-                loginError: 'Geçersiz e-posta veya şifre',
-                loginLoading: 'Bağlanıyor...',
-                logoutLabel: 'Çıkış Yap',
-                exportLabel: 'Dışa Aktar',
-                importLabel: 'İçe Aktar',
-                labelBudget: '💰 Aylık Bütçe',
-                budgetEditLabel: 'Düzenlemek için tıklayın',
-                labelSpent: '✅ Harcanan',
-                spentSubLabel: 'Bu ay',
-                labelRemaining: '📊 Kalan',
-                labelProfit: '📈 Aylık Kar',
-                profitSubLabel: 'Bütçe - Harcanan',
-                tabDashboard: 'Kontrol Paneli',
-                tabShopping: 'Alışveriş',
-                tabProducts: 'Ürünler',
-                tabMonths: 'Aylar',
-                tabSettings: 'Ayarlar',
-                tabAdmin: 'Yönetici',
-                categorySummaryTitle: 'Kategori Özeti',
-                summaryMonthBadge: 'Bu ay',
-                catColCategory: 'Kategori',
-                catColEstimated: 'Tahmini',
-                catColReal: 'Gerçek',
-                catColDiff: 'Fark',
-                pieChartTitle: 'Kategoriye Göre Harcamalar',
-                monthlyComparisonTitle: 'Aylık Karşılaştırma',
-                recentTitle: 'Son Alışverişler',
-                quickStatsTitle: 'Hızlı İstatistikler',
-                shoppingTitle: 'Alışveriş Listesi',
-                addProductLabel: 'Ürün ekle',
-                totalEstLabel: 'Toplam tahmini',
-                totalRealLabel: 'Toplam gerçek',
-                boughtLabel: 'Satın alındı',
-                productsTitle: 'Ürün Veritabanı',
-                addProductDbLabel: 'Ürün ekle',
-                monthsTitle: 'Aylık Sayfalar',
-                monthsSubtitle: 'Her ay otomatik olarak kaydedilir. Detayları görmek için bir aya tıklayın.',
-                settingsTitle: 'Ayarlar',
-                darkModeLabel: 'Karanlık Mod',
-                currencyLabel: 'Para Birimi',
-                languageLabel: 'Dil',
-                syncLabel: 'Bulut Senkronizasyonu',
-                exportExcelLabel: 'Excel Dışa Aktar (CSV)',
-                exportBtnLabel: 'Dışa Aktar',
-                importExcelLabel: 'CSV İçe Aktar',
-                importBtnLabel: 'İçe Aktar',
-                userLabel: 'Kullanıcı',
-                adminPanelTitle: 'Yönetici Paneli — Hamza Margal',
-                adminSubtitle: 'Tüm kullanıcıları ve verilerini görün.',
-                adminStatsTitle: 'Küresel İstatistikler',
-                noData: 'Henüz veri yok.',
-                noPurchases: 'Henüz alışveriş yok.',
-                statisticsWillAppear: 'İstatistikler burada görünecek.',
-                loading: 'Yükleniyor...',
-                deleteConfirm: 'Bu ürünü bu aydan sil?',
-                deleteAllConfirm: 'Bu ürünü TÜM verilerden sil?',
-                logoutConfirm: 'Çıkış yap?',
-                budgetPrompt: 'Aylık bütçeyi belirleyin',
-                currencyUpdated: 'Para birimi güncellendi',
-                languageUpdated: 'Dil güncellendi',
-                exported: 'Dışa aktarıldı!',
-                imported: 'İçe aktarıldı',
-                invalidCSV: 'Geçersiz CSV',
-                added: 'Eklendi',
-                deleted: 'Silindi',
-                updated: 'Güncellendi',
-                synced: 'Başka bir cihazdan senkronize edildi',
-                offline: 'Çevrimdışı veri kullanımı',
-                cloudSync: 'Senkronize',
-                loadingMonth: 'Ay yükleniyor...',
-                totalItems: 'Toplam öğe',
-                boughtItems: 'Satın alındı',
-                estimatedTotal: 'Tahmini toplam',
-                realTotal: 'Gerçek toplam',
-                topCategory: 'En çok kategori',
-                admin: 'Yönetici',
-                users: 'Kullanıcılar',
-                totalUsers: 'Toplam Kullanıcı',
-                totalSpentAll: 'Toplam Harcama (Tümü)',
-                avgBudget: 'Ortalama Bütçe',
-                month: 'Ay',
-                spent: 'Harcanan',
-                budget: 'Bütçe',
-                profit: 'Kar',
-                searchProducts: 'Ürünleri ara...',
-                allCategories: 'Tüm kategoriler',
-                allSubcategories: 'Tüm alt kategoriler',
-                allPriorities: 'Tüm öncelikler',
-                all: 'Tümü',
-                bought: 'Satın alındı',
-                unbought: 'Satın alınmadı',
-                high: 'Yüksek',
-                medium: 'Orta',
-                low: 'Düşük',
-                noProductsFound: 'Ürün bulunamadı',
-            },
-            ja: {
-                appTitle: 'スマートバジェット',
-                loginSubtitle: 'すべてのデバイスで同期するにはサインイン',
-                loginBtn: 'サインイン',
-                loginError: 'メールアドレスまたはパスワードが無効です',
-                loginLoading: '接続中...',
-                logoutLabel: 'ログアウト',
-                exportLabel: 'エクスポート',
-                importLabel: 'インポート',
-                labelBudget: '💰 月次予算',
-                budgetEditLabel: 'クリックして編集',
-                labelSpent: '✅ 支出合計',
-                spentSubLabel: '今月',
-                labelRemaining: '📊 残り',
-                labelProfit: '📈 月次利益',
-                profitSubLabel: '予算 - 支出',
-                tabDashboard: 'ダッシュボード',
-                tabShopping: 'ショッピング',
-                tabProducts: '製品',
-                tabMonths: '月次',
-                tabSettings: '設定',
-                tabAdmin: '管理者',
-                categorySummaryTitle: 'カテゴリー概要',
-                summaryMonthBadge: '今月',
-                catColCategory: 'カテゴリー',
-                catColEstimated: '見積もり',
-                catColReal: '実績',
-                catColDiff: '差額',
-                pieChartTitle: 'カテゴリー別支出',
-                monthlyComparisonTitle: '月次比較',
-                recentTitle: '最近の購入',
-                quickStatsTitle: 'クイック統計',
-                shoppingTitle: 'ショッピングリスト',
-                addProductLabel: '製品を追加',
-                totalEstLabel: '見積もり合計',
-                totalRealLabel: '実績合計',
-                boughtLabel: '購入済み',
-                productsTitle: '製品データベース',
-                addProductDbLabel: '製品を追加',
-                monthsTitle: '月次シート',
-                monthsSubtitle: '各月は自動的に保存されます。詳細を表示するには月をクリックしてください。',
-                settingsTitle: '設定',
-                darkModeLabel: 'ダークモード',
-                currencyLabel: '通貨',
-                languageLabel: '言語',
-                syncLabel: 'クラウド同期',
-                exportExcelLabel: 'Excelエクスポート (CSV)',
-                exportBtnLabel: 'エクスポート',
-                importExcelLabel: 'CSVインポート',
-                importBtnLabel: 'インポート',
-                userLabel: 'ユーザー',
-                adminPanelTitle: '管理者パネル — Hamza Margal',
-                adminSubtitle: 'すべてのユーザーとそのデータを表示します。',
-                adminStatsTitle: 'グローバル統計',
-                noData: 'データがまだありません。',
-                noPurchases: '購入がまだありません。',
-                statisticsWillAppear: '統計がここに表示されます。',
-                loading: '読み込み中...',
-                deleteConfirm: '今月からこの製品を削除しますか？',
-                deleteAllConfirm: 'すべてのデータからこの製品を削除しますか？',
-                logoutConfirm: 'ログアウトしますか？',
-                budgetPrompt: '月次予算を設定',
-                currencyUpdated: '通貨が更新されました',
-                languageUpdated: '言語が更新されました',
-                exported: 'エクスポート完了！',
-                imported: 'インポート完了',
-                invalidCSV: '無効なCSV',
-                added: '追加されました',
-                deleted: '削除されました',
-                updated: '更新されました',
-                synced: '別のデバイスから同期されました',
-                offline: 'オフラインデータ使用',
-                cloudSync: '同期済み',
-                loadingMonth: '月を読み込み中...',
-                totalItems: '合計アイテム',
-                boughtItems: '購入済み',
-                estimatedTotal: '見積もり合計',
-                realTotal: '実績合計',
-                topCategory: 'トップカテゴリー',
-                admin: '管理者',
-                users: 'ユーザー',
-                totalUsers: '合計ユーザー',
-                totalSpentAll: '総支出 (全ユーザー)',
-                avgBudget: '平均予算',
-                month: '月',
-                spent: '支出',
-                budget: '予算',
-                profit: '利益',
-                searchProducts: '製品を検索...',
-                allCategories: 'すべてのカテゴリー',
-                allSubcategories: 'すべてのサブカテゴリー',
-                allPriorities: 'すべての優先度',
-                all: 'すべて',
-                bought: '購入済み',
-                unbought: '未購入',
-                high: '高',
-                medium: '中',
-                low: '低',
-                noProductsFound: '製品が見つかりません',
-            }
-        };
+        // ──────────────── AUTH UI ────────────────
 
-        let t = translations.en;
-        let sortShoppingField = 'name';
-        let sortShoppingAsc = true;
-        let sortProductsField = 'name';
-        let sortProductsAsc = true;
+        function showRegister() {
+            document.getElementById('loginForm').style.display = 'none';
+            document.getElementById('registerForm').style.display = 'block';
+            document.getElementById('verifySection').classList.remove('active');
+            document.getElementById('registerError').style.display = 'none';
+            document.getElementById('registerSuccess').style.display = 'none';
+        }
 
-        // ──────────────── AUTH ────────────────
+        function showLogin() {
+            document.getElementById('loginForm').style.display = 'block';
+            document.getElementById('registerForm').style.display = 'none';
+            document.getElementById('verifySection').classList.remove('active');
+            document.getElementById('loginError').style.display = 'none';
+        }
 
-        function handleLogin(e) {
-            e.preventDefault();
+        // ──────────────── AUTH FUNCTIONS ────────────────
+
+        function handleLogin() {
             const email = document.getElementById('loginEmail').value;
             const password = document.getElementById('loginPassword').value;
             const errorEl = document.getElementById('loginError');
@@ -1733,233 +1366,236 @@
             errorEl.style.display = 'none';
             loadingEl.style.display = 'block';
             btn.disabled = true;
-            btn.textContent = t.loginLoading || 'Signing in...';
 
-            // Check if admin
-            if (email === ADMIN_EMAIL && password === ADMIN_PASSWORD) {
-                // Admin login
+            // Check admin login
+            if (email === ADMIN_EMAIL) {
                 auth.signInWithEmailAndPassword(email, password)
                     .then(userCredential => {
                         currentUser = userCredential.user;
                         isAdmin = true;
                         loadingEl.style.display = 'none';
                         btn.disabled = false;
-                        btn.textContent = t.loginBtn || 'Sign In';
-                        document.getElementById('loginScreen').classList.add('hidden');
+                        document.getElementById('authScreen').classList.add('hidden');
                         document.getElementById('app').classList.add('visible');
                         document.getElementById('adminBadge').classList.remove('hidden');
                         document.getElementById('adminTab').classList.remove('hidden');
                         initializeApp();
+                        showToast('👑 Welcome Admin!');
                     })
                     .catch(error => {
                         loadingEl.style.display = 'none';
                         btn.disabled = false;
-                        btn.textContent = t.loginBtn || 'Sign In';
                         errorEl.textContent = error.message;
                         errorEl.style.display = 'block';
                     });
                 return;
             }
 
-            // Regular user login
             auth.signInWithEmailAndPassword(email, password)
                 .then(userCredential => {
                     currentUser = userCredential.user;
                     isAdmin = false;
                     loadingEl.style.display = 'none';
                     btn.disabled = false;
-                    btn.textContent = t.loginBtn || 'Sign In';
-                    document.getElementById('loginScreen').classList.add('hidden');
+                    document.getElementById('authScreen').classList.add('hidden');
                     document.getElementById('app').classList.add('visible');
                     document.getElementById('adminBadge').classList.add('hidden');
                     document.getElementById('adminTab').classList.add('hidden');
+                    // Load user name
+                    loadUserName();
                     initializeApp();
+                    showToast('✅ Welcome back!');
                 })
                 .catch(error => {
                     loadingEl.style.display = 'none';
                     btn.disabled = false;
-                    btn.textContent = t.loginBtn || 'Sign In';
                     errorEl.textContent = error.message;
                     errorEl.style.display = 'block';
                 });
         }
 
+        function handleRegister() {
+            const name = document.getElementById('regName').value.trim();
+            const surname = document.getElementById('regSurname').value.trim();
+            const email = document.getElementById('regEmail').value;
+            const password = document.getElementById('regPassword').value;
+            const confirm = document.getElementById('regConfirmPassword').value;
+            const errorEl = document.getElementById('registerError');
+            const successEl = document.getElementById('registerSuccess');
+            const loadingEl = document.getElementById('registerLoading');
+            const btn = document.getElementById('registerBtn');
+
+            errorEl.style.display = 'none';
+            successEl.style.display = 'none';
+            loadingEl.style.display = 'block';
+            btn.disabled = true;
+
+            if (!name || !surname) {
+                errorEl.textContent = 'Please enter your name and surname.';
+                errorEl.style.display = 'block';
+                loadingEl.style.display = 'none';
+                btn.disabled = false;
+                return;
+            }
+
+            if (password.length < 6) {
+                errorEl.textContent = 'Password must be at least 6 characters.';
+                errorEl.style.display = 'block';
+                loadingEl.style.display = 'none';
+                btn.disabled = false;
+                return;
+            }
+
+            if (password !== confirm) {
+                errorEl.textContent = 'Passwords do not match.';
+                errorEl.style.display = 'block';
+                loadingEl.style.display = 'none';
+                btn.disabled = false;
+                return;
+            }
+
+            pendingVerificationEmail = email;
+
+            auth.createUserWithEmailAndPassword(email, password)
+                .then(userCredential => {
+                    currentUser = userCredential.user;
+                    // Save user name to Firestore
+                    return db.collection('users').doc(currentUser.uid).set({
+                        name: name,
+                        surname: surname,
+                        email: email,
+                        createdAt: firebase.firestore.FieldValue.serverTimestamp()
+                    }, { merge: true });
+                })
+                .then(() => {
+                    // Send verification email
+                    return currentUser.sendEmailVerification();
+                })
+                .then(() => {
+                    loadingEl.style.display = 'none';
+                    btn.disabled = false;
+                    successEl.textContent = '✅ Verification code sent to your email! Please check your inbox.';
+                    successEl.style.display = 'block';
+                    document.getElementById('verifySection').classList.add('active');
+                    showToast('📧 Verification email sent!');
+                })
+                .catch(error => {
+                    loadingEl.style.display = 'none';
+                    btn.disabled = false;
+                    errorEl.textContent = error.message;
+                    errorEl.style.display = 'block';
+                });
+        }
+
+        function verifyEmail() {
+            const code = document.getElementById('verifyCode').value.trim();
+            const errorEl = document.getElementById('verifyError');
+            const loadingEl = document.getElementById('verifyLoading');
+            const btn = document.querySelector('#verifySection button');
+
+            if (!code) {
+                errorEl.textContent = 'Please enter the verification code.';
+                errorEl.style.display = 'block';
+                return;
+            }
+
+            errorEl.style.display = 'none';
+            loadingEl.style.display = 'block';
+            btn.disabled = true;
+
+            // Firebase email verification is automatic via link
+            // We'll just check if the user verified their email
+            currentUser.reload().then(() => {
+                if (currentUser.emailVerified) {
+                    loadingEl.style.display = 'none';
+                    btn.disabled = false;
+                    document.getElementById('verifySection').classList.remove('active');
+                    document.getElementById('authScreen').classList.add('hidden');
+                    document.getElementById('app').classList.add('visible');
+                    isAdmin = currentUser.email === ADMIN_EMAIL;
+                    if (isAdmin) {
+                        document.getElementById('adminBadge').classList.remove('hidden');
+                        document.getElementById('adminTab').classList.remove('hidden');
+                    }
+                    loadUserName();
+                    initializeApp();
+                    showToast('✅ Email verified! Welcome to Smart Budget!');
+                } else {
+                    loadingEl.style.display = 'none';
+                    btn.disabled = false;
+                    errorEl.textContent = 'Email not verified yet. Please check your inbox and click the verification link.';
+                    errorEl.style.display = 'block';
+                }
+            }).catch(err => {
+                loadingEl.style.display = 'none';
+                btn.disabled = false;
+                errorEl.textContent = err.message;
+                errorEl.style.display = 'block';
+            });
+        }
+
+        function resendVerification() {
+            if (currentUser) {
+                currentUser.sendEmailVerification()
+                    .then(() => {
+                        showToast('📧 Verification email resent!');
+                    })
+                    .catch(err => {
+                        showToast('❌ Error: ' + err.message);
+                    });
+            }
+        }
+
+        function loadUserName() {
+            if (!currentUser) return;
+            db.collection('users').doc(currentUser.uid).get()
+                .then(doc => {
+                    if (doc.exists) {
+                        const userData = doc.data();
+                        currentUserName = userData.name + ' ' + userData.surname;
+                        document.getElementById('userNameDisplay').textContent = '👤 ' + currentUserName;
+                        document.getElementById('userEmailDisplay').textContent = currentUser.email;
+                    }
+                })
+                .catch(err => console.warn('Error loading user name:', err));
+        }
+
         function handleLogout() {
-            if (confirm(t.logoutConfirm || 'Logout?')) {
+            if (confirm('Logout?')) {
                 auth.signOut().then(() => {
                     currentUser = null;
                     isAdmin = false;
                     document.getElementById('app').classList.remove('visible');
-                    document.getElementById('loginScreen').classList.remove('hidden');
+                    document.getElementById('authScreen').classList.remove('hidden');
                     document.getElementById('loginPassword').value = '';
                     document.getElementById('adminBadge').classList.add('hidden');
                     document.getElementById('adminTab').classList.add('hidden');
-                    showToast(t.logoutLabel || 'Logged out');
+                    showToast('Logged out');
                 });
             }
         }
 
+        // ─── Auto-login check ───
         auth.onAuthStateChanged(user => {
             if (user) {
                 currentUser = user;
-                // Check if admin
                 if (user.email === ADMIN_EMAIL) {
                     isAdmin = true;
                     document.getElementById('adminBadge').classList.remove('hidden');
                     document.getElementById('adminTab').classList.remove('hidden');
                 }
-                document.getElementById('loginScreen').classList.add('hidden');
+                document.getElementById('authScreen').classList.add('hidden');
                 document.getElementById('app').classList.add('visible');
+                loadUserName();
                 initializeApp();
             } else {
-                document.getElementById('loginScreen').classList.remove('hidden');
+                document.getElementById('authScreen').classList.remove('hidden');
                 document.getElementById('app').classList.remove('visible');
+                document.getElementById('loginForm').style.display = 'block';
+                document.getElementById('registerForm').style.display = 'none';
+                document.getElementById('verifySection').classList.remove('active');
             }
         });
-
-        // ──────────────── TRANSLATION HELPERS ────────────────
-
-        function getLang() { return data.language || 'en'; }
-
-        function getCurrencySymbol() {
-            const symbols = { 'DH': 'DH', '$': '$', '€': '€', '£': '£', '₺': '₺' };
-            return symbols[data.currency] || 'DH';
-        }
-
-        function fmt(n) {
-            return Number(n).toFixed(0) + ' ' + getCurrencySymbol();
-        }
-
-        function _(key) {
-            const lang = getLang();
-            if (translations[lang] && translations[lang][key] !== undefined) {
-                return translations[lang][key];
-            }
-            // Fallback to English
-            if (translations.en && translations.en[key] !== undefined) {
-                return translations.en[key];
-            }
-            return key;
-        }
-
-        function applyTranslations() {
-            const lang = getLang();
-            t = translations[lang] || translations.en;
-
-            document.querySelectorAll('[data-i18n]').forEach(el => {
-                const key = el.dataset.i18n;
-                if (t[key] !== undefined) {
-                    el.textContent = t[key];
-                }
-            });
-
-            // Update all translatable elements
-            const elements = {
-                'appTitle': document.getElementById('appTitle'),
-                'loginSubtitle': document.getElementById('loginSubtitle'),
-                'loginBtn': document.getElementById('loginBtn'),
-                'logoutLabel': document.getElementById('logoutLabel'),
-                'exportLabel': document.getElementById('exportLabel'),
-                'importLabel': document.getElementById('importLabel'),
-                'labelBudget': document.getElementById('labelBudget'),
-                'budgetEditLabel': document.getElementById('budgetEditLabel'),
-                'labelSpent': document.getElementById('labelSpent'),
-                'spentSubLabel': document.getElementById('spentSubLabel'),
-                'labelRemaining': document.getElementById('labelRemaining'),
-                'labelProfit': document.getElementById('labelProfit'),
-                'profitSubLabel': document.getElementById('profitSubLabel'),
-                'tabDashboard': document.getElementById('tabDashboard'),
-                'tabShopping': document.getElementById('tabShopping'),
-                'tabProducts': document.getElementById('tabProducts'),
-                'tabMonths': document.getElementById('tabMonths'),
-                'tabSettings': document.getElementById('tabSettings'),
-                'tabAdmin': document.getElementById('tabAdmin'),
-                'categorySummaryTitle': document.getElementById('categorySummaryTitle'),
-                'summaryMonthBadge': document.getElementById('summaryMonthBadge'),
-                'catColCategory': document.getElementById('catColCategory'),
-                'catColEstimated': document.getElementById('catColEstimated'),
-                'catColReal': document.getElementById('catColReal'),
-                'catColDiff': document.getElementById('catColDiff'),
-                'pieChartTitle': document.getElementById('pieChartTitle'),
-                'monthlyComparisonTitle': document.getElementById('monthlyComparisonTitle'),
-                'recentTitle': document.getElementById('recentTitle'),
-                'quickStatsTitle': document.getElementById('quickStatsTitle'),
-                'shoppingTitle': document.getElementById('shoppingTitle'),
-                'addProductLabel': document.getElementById('addProductLabel'),
-                'totalEstLabel': document.getElementById('totalEstLabel'),
-                'totalRealLabel': document.getElementById('totalRealLabel'),
-                'boughtLabel': document.getElementById('boughtLabel'),
-                'productsTitle': document.getElementById('productsTitle'),
-                'addProductDbLabel': document.getElementById('addProductDbLabel'),
-                'monthsTitle': document.getElementById('monthsTitle'),
-                'monthsSubtitle': document.getElementById('monthsSubtitle'),
-                'settingsTitle': document.getElementById('settingsTitle'),
-                'darkModeLabel': document.getElementById('darkModeLabel'),
-                'currencyLabel': document.getElementById('currencyLabel'),
-                'languageLabel': document.getElementById('languageLabel'),
-                'syncLabel': document.getElementById('syncLabel'),
-                'exportExcelLabel': document.getElementById('exportExcelLabel'),
-                'exportBtnLabel': document.getElementById('exportBtnLabel'),
-                'importExcelLabel': document.getElementById('importExcelLabel'),
-                'importBtnLabel': document.getElementById('importBtnLabel'),
-                'userLabel': document.getElementById('userLabel'),
-                'adminPanelTitle': document.getElementById('adminPanelTitle'),
-                'adminSubtitle': document.getElementById('adminSubtitle'),
-                'adminStatsTitle': document.getElementById('adminStatsTitle'),
-            };
-
-            for (const [key, el] of Object.entries(elements)) {
-                if (el && t[key] !== undefined) {
-                    el.textContent = t[key];
-                }
-            }
-
-            // Update placeholder texts
-            const searchShopping = document.getElementById('searchShopping');
-            if (searchShopping) searchShopping.placeholder = t.searchProducts || 'Search products...';
-
-            // Update filter options
-            updateFilterLabels();
-        }
-
-        function updateFilterLabels() {
-            // Category filters
-            document.querySelectorAll('select[id*="category"] option').forEach(opt => {
-                if (opt.value === 'all') opt.textContent = t.allCategories || 'All categories';
-            });
-
-            // Subcategory filters
-            document.querySelectorAll('select[id*="subcategory"] option').forEach(opt => {
-                if (opt.value === 'all') opt.textContent = t.allSubcategories || 'All subcategories';
-            });
-
-            // Priority filters
-            document.querySelectorAll('select[id*="priority"] option').forEach(opt => {
-                if (opt.value === 'all') opt.textContent = t.allPriorities || 'All priorities';
-                if (opt.value === 'high') opt.textContent = t.high || 'High';
-                if (opt.value === 'medium') opt.textContent = t.medium || 'Medium';
-                if (opt.value === 'low') opt.textContent = t.low || 'Low';
-            });
-
-            // Shopping filter
-            const filterShopping = document.getElementById('filterShopping');
-            if (filterShopping) {
-                filterShopping.options[0].textContent = t.all || 'All';
-                filterShopping.options[1].textContent = t.bought || 'Bought';
-                filterShopping.options[2].textContent = t.unbought || 'Unbought';
-            }
-        }
-
-        // ──────────────── LANGUAGE ────────────────
-
-        function updateLanguage() {
-            const sel = document.getElementById('languageSelect');
-            data.language = sel.value;
-            saveToFirebase();
-            applyTranslations();
-            refreshAll();
-            showToast(t.languageUpdated || 'Language updated');
-        }
 
         // ──────────────── DATA LAYER ────────────────
 
@@ -1994,6 +1630,15 @@
             refreshAll();
         }
 
+        function getCurrencySymbol() {
+            const symbols = { 'DH': 'DH', '$': '$', '€': '€', '£': '£', '₺': '₺', '¥':'¥' };
+            return symbols[data.currency] || 'DH';
+        }
+
+        function fmt(n) {
+            return Number(n).toFixed(0) + ' ' + getCurrencySymbol();
+        }
+
         function getUserDocRef() {
             if (!currentUser) return null;
             return db.collection('users').doc(currentUser.uid);
@@ -2014,7 +1659,6 @@
             const saveData = {
                 budget: data.budget,
                 currency: data.currency,
-                language: data.language || 'en',
                 products: data.products,
                 months: data.months,
                 updatedAt: firebase.firestore.FieldValue.serverTimestamp()
@@ -2043,18 +1687,14 @@
                 .then(doc => {
                     if (doc.exists) {
                         const fbData = doc.data();
-                        data.budget = fbData.budget || 1500;
+                        data.budget = fbData.budget || 0000;
                         data.currency = fbData.currency || 'DH';
-                        data.language = fbData.language || 'en';
                         data.products = fbData.products || [];
                         data.months = fbData.months || {};
                         localStorage.setItem(STORAGE_KEY + '_' + currentUser.uid, JSON.stringify(data));
-                        applyTranslations();
                         refreshAll();
                         updateSyncStatus('online');
-                        showToast('📥 ' + _( 'cloudSync') || 'Data synced from cloud');
                     } else {
-                        // No cloud data yet, upload local
                         const local = localStorage.getItem(STORAGE_KEY + '_' + currentUser.uid);
                         if (local) {
                             try {
@@ -2073,8 +1713,6 @@
                         saveToFirebase();
                         updateSyncStatus('online');
                     }
-                    // Update user email in settings
-                    document.getElementById('userEmailDisplay').textContent = currentUser.email;
                 })
                 .catch(err => {
                     console.warn('Firebase load error:', err);
@@ -2083,10 +1721,8 @@
                         try {
                             const parsed = JSON.parse(local);
                             data = parsed;
-                            applyTranslations();
                             refreshAll();
                             updateSyncStatus('offline');
-                            showToast('📱 ' + _( 'offline') || 'Using offline data');
                         } catch (e) {
                             seedDemoData();
                             refreshAll();
@@ -2108,20 +1744,17 @@
                     const fbStr = JSON.stringify({
                         budget: fbData.budget,
                         currency: fbData.currency,
-                        language: fbData.language,
                         products: fbData.products,
                         months: fbData.months
                     });
                     if (currentStr !== fbStr) {
-                        data.budget = fbData.budget || 1500;
+                        data.budget = fbData.budget || 0000;
                         data.currency = fbData.currency || 'DH';
-                        data.language = fbData.language || 'en';
                         data.products = fbData.products || [];
                         data.months = fbData.months || {};
                         localStorage.setItem(STORAGE_KEY + '_' + currentUser.uid, JSON.stringify(data));
-                        applyTranslations();
                         refreshAll();
-                        showToast('🔄 ' + _( 'synced') || 'Synced from another device');
+                        showToast('🔄 Synced from another device');
                     }
                 }
             }, err => {
@@ -2138,12 +1771,12 @@
             dot.className = 'dot';
             if (status === 'online') {
                 dot.classList.add('online');
-                text.textContent = _( 'cloudSync') || 'Synced';
-                if (statusText) statusText.textContent = _( 'cloudSync') || 'Connected';
+                text.textContent = 'Synced';
+                if (statusText) statusText.textContent = 'Connected';
             } else if (status === 'offline') {
                 dot.classList.add('offline');
-                text.textContent = _( 'offline') || 'Offline';
-                if (statusText) statusText.textContent = _( 'offline') || 'Offline';
+                text.textContent = 'Offline';
+                if (statusText) statusText.textContent = 'Offline';
             } else {
                 dot.classList.add('syncing');
                 text.textContent = 'Syncing...';
@@ -2157,24 +1790,9 @@
             const now = new Date();
             const monthKey = getMonthKey(now);
             data.products = [
-                { id: 'p1', name: 'Riz', category: 'Alimentation', subcategory: 'Féculents', defaultPrice: 25, unit: 'Kg',
-                    priority: 'medium', bought: false, quantity: 1, estimated: 25, real: 0, notes: '', date: now
+                { category: 'A', subcategory: 'A1', name: 'exmple', quantity: 1, unit: 'Kg',
+                    priority: 'medium', bought: false, estimated: 10, real: 0, notes: '', date: now
                         .toISOString() },
-                { id: 'p2', name: 'Lait', category: 'Produits laitiers', subcategory: 'Lait', defaultPrice: 8, unit: 'L',
-                    priority: 'high', bought: false, quantity: 3, estimated: 24, real: 0, notes: '', date: now
-                        .toISOString() },
-                { id: 'p3', name: 'Poulet', category: 'Viandes', subcategory: 'Volaille', defaultPrice: 25, unit: 'Kg',
-                    priority: 'high', bought: false, quantity: 2, estimated: 50, real: 0, notes: '', date: now
-                        .toISOString() },
-                { id: 'p4', name: 'Œufs', category: 'Viandes', subcategory: 'Œufs', defaultPrice: 30, unit: 'pièce',
-                    priority: 'medium', bought: false, quantity: 30, estimated: 30, real: 0, notes: '', date: now
-                        .toISOString() },
-                { id: 'p5', name: 'Pâtes', category: 'Alimentation', subcategory: 'Féculents', defaultPrice: 20, unit: 'Kg',
-                    priority: 'low', bought: false, quantity: 1, estimated: 20, real: 0, notes: '', date: now
-                        .toISOString() },
-                { id: 'p6', name: 'Fromage', category: 'Produits laitiers', subcategory: 'Fromage', defaultPrice: 40,
-                    unit: 'boîte', priority: 'medium', bought: false, quantity: 1, estimated: 40, real: 0, notes: '',
-                    date: now.toISOString() },
             ];
             data.months[monthKey] = {
                 budget: data.budget,
@@ -2194,10 +1812,7 @@
                 document.body.classList.add('dark');
                 updateDarkToggle();
             }
-            // Set language dropdown
-            document.getElementById('languageSelect').value = data.language || 'en';
             document.getElementById('currencySelect').value = data.currency || 'DH';
-            applyTranslations();
         }
 
         function setupAutoSave() {
@@ -2275,7 +1890,7 @@
 
             if (entries.length === 0) {
                 tbody.innerHTML =
-                    `<tr><td colspan="4" class="text-muted text-center" style="padding:20px;">${_( 'noData') || 'No data yet.'}</td></tr>`;
+                    `<tr><td colspan="4" class="text-muted text-center" style="padding:20px;">No data yet.</td></tr>`;
                 return;
             }
 
@@ -2301,14 +1916,14 @@
             const totalDiff = totalEst - totalReal;
             html += `
                 <tr class="total-row">
-                    <td><strong>${_( 'totalEstLabel') || 'Total'}</strong></td>
+                    <td><strong>Total</strong></td>
                     <td style="text-align:right;"><strong>${fmt(totalEst)}</strong></td>
                     <td style="text-align:right;"><strong>${fmt(totalReal)}</strong></td>
                     <td style="text-align:right;color:${totalDiff >= 0 ? 'var(--green)' : 'var(--red)'};"><strong>${fmt(totalDiff)}</strong></td>
                 </tr>
                 <tr class="profit-row">
                     <td colspan="4" style="text-align:center;">
-                        🎯 <strong>${_( 'labelProfit') || 'Monthly Profit'}: ${fmt(totalDiff)}</strong>
+                        🎯 <strong>Monthly Profit: ${fmt(totalDiff)}</strong>
                         ${totalDiff >= 0 ? ' ✅' : ' ⚠️'}
                     </td>
                 </tr>
@@ -2321,7 +1936,6 @@
             const monthProducts = getCurrentMonthProducts();
             const bought = monthProducts.filter(p => p.bought);
 
-            // Pie chart
             const catMap = {};
             for (const p of bought) {
                 const cat = p.category || 'Uncategorized';
@@ -2335,7 +1949,7 @@
             if (catEntries.length === 0) {
                 pieChartInstance = new Chart(ctx, {
                     type: 'doughnut',
-                    data: { labels: [_( 'noData') || 'No data'], datasets: [{ data: [1], backgroundColor: ['#e2e8f0'] }] },
+                    data: { labels: ['No data'], datasets: [{ data: [1], backgroundColor: ['#e2e8f0'] }] },
                     options: { responsive: true, maintainAspectRatio: true, plugins: { legend: { display: false } } }
                 });
             } else {
@@ -2356,13 +1970,12 @@
                 });
             }
 
-            // Recent purchases
             const recent = monthProducts.filter(p => p.bought).sort((a, b) => new Date(b.date) - new Date(a.date)).slice(0,
             5);
             const recentEl = document.getElementById('recentPurchases');
             if (recent.length === 0) {
                 recentEl.innerHTML =
-                    `<div class="text-muted text-center" style="padding:20px 0;">${_( 'noPurchases') || 'No purchases yet.'}</div>`;
+                    '<div class="text-muted text-center" style="padding:20px 0;">No purchases yet.</div>';
             } else {
                 recentEl.innerHTML = recent.map(p => `
                     <div class="category-item">
@@ -2372,17 +1985,16 @@
                 `).join('');
             }
 
-            // Quick stats
             const totalItems = monthProducts.length;
             const boughtItems = monthProducts.filter(p => p.bought).length;
             const totalEst = monthProducts.reduce((s, p) => s + (parseFloat(p.estimated) || 0), 0);
             const totalReal = monthProducts.reduce((s, p) => s + (parseFloat(p.real) || 0), 0);
             document.getElementById('quickStats').innerHTML = `
-                <div class="category-item"><span class="name">📦 ${_( 'totalItems') || 'Total items'}</span><span>${totalItems}</span></div>
-                <div class="category-item"><span class="name">✅ ${_( 'boughtItems') || 'Bought'}</span><span>${boughtItems}</span></div>
-                <div class="category-item"><span class="name">📊 ${_( 'estimatedTotal') || 'Estimated total'}</span><span>${fmt(totalEst)}</span></div>
-                <div class="category-item"><span class="name">💵 ${_( 'realTotal') || 'Real total'}</span><span>${fmt(totalReal)}</span></div>
-                <div class="category-item"><span class="name">🏷️ ${_( 'topCategory') || 'Top category'}</span><span>${catEntries.length > 0 ? catEntries[0][0] : '—'}</span></div>
+                <div class="category-item"><span class="name">📦 Total items</span><span>${totalItems}</span></div>
+                <div class="category-item"><span class="name">✅ Bought</span><span>${boughtItems}</span></div>
+                <div class="category-item"><span class="name">📊 Estimated total</span><span>${fmt(totalEst)}</span></div>
+                <div class="category-item"><span class="name">💵 Real total</span><span>${fmt(totalReal)}</span></div>
+                <div class="category-item"><span class="name">🏷️ Top category</span><span>${catEntries.length > 0 ? catEntries[0][0] : '—'}</span></div>
             `;
         }
 
@@ -2393,7 +2005,7 @@
                 if (monthlyChartInstance) monthlyChartInstance.destroy();
                 monthlyChartInstance = new Chart(ctx, {
                     type: 'bar',
-                    data: { labels: [_( 'noData') || 'No data'], datasets: [{ data: [0], backgroundColor: ['#e2e8f0'] }] },
+                    data: { labels: ['No data'], datasets: [{ data: [0], backgroundColor: ['#e2e8f0'] }] },
                     options: { responsive: true, maintainAspectRatio: true, plugins: { legend: { display: false } } }
                 });
                 return;
@@ -2421,14 +2033,14 @@
                 data: {
                     labels: labels,
                     datasets: [{
-                        label: _( 'spent') || 'Spent',
+                        label: 'Spent',
                         data: spentData,
                         backgroundColor: 'rgba(59, 130, 246, 0.7)',
                         borderColor: '#3b82f6',
                         borderWidth: 2,
                         borderRadius: 6
                     }, {
-                        label: _( 'budget') || 'Budget',
+                        label: 'Budget',
                         data: budgetData,
                         backgroundColor: 'rgba(34, 197, 94, 0.5)',
                         borderColor: '#22c55e',
@@ -2463,6 +2075,11 @@
 
         // ──────────────── SHOPPING ────────────────
 
+        let sortShoppingField = 'name';
+        let sortShoppingAsc = true;
+        let sortProductsField = 'name';
+        let sortProductsAsc = true;
+
         function renderShopping() {
             const monthProducts = getCurrentMonthProducts();
             const search = document.getElementById('searchShopping').value.toLowerCase();
@@ -2470,11 +2087,10 @@
             const priority = document.getElementById('priorityFilter').value;
             const category = document.getElementById('filterCategoryShopping').value;
 
-            // Populate category filter
             const cats = new Set(monthProducts.map(p => p.category).filter(Boolean));
             const catSelect = document.getElementById('filterCategoryShopping');
             const currentCat = catSelect.value;
-            catSelect.innerHTML = '<option value="all">' + (_( 'allCategories') || 'All categories') + '</option>' +
+            catSelect.innerHTML = '<option value="all">All Categories</option>' +
                 Array.from(cats).map(c => `<option value="${c}">${c}</option>`).join('');
             catSelect.value = currentCat;
 
@@ -2487,7 +2103,6 @@
                 return matchSearch && matchFilter && matchPriority && matchCategory;
             });
 
-            // Sort
             filtered.sort((a, b) => {
                 let valA = a[sortShoppingField] || '';
                 let valB = b[sortShoppingField] || '';
@@ -2501,23 +2116,23 @@
             const tbody = document.getElementById('shoppingBody');
             if (filtered.length === 0) {
                 tbody.innerHTML =
-                    `<tr><td colspan="10" class="text-muted text-center" style="padding:20px;">${_( 'noProductsFound') || 'No products found'}</td></tr>`;
+                    `<tr><td colspan="10" class="text-muted text-center" style="padding:20px;">No products found</td></tr>`;
             } else {
                 tbody.innerHTML = filtered.map(p => `
                     <tr>
                         <td><input type="checkbox" ${p.bought ? 'checked' : ''} onchange="toggleBought('${p.id}')" /></td>
-                        <td><input type="text" value="${p.name}" onchange="updateProductField('${p.id}','name',this.value)" /></td>
                         <td><input type="text" value="${p.category || ''}" onchange="updateProductField('${p.id}','category',this.value)" /></td>
                         <td><input type="text" value="${p.subcategory || ''}" onchange="updateProductField('${p.id}','subcategory',this.value)" /></td>
+                        <td><input type="text" value="${p.name}" onchange="updateProductField('${p.id}','name',this.value)" /></td>
                         <td><input type="number" value="${p.quantity || 1}" onchange="updateProductField('${p.id}','quantity',parseFloat(this.value)||0)" style="width:50px;" /></td>
                         <td><input type="number" value="${p.estimated || 0}" onchange="updateProductField('${p.id}','estimated',parseFloat(this.value)||0)" style="width:60px;" /></td>
                         <td><input type="number" value="${p.real || 0}" onchange="updateProductField('${p.id}','real',parseFloat(this.value)||0)" style="width:60px;" /></td>
                         <td style="font-weight:600;color:${(p.real||0) > (p.estimated||0) ? 'var(--red)' : 'var(--green)'};">${fmt((p.real||0) - (p.estimated||0))}</td>
-                        <td>
+                        <td> 
                             <select onchange="updateProductField('${p.id}','priority',this.value)" style="background:transparent;border:1px solid var(--border);border-radius:6px;padding:2px 6px;color:var(--text);">
-                                <option value="low" ${p.priority === 'low' ? 'selected' : ''}>${_( 'low') || 'Low'}</option>
-                                <option value="medium" ${p.priority === 'medium' ? 'selected' : ''}>${_( 'medium') || 'Medium'}</option>
-                                <option value="high" ${p.priority === 'high' ? 'selected' : ''}>${_( 'high') || 'High'}</option>
+                                <option value="low" ${p.priority === 'low' ? 'selected' : ''}>Low</option>
+                                <option value="medium" ${p.priority === 'medium' ? 'selected' : ''}>Medium</option>
+                                <option value="high" ${p.priority === 'high' ? 'selected' : ''}>High</option>
                             </select>
                         </td>
                         <td>
@@ -2557,11 +2172,10 @@
             const catFilter = document.getElementById('categoryFilter').value;
             const subFilter = document.getElementById('subcategoryFilter').value;
 
-            // Populate filters
             const cats = new Set(data.products.map(p => p.category).filter(Boolean));
             const catSelect = document.getElementById('categoryFilter');
             const currentCat = catSelect.value;
-            catSelect.innerHTML = '<option value="all">' + (_( 'allCategories') || 'All categories') + '</option>' +
+            catSelect.innerHTML = '<option value="all">All categories</option>' +
                 Array.from(cats).map(c => `<option value="${c}">${c}</option>`).join('');
             catSelect.value = currentCat;
 
@@ -2569,7 +2183,7 @@
                 .subcategory).filter(Boolean));
             const subSelect = document.getElementById('subcategoryFilter');
             const currentSub = subSelect.value;
-            subSelect.innerHTML = '<option value="all">' + (_( 'allSubcategories') || 'All subcategories') + '</option>' +
+            subSelect.innerHTML = '<option value="all">All subcategories</option>' +
                 Array.from(subs).map(s => `<option value="${s}">${s}</option>`).join('');
             subSelect.value = currentSub;
 
@@ -2581,7 +2195,6 @@
                 return matchSearch && matchCat && matchSub;
             });
 
-            // Sort
             filtered.sort((a, b) => {
                 let valA = a[sortProductsField] || '';
                 let valB = b[sortProductsField] || '';
@@ -2595,13 +2208,13 @@
             const tbody = document.getElementById('productsBody');
             if (filtered.length === 0) {
                 tbody.innerHTML =
-                    `<tr><td colspan="6" class="text-muted text-center" style="padding:20px;">${_( 'noProductsFound') || 'No products in database'}</td></tr>`;
+                    `<tr><td colspan="6" class="text-muted text-center" style="padding:20px;">No products in database</td></tr>`;
             } else {
                 tbody.innerHTML = filtered.map(p => `
                     <tr>
-                        <td><input type="text" value="${p.name}" onchange="updateMasterProduct('${p.id}','name',this.value)" /></td>
                         <td><input type="text" value="${p.category || ''}" onchange="updateMasterProduct('${p.id}','category',this.value)" /></td>
                         <td><input type="text" value="${p.subcategory || ''}" onchange="updateMasterProduct('${p.id}','subcategory',this.value)" /></td>
+                        <td><input type="text" value="${p.name}" onchange="updateMasterProduct('${p.id}','name',this.value)" /></td>
                         <td><input type="number" value="${p.defaultPrice || 0}" onchange="updateMasterProduct('${p.id}','defaultPrice',parseFloat(this.value)||0)" style="width:70px;" /></td>
                         <td><input type="text" value="${p.unit || ''}" onchange="updateMasterProduct('${p.id}','unit',this.value)" style="width:60px;" /></td>
                         <td>
@@ -2629,7 +2242,7 @@
             const keys = Object.keys(data.months).sort().reverse();
             if (keys.length === 0) {
                 grid.innerHTML =
-                    `<div class="text-muted text-center" style="padding:20px 0;">${_( 'noData') || 'No months yet.'}</div>`;
+                    '<div class="text-muted text-center" style="padding:20px 0;">No months yet.</div>';
                 return;
             }
             grid.innerHTML = keys.map(key => {
@@ -2643,12 +2256,12 @@
                     <div class="month-card" onclick="loadMonth('${key}')">
                         <div class="month-name">📅 ${name}</div>
                         <div class="month-stats">
-                            <span>${_( 'budget') || 'Budget'}: ${fmt(month.budget || 0)}</span>
-                            <span>${_( 'spent') || 'Spent'}: ${fmt(totalReal)}</span>
+                            <span>Budget: ${fmt(month.budget || 0)}</span>
+                            <span>Spent: ${fmt(totalReal)}</span>
                         </div>
                         <div class="month-stats">
-                            <span>${_( 'totalItems') || 'Items'}: ${(month.products||[]).length}</span>
-                            <span>${_( 'labelRemaining') || 'Remaining'}: ${fmt((month.budget||0) - totalReal)}</span>
+                            <span>Items: ${(month.products||[]).length}</span>
+                            <span>Remaining: ${fmt((month.budget||0) - totalReal)}</span>
                         </div>
                     </div>
                 `;
@@ -2656,7 +2269,7 @@
         }
 
         function loadMonth(key) {
-            if (confirm(_( 'loadingMonth') || 'Load this month?')) {
+            if (confirm('Load ' + key + '? This will switch your current view to that month.')) {
                 const currentKey = getMonthKey();
                 data.months[currentKey].products = getCurrentMonthProducts();
                 const monthData = data.months[key];
@@ -2667,28 +2280,26 @@
                 saveToFirebase();
                 refreshAll();
                 switchTab('shopping');
-                showToast('📅 ' + key);
+                showToast('📅 Loaded ' + key);
             }
         }
 
         // ──────────────── ACTIONS ────────────────
 
         function addProduct() {
-            const name = prompt(_( 'addProductLabel') || 'Product name:');
+            const name = prompt('Product name:');
             if (!name) return;
             const cat = prompt('Category:') || 'Uncategorized';
             const sub = prompt('Subcategory:') || '';
             const price = parseFloat(prompt('Estimated price (' + getCurrencySymbol() + '):')) || 0;
             const newProduct = {
-                id: 'p' + Date.now() + Math.random().toString(36).slice(2, 6),
-                name: name,
                 category: cat,
                 subcategory: sub,
-                defaultPrice: price,
+                name: name,
+                quantity: 1,
                 unit: 'piece',
                 priority: 'medium',
                 bought: false,
-                quantity: 1,
                 estimated: price,
                 real: 0,
                 notes: '',
@@ -2699,7 +2310,7 @@
             monthProducts.push(JSON.parse(JSON.stringify(newProduct)));
             saveToFirebase();
             refreshAll();
-            showToast('✅ ' + _( 'added') || 'Added: ' + name);
+            showToast('✅ Added: ' + name);
         }
 
         function toggleBought(id) {
@@ -2741,37 +2352,37 @@
                 }
                 saveToFirebase();
                 refreshAll();
-                showToast('✅ ' + _( 'updated') || 'Updated');
+                showToast('✅ Updated');
             }
         }
 
         function deleteProduct(id) {
-            if (!confirm(_( 'deleteConfirm') || 'Delete this product from current month?')) return;
+            if (!confirm('Delete this product from current month?')) return;
             const monthProducts = getCurrentMonthProducts();
             const idx = monthProducts.findIndex(p => p.id === id);
             if (idx !== -1) monthProducts.splice(idx, 1);
             saveToFirebase();
             refreshAll();
-            showToast('🗑️ ' + _( 'deleted') || 'Deleted');
+            showToast('🗑️ Deleted');
         }
 
         function deleteMasterProduct(id) {
-            if (!confirm(_( 'deleteAllConfirm') || 'Delete this product from ALL data?')) return;
+            if (!confirm('Delete this product from ALL data?')) return;
             data.products = data.products.filter(p => p.id !== id);
             for (const key in data.months) {
                 data.months[key].products = data.months[key].products.filter(p => p.id !== id);
             }
             saveToFirebase();
             refreshAll();
-            showToast('🗑️ ' + _( 'deleted') || 'Deleted from all');
+            showToast('🗑️ Deleted from all');
         }
 
         function editBudget() {
             const current = getCurrentMonthBudget();
-            const newBudget = prompt(_( 'budgetPrompt') || 'Set monthly budget (' + getCurrencySymbol() + '):', current);
+            const newBudget = prompt('Set monthly budget (' + getCurrencySymbol() + '):', current);
             if (newBudget !== null && !isNaN(parseFloat(newBudget))) {
                 setCurrentMonthBudget(parseFloat(newBudget));
-                showToast('✅ ' + _( 'updated') || 'Budget updated to ' + fmt(parseFloat(newBudget)));
+                showToast('✅ Budget updated to ' + fmt(parseFloat(newBudget)));
             }
         }
 
@@ -2803,16 +2414,14 @@
             const listEl = document.getElementById('adminUserList');
             const statsEl = document.getElementById('adminGlobalStats');
 
-            listEl.innerHTML = `<div class="text-muted">${_( 'loading') || 'Loading...'}</div>`;
-            statsEl.innerHTML = `<div class="text-muted">${_( 'loading') || 'Loading...'}</div>`;
+            listEl.innerHTML = `<div class="text-muted">Loading users...</div>`;
+            statsEl.innerHTML = `<div class="text-muted">Loading global statistics...</div>`;
 
             getUsersCollectionRef().get()
                 .then(snapshot => {
                     if (snapshot.empty) {
-                        listEl.innerHTML =
-                            `<div class="text-muted">${_( 'noData') || 'No users found'}</div>`;
-                        statsEl.innerHTML =
-                            `<div class="text-muted">${_( 'noData') || 'No data available'}</div>`;
+                        listEl.innerHTML = `<div class="text-muted">No users found</div>`;
+                        statsEl.innerHTML = `<div class="text-muted">No data available</div>`;
                         return;
                     }
 
@@ -2826,7 +2435,6 @@
                         const email = doc.id;
                         totalUsers++;
 
-                        // Calculate user's total spent
                         let userSpent = 0;
                         let userBudget = 0;
                         if (userData.months) {
@@ -2844,11 +2452,14 @@
                         totalBudgetAll += userBudget;
 
                         const isAdminUser = email === ADMIN_EMAIL;
+                        const name = userData.name || '';
+                        const surname = userData.surname || '';
+                        const fullName = name + ' ' + surname;
                         userCards += `
                             <div class="admin-user-card">
                                 <div>
-                                    <div class="email">${email} ${isAdminUser ? '👑' : ''}</div>
-                                    <div class="status">${_( 'spent') || 'Spent'}: ${userSpent} ${userData.currency || 'DH'} | ${_( 'budget') || 'Budget'}: ${userBudget} ${userData.currency || 'DH'}</div>
+                                    <div class="email">${fullName.trim() || email} ${isAdminUser ? '👑' : ''}</div>
+                                    <div class="status">Spent: ${userSpent} ${userData.currency || 'DH'} | Budget: ${userBudget} ${userData.currency || 'DH'}</div>
                                 </div>
                                 <span style="font-size:12px;color:${userSpent <= userBudget ? 'var(--green)' : 'var(--red)'};">${userSpent <= userBudget ? '✅' : '⚠️'}</span>
                             </div>
@@ -2857,7 +2468,7 @@
 
                     listEl.innerHTML = `
                         <div style="margin-bottom:12px;font-weight:600;color:var(--text2);">
-                            👥 ${_( 'totalUsers') || 'Total Users'}: ${totalUsers}
+                            👥 Total Users: ${totalUsers}
                         </div>
                         <div class="admin-user-list">${userCards}</div>
                     `;
@@ -2865,19 +2476,19 @@
                     statsEl.innerHTML = `
                         <div class="stats-grid" style="grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));">
                             <div class="stat-card blue">
-                                <div class="label">👥 ${_( 'totalUsers') || 'Total Users'}</div>
+                                <div class="label">👥 Total Users</div>
                                 <div class="value">${totalUsers}</div>
                             </div>
                             <div class="stat-card orange">
-                                <div class="label">💰 ${_( 'totalSpentAll') || 'Total Spent (All)'}</div>
+                                <div class="label">💰 Total Spent (All)</div>
                                 <div class="value">${totalSpentAll} ${data.currency || 'DH'}</div>
                             </div>
                             <div class="stat-card green">
-                                <div class="label">📊 ${_( 'avgBudget') || 'Average Budget'}</div>
+                                <div class="label">📊 Average Budget</div>
                                 <div class="value">${totalUsers > 0 ? Math.round(totalBudgetAll / totalUsers) : 0} ${data.currency || 'DH'}</div>
                             </div>
                             <div class="stat-card purple">
-                                <div class="label">📈 ${_( 'labelProfit') || 'Profit'}</div>
+                                <div class="label">📈 Profit</div>
                                 <div class="value">${totalBudgetAll - totalSpentAll} ${data.currency || 'DH'}</div>
                             </div>
                         </div>
@@ -2918,7 +2529,7 @@
             data.currency = sel.value;
             saveToFirebase();
             refreshAll();
-            showToast('✅ ' + _( 'currencyUpdated') || 'Currency updated');
+            showToast('✅ Currency updated');
         }
 
         // ──────────────── EXPORT / IMPORT ────────────────
@@ -2926,10 +2537,10 @@
         function exportCSV() {
             const monthProducts = getCurrentMonthProducts();
             if (monthProducts.length === 0) {
-                showToast(_( 'noData') || 'No data to export');
+                showToast('No data to export');
                 return;
             }
-            const headers = ['Name', 'Category', 'Subcategory', 'Quantity', 'Unit', 'Estimated', 'Real', 'Bought', 'Priority',
+            const headers = ['Category', 'Subcategory', 'Name', 'Quantity', 'Unit', 'Estimated', 'Real', 'Bought', 'Priority',
                 'Notes'
             ];
             const rows = monthProducts.map(p => [
@@ -2942,7 +2553,7 @@
             link.href = URL.createObjectURL(blob);
             link.download = `budget_${getMonthKey()}.csv`;
             link.click();
-            showToast('✅ ' + _( 'exported') || 'Exported!');
+            showToast('✅ Exported!');
         }
 
         function handleImport(event) {
@@ -2952,7 +2563,7 @@
             reader.onload = function(e) {
                 const text = e.target.result;
                 const lines = text.split('\n').filter(l => l.trim());
-                if (lines.length < 2) { showToast(_( 'invalidCSV') || 'Invalid CSV'); return; }
+                if (lines.length < 2) { showToast('Invalid CSV'); return; }
                 const headers = lines[0].split(',').map(h => h.trim().toLowerCase());
                 const monthProducts = getCurrentMonthProducts();
                 for (let i = 1; i < lines.length; i++) {
@@ -2993,7 +2604,7 @@
                 }
                 saveToFirebase();
                 refreshAll();
-                showToast('✅ ' + _( 'imported') || 'Imported ' + (monthProducts.length) + ' products');
+                showToast('✅ Imported ' + (monthProducts.length) + ' products');
             };
             reader.readAsText(file);
             event.target.value = '';
@@ -3011,7 +2622,6 @@
 
         // ──────────────── INIT ────────────────
 
-        // Override saveToFirebase for debounce
         const originalSaveToFirebase = saveToFirebase;
         saveToFirebase = function() {
             if (syncTimeout) clearTimeout(syncTimeout);
@@ -3021,10 +2631,12 @@
             }, 500);
         };
 
-        console.log('🚀 Smart Budget with Admin & Multi-language loaded!');
+        console.log('🚀 Smart Budget with Sign Up & Email Verification!');
         console.log('👑 Admin: Hamza Margal');
         console.log('📧 Admin email: hamza.margal@admin.com');
         console.log('🔑 Admin password: Hamza2005');
+        console.log('📝 New users: Sign up with email + password');
+        console.log('✅ Email verification required!');
     </script>
 </body>
 </html>
