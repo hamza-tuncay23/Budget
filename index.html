@@ -120,7 +120,6 @@
             width: 100%;
             max-height: 95vh;
             overflow-y: auto;
-            backdrop-filter: blur(10px);
         }
 
         .auth-box h2 {
@@ -181,6 +180,21 @@
             display: grid;
             grid-template-columns: 1fr 1fr;
             gap: 12px;
+        }
+
+        .auth-box .code-input-group {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .auth-box .code-input-group input {
+            flex: 1;
+            text-align: center;
+            font-size: 24px;
+            letter-spacing: 8px;
+            font-weight: 700;
+            padding: 12px 8px;
         }
 
         .auth-box button {
@@ -247,6 +261,18 @@
             color: var(--text2);
             text-align: center;
             margin-bottom: 12px;
+        }
+
+        .auth-box .verify-section .code-hint {
+            font-size: 20px;
+            font-weight: 700;
+            text-align: center;
+            color: var(--primary);
+            padding: 12px;
+            background: var(--primary-light);
+            border-radius: 12px;
+            margin: 12px 0;
+            letter-spacing: 4px;
         }
 
         /* ───────────── APP ───────────── */
@@ -847,6 +873,132 @@
             border-color: var(--primary);
         }
 
+        /* ───────────── WISHLIST / NOTE ───────────── */
+        .wishlist-card {
+            background: var(--card);
+            border-radius: var(--radius);
+            padding: 22px 24px;
+            box-shadow: var(--shadow);
+            border: 1px solid var(--border);
+            margin-bottom: 28px;
+            transition: all var(--transition);
+        }
+
+        .wishlist-card h3 i {
+            color: var(--pink);
+        }
+
+        .wishlist-card textarea {
+            width: 100%;
+            min-height: 120px;
+            padding: 12px 16px;
+            border: 2px solid var(--border);
+            border-radius: 12px;
+            background: var(--bg);
+            color: var(--text);
+            font-size: 14px;
+            resize: vertical;
+            transition: border var(--transition);
+            font-family: inherit;
+        }
+
+        .wishlist-card textarea:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+
+        .wishlist-card .wishlist-items {
+            margin-top: 12px;
+        }
+
+        .wishlist-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px 0;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .wishlist-item:last-child {
+            border-bottom: none;
+        }
+
+        .wishlist-item .text {
+            flex: 1;
+            margin-right: 12px;
+        }
+
+        .wishlist-item .price-tag {
+            font-weight: 600;
+            color: var(--primary);
+            margin-right: 12px;
+        }
+
+        /* ───────────── SHOPPING DAYS ───────────── */
+        .day-card {
+            background: var(--card);
+            border-radius: var(--radius);
+            padding: 16px 20px;
+            border: 1px solid var(--border);
+            box-shadow: var(--shadow);
+            margin-bottom: 16px;
+            transition: all var(--transition);
+        }
+
+        .day-card:hover {
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+        }
+
+        .day-card .day-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+
+        .day-card .day-header .day-title {
+            font-weight: 600;
+            font-size: 16px;
+        }
+
+        .day-card .day-categories {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 12px;
+        }
+
+        .day-category-box {
+            background: var(--bg);
+            padding: 12px 16px;
+            border-radius: 12px;
+            border: 1px solid var(--border);
+        }
+
+        .day-category-box .cat-title {
+            font-weight: 600;
+            font-size: 13px;
+            margin-bottom: 8px;
+            color: var(--primary);
+        }
+
+        .day-category-box .cat-items {
+            font-size: 13px;
+            color: var(--text2);
+        }
+
+        .day-category-box .cat-items .item-check {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 2px 0;
+        }
+
+        .day-category-box .cat-items .item-check input[type="checkbox"] {
+            width: 16px;
+            height: 16px;
+            accent-color: var(--primary);
+        }
+
         /* ───────────── ADMIN PANEL ───────────── */
         .admin-panel {
             background: var(--card);
@@ -906,7 +1058,6 @@
             font-weight: 600;
         }
 
-        /* Admin User Detail View */
         .admin-user-detail {
             background: var(--card);
             border-radius: var(--radius);
@@ -997,6 +1148,9 @@
             }
             .stats-grid {
                 grid-template-columns: 1fr 1fr;
+            }
+            .day-categories {
+                grid-template-columns: 1fr !important;
             }
         }
 
@@ -1119,7 +1273,6 @@
                         Please check your inbox and enter the code below.
                     </div>
 
-                    <!-- Show the code that was sent (for testing/debug) -->
                     <div class="code-hint" id="codeDisplay" style="display:none;">
                         📧 Code: <span id="sentCodeValue">------</span>
                     </div>
@@ -1140,7 +1293,7 @@
                     </div>
 
                     <div class="toggle-mode" style="margin-top:8px;font-size:12px;">
-                        <a onclick="showCodeHint()" style="color:var(--text2);font-size:12px;">Show code (for testing)</a>
+                        <a onclick="showCodeHint()" style="color:var(--text2);font-size:12px;cursor:pointer;">Show code (for testing)</a>
                     </div>
                 </div>
 
@@ -1199,6 +1352,7 @@
                 <button data-tab="shopping"><i class="fas fa-shopping-cart"></i> Shopping</button>
                 <button data-tab="products"><i class="fas fa-boxes"></i> Products</button>
                 <button data-tab="months"><i class="fas fa-calendar-alt"></i> Months</button>
+                <button data-tab="wishlist"><i class="fas fa-heart"></i> Wishlist</button>
                 <button data-tab="settings"><i class="fas fa-cog"></i> Settings</button>
                 <button data-tab="admin" id="adminTab" class="hidden"><i class="fas fa-user-shield"></i> Admin</button>
             </div>
@@ -1253,60 +1407,19 @@
                 </div>
             </div>
 
-            <!-- ═══════ SHOPPING ═══════ -->
+            <!-- ═══════ SHOPPING (Daily Lists) ═══════ -->
             <div class="tab-content" id="tab-shopping">
                 <div class="card">
-                    <h3><i class="fas fa-shopping-list"></i> Shopping Checklist</h3>
-                    <div class="toolbar">
-                        <input type="text" id="searchShopping" placeholder="🔍 Search products..." oninput="renderShopping()" />
-                        <div class="filter-group">
-                            <select id="filterCategoryShopping" onchange="renderShopping()">
-                                <option value="all">All Categories</option>
-                            </select>
-                            <select id="filterShopping" onchange="renderShopping()">
-                                <option value="all">All</option>
-                                <option value="bought">Bought</option>
-                                <option value="unbought">Unbought</option>
-                            </select>
-                            <select id="priorityFilter" onchange="renderShopping()">
-                                <option value="all">All priorities</option>
-                                <option value="high">High</option>
-                                <option value="medium">Medium</option>
-                                <option value="low">Low</option>
-                            </select>
-                        </div>
-                        <button class="add-row" onclick="addProduct()"><i class="fas fa-plus"></i> Add product</button>
-                    </div>
-                    <div class="table-wrap">
-                        <table>
-                            <thead>
-                                <tr>
-                                    <th style="width:30px;">✔</th>
-                                    <th onclick="sortShopping('category')">Category <span class="sort-icon">↕</span></th>
-                                    <th onclick="sortShopping('name')">Product <span class="sort-icon">↕</span></th>
-                                    <th onclick="sortShopping('quantity')">Qty <span class="sort-icon">↕</span></th>
-                                    <th onclick="sortShopping('estimated')">Est. <span class="sort-icon">↕</span></th>
-                                    <th onclick="sortShopping('real')">Real <span class="sort-icon">↕</span></th>
-                                    <th>Diff</th>
-                                    <th onclick="sortShopping('priority')">Priority <span class="sort-icon">↕</span></th>
-                                    <th style="width:60px;">Actions</th>
-                                </tr>
-                            </thead>
-                            <tbody id="shoppingBody"></tbody>
-                        </table>
-                    </div>
-                    <div style="margin-top:12px; display:flex; gap:12px; flex-wrap:wrap;">
-                        <span class="text-muted">Total estimated: <strong id="shoppingEstTotal">0</strong></span>
-                        <span class="text-muted">Total real: <strong id="shoppingRealTotal">0</strong></span>
-                        <span class="text-muted">Bought: <strong id="shoppingBoughtCount">0</strong> / <span id="shoppingTotalCount">0</span></span>
-                    </div>
+                    <h3><i class="fas fa-shopping-cart"></i> Shopping Days</h3>
+                    <button class="add-row" onclick="addShoppingDay()"><i class="fas fa-plus"></i> Add Shopping Day</button>
+                    <div id="shoppingDaysContainer" style="margin-top:16px;"></div>
                 </div>
             </div>
 
-            <!-- ═══════ PRODUCTS ═══════ -->
+            <!-- ═══════ PRODUCTS (Database) ═══════ -->
             <div class="tab-content" id="tab-products">
                 <div class="card">
-                    <h3><i class="fas fa-box"></i> Product Database</h3>
+                    <h3><i class="fas fa-boxes"></i> Product Database</h3>
                     <div class="toolbar">
                         <input type="text" id="searchProducts" placeholder="🔍 Search products..." oninput="renderProducts()" />
                         <div class="filter-group">
@@ -1314,17 +1427,19 @@
                                 <option value="all">All categories</option>
                             </select>
                         </div>
-                        <button class="add-row" onclick="addProduct()"><i class="fas fa-plus"></i> Add product</button>
+                        <button class="add-row" onclick="addProductToDatabase()"><i class="fas fa-plus"></i> Add product</button>
                     </div>
                     <div class="table-wrap">
                         <table>
                             <thead>
                                 <tr>
-                                    <th onclick="sortProducts('name')">Product <span class="sort-icon">↕</span></th>
                                     <th onclick="sortProducts('category')">Category <span class="sort-icon">↕</span></th>
-                                    <th onclick="sortProducts('subcategory')">Subcategory <span class="sort-icon">↕</span></th>
-                                    <th onclick="sortProducts('defaultPrice')">Default price <span class="sort-icon">↕</span></th>
-                                    <th onclick="sortProducts('unit')">Unit <span class="sort-icon">↕</span></th>
+                                    <th onclick="sortProducts('name')">Name <span class="sort-icon">↕</span></th>
+                                    <th onclick="sortProducts('quantity')">Qty <span class="sort-icon">↕</span></th>
+                                    <th onclick="sortProducts('estimated')">Est. <span class="sort-icon">↕</span></th>
+                                    <th onclick="sortProducts('real')">Real <span class="sort-icon">↕</span></th>
+                                    <th>Diff</th>
+                                    <th onclick="sortProducts('priority')">Priority <span class="sort-icon">↕</span></th>
                                     <th style="width:60px;">Actions</th>
                                 </tr>
                             </thead>
@@ -1340,6 +1455,27 @@
                     <h3><i class="fas fa-calendar-alt"></i> Monthly Sheets</h3>
                     <p class="text-muted" style="margin-bottom:16px;">Each month is saved automatically. Click a month to view details.</p>
                     <div id="monthGrid" class="month-grid"></div>
+                </div>
+            </div>
+
+            <!-- ═══════ WISHLIST ═══════ -->
+            <div class="tab-content" id="tab-wishlist">
+                <div class="wishlist-card">
+                    <h3><i class="fas fa-heart" style="color:var(--pink);"></i> My Wishlist</h3>
+                    <p class="text-muted" style="margin-bottom:12px;">Save your wishes and track how much you need to save!</p>
+
+                    <div class="flex" style="gap:12px;margin-bottom:12px;flex-wrap:wrap;">
+                        <input type="text" id="wishlistInput" placeholder="What do you want?" style="flex:1;padding:10px 16px;border:2px solid var(--border);border-radius:12px;background:var(--bg);color:var(--text);font-size:14px;" />
+                        <input type="number" id="wishlistPrice" placeholder="Price" style="width:120px;padding:10px 16px;border:2px solid var(--border);border-radius:12px;background:var(--bg);color:var(--text);font-size:14px;" />
+                        <button onclick="addWishlistItem()" style="background:var(--pink);color:white;border:none;padding:10px 20px;border-radius:12px;cursor:pointer;font-weight:600;">Add</button>
+                    </div>
+
+                    <div id="wishlistContainer" class="wishlist-items"></div>
+
+                    <div style="margin-top:16px;padding-top:16px;border-top:2px solid var(--border);">
+                        <p class="text-muted"><strong>Total needed:</strong> <span id="wishlistTotal">0</span> <span id="wishlistCurrency">DH</span></p>
+                        <p class="text-muted"><strong>Items:</strong> <span id="wishlistCount">0</span></p>
+                    </div>
                 </div>
             </div>
 
@@ -1361,8 +1497,8 @@
                             <option value="DH">DH</option>
                             <option value="$">$</option>
                             <option value="€">€</option>
-                            <option value="₺">₺</option>
                             <option value="£">£</option>
+                            <option value="₺">₺</option>
                             <option value="¥">¥</option>
                         </select>
                     </div>
@@ -1411,7 +1547,6 @@
                         <div class="text-muted text-center" style="padding:20px 0;">Loading users...</div>
                     </div>
 
-                    <!-- User Detail View -->
                     <div class="admin-user-detail" id="adminUserDetail">
                         <button class="back-btn" onclick="closeUserDetail()"><i class="fas fa-arrow-left"></i> Back to Users</button>
                         <h4 id="detailUserName" style="margin-bottom:8px;">User: —</h4>
@@ -1447,17 +1582,16 @@
         // ═══════════════════════════════════════════════════
 
         const firebaseConfig = {
-            apiKey: "AIzaSyBeSa90G5b_fl9HoNiDQhUJSyS_4n3x5o0",
-            authDomain: "smart-budget-55f99.firebaseapp.com",
-            projectId: "smart-budget-55f99",
-            storageBucket: "smart-budget-55f99.firebasestorage.app",
-            messagingSenderId: "386991773547",
-            appId: "1:386991773547:web:9e335b919e448f2dcfde2e",
-            measurementId: "G-M6HT37LGFK"
+            apiKey: "YOUR_API_KEY",
+            authDomain: "YOUR_PROJECT.firebaseapp.com",
+            projectId: "YOUR_PROJECT_ID",
+            storageBucket: "YOUR_PROJECT.appspot.com",
+            messagingSenderId: "YOUR_SENDER_ID",
+            appId: "YOUR_APP_ID"
         };
 
         // ─── Admin Email ───
-        const ADMIN_EMAIL = "hamzamp2026@admin.com";
+        const ADMIN_EMAIL = "hamzamp2026@gmail.com";
 
         // ─── Initialize Firebase ───
         firebase.initializeApp(firebaseConfig);
@@ -1471,20 +1605,25 @@
         // ──────────────── STATE ────────────────
         let currentUser = null;
         let isAdmin = false;
-        let currentUserName = '';
         let currentUserFullName = '';
         let data = {
-            budget: 0000,
+            budget: 1500,
             currency: 'DH',
             language: 'en',
             products: [],
-            months: {}
+            months: {},
+            shoppingDays: [],
+            wishlist: []
         };
         let isSyncing = false;
         let syncTimeout = null;
         let pieChartInstance = null;
         let monthlyChartInstance = null;
         let viewingUserEmail = null;
+        let pendingVerificationCode = '';
+        let pendingVerificationEmail = '';
+        let sortProductsField = 'category';
+        let sortProductsAsc = true;
 
         const STORAGE_KEY = 'smartBudgetLocal';
 
@@ -1506,6 +1645,7 @@
                 shopping: 'Shopping',
                 products: 'Products',
                 months: 'Months',
+                wishlist: 'Wishlist',
                 settings: 'Settings',
                 admin: 'Admin',
                 categorySummary: 'Category Summary',
@@ -1518,7 +1658,7 @@
                 monthlyComparison: 'Monthly Comparison',
                 recentPurchases: 'Recent Purchases',
                 quickStats: 'Quick Stats',
-                shoppingList: 'Shopping Checklist',
+                shoppingList: 'Shopping Days',
                 addProduct: 'Add product',
                 totalEstimated: 'Total estimated',
                 totalReal: 'Total real',
@@ -1556,7 +1696,6 @@
                 profitLabel: 'Profit',
                 searchProducts: 'Search products...',
                 allCategories: 'All categories',
-                allSubcategories: 'All subcategories',
                 allPriorities: 'All priorities',
                 all: 'All',
                 boughtFilter: 'Bought',
@@ -1565,7 +1704,7 @@
                 medium: 'Medium',
                 low: 'Low',
                 noProducts: 'No products found',
-                deleteConfirm: 'Delete this product from current month?',
+                deleteConfirm: 'Delete this product?',
                 deleteAllConfirm: 'Delete this product from ALL data?',
                 logoutConfirm: 'Logout?',
                 budgetPrompt: 'Set monthly budget',
@@ -1583,16 +1722,32 @@
                 backToUsers: 'Back to Users',
                 userDetails: 'User Details',
                 noUserData: 'No data for this user.',
-                emailVerified: 'Email verified! Welcome to Smart Budget!',
                 verifyEmail: 'Verify Your Email',
-                verifyInfo: 'A verification email has been sent to your email. Please check your inbox and click the verification link.',
-                verifyBtn: 'I\'ve Verified My Email',
+                verifyInfo: 'A 6-digit verification code has been sent to your email.',
+                verifyBtn: 'Verify Code',
                 resend: 'Resend',
-                checkVerifying: 'Checking...',
+                checkVerifying: 'Verifying...',
+                codeSent: 'Verification code sent!',
+                invalidCode: 'Invalid verification code.',
+                verified: 'Email verified! Welcome!',
+                showCode: 'Show code (for testing)',
+                enterCode: 'Enter 6-digit code',
+                addShoppingDay: 'Add Shopping Day',
+                day: 'Day',
+                items: 'items',
+                wishlistTitle: 'My Wishlist',
+                wishlistSub: 'Save your wishes and track how much you need to save!',
+                wishlistAdd: 'Add',
+                totalNeeded: 'Total needed:',
+                whatYouWant: 'What do you want?',
+                price: 'Price',
+                delete: 'Delete',
+                noWishlist: 'No wishes yet. Add your first wish!',
+                verifyCodeInstruction: 'Please check your inbox and enter the code below.'
             },
             fr: {
                 appTitle: 'Budget Intelligent',
-                loginSubtitle: 'Connectez-vous pour synchroniser tous vos appareils',
+                loginSubtitle: 'Connectez-vous pour synchroniser',
                 loginBtn: 'Se connecter',
                 registerBtn: 'Créer un compte',
                 logout: 'Déconnexion',
@@ -1606,6 +1761,7 @@
                 shopping: 'Courses',
                 products: 'Produits',
                 months: 'Mois',
+                wishlist: 'Souhaits',
                 settings: 'Paramètres',
                 admin: 'Admin',
                 categorySummary: 'Résumé par Catégorie',
@@ -1618,14 +1774,14 @@
                 monthlyComparison: 'Comparaison Mensuelle',
                 recentPurchases: 'Achats Récents',
                 quickStats: 'Statistiques Rapides',
-                shoppingList: 'Liste de Courses',
+                shoppingList: 'Jours de Courses',
                 addProduct: 'Ajouter un produit',
                 totalEstimated: 'Total estimé',
                 totalReal: 'Total réel',
                 bought: 'Acheté',
                 productDatabase: 'Base de Données Produits',
                 monthlySheets: 'Feuilles Mensuelles',
-                monthsSubtitle: 'Chaque mois est sauvegardé automatiquement. Cliquez sur un mois pour voir les détails.',
+                monthsSubtitle: 'Chaque mois est sauvegardé automatiquement.',
                 settingsTitle: 'Paramètres',
                 darkMode: 'Mode Sombre',
                 currency: 'Devise',
@@ -1656,7 +1812,6 @@
                 profitLabel: 'Profit',
                 searchProducts: 'Rechercher des produits...',
                 allCategories: 'Toutes les catégories',
-                allSubcategories: 'Toutes les sous-catégories',
                 allPriorities: 'Toutes les priorités',
                 all: 'Tous',
                 boughtFilter: 'Acheté',
@@ -1665,8 +1820,8 @@
                 medium: 'Moyenne',
                 low: 'Basse',
                 noProducts: 'Aucun produit trouvé',
-                deleteConfirm: 'Supprimer ce produit du mois en cours ?',
-                deleteAllConfirm: 'Supprimer ce produit de TOUTES les données ?',
+                deleteConfirm: 'Supprimer ce produit ?',
+                deleteAllConfirm: 'Supprimer de TOUTES les données ?',
                 logoutConfirm: 'Se déconnecter ?',
                 budgetPrompt: 'Définir le budget mensuel',
                 currencyUpdated: 'Devise mise à jour',
@@ -1683,312 +1838,28 @@
                 backToUsers: 'Retour aux utilisateurs',
                 userDetails: 'Détails de l\'utilisateur',
                 noUserData: 'Pas de données pour cet utilisateur.',
-                emailVerified: 'Email vérifié ! Bienvenue sur Budget Intelligent !',
                 verifyEmail: 'Vérifiez votre email',
-                verifyInfo: 'Un email de vérification a été envoyé à votre adresse. Veuillez vérifier votre boîte de réception et cliquer sur le lien de vérification.',
-                verifyBtn: 'J\'ai vérifié mon email',
+                verifyInfo: 'Un code de vérification à 6 chiffres a été envoyé à votre email.',
+                verifyBtn: 'Vérifier le code',
                 resend: 'Renvoyer',
                 checkVerifying: 'Vérification...',
-            },
-            ar: {
-                appTitle: 'الميزانية الذكية',
-                loginSubtitle: 'تسجيل الدخول للمزامنة بين جميع أجهزتك',
-                loginBtn: 'تسجيل الدخول',
-                registerBtn: 'إنشاء حساب',
-                logout: 'تسجيل الخروج',
-                export: 'تصدير',
-                import: 'استيراد',
-                budget: '💰 الميزانية الشهرية',
-                spent: '✅ المصروف',
-                remaining: '📊 المتبقي',
-                profit: '📈 الربح الشهري',
-                dashboard: 'لوحة التحكم',
-                shopping: 'التسوق',
-                products: 'المنتجات',
-                months: 'الأشهر',
-                settings: 'الإعدادات',
-                admin: 'المشرف',
-                categorySummary: 'ملخص الفئات',
-                thisMonth: 'هذا الشهر',
-                category: 'الفئة',
-                estimated: 'تقديري',
-                real: 'فعلي',
-                difference: 'الفرق',
-                spendingByCategory: 'المصروفات حسب الفئة',
-                monthlyComparison: 'مقارنة شهرية',
-                recentPurchases: 'المشتريات الأخيرة',
-                quickStats: 'إحصائيات سريعة',
-                shoppingList: 'قائمة التسوق',
-                addProduct: 'إضافة منتج',
-                totalEstimated: 'الإجمالي التقديري',
-                totalReal: 'الإجمالي الفعلي',
-                bought: 'تم الشراء',
-                productDatabase: 'قاعدة بيانات المنتجات',
-                monthlySheets: 'الأوراق الشهرية',
-                monthsSubtitle: 'يتم حفظ كل شهر تلقائياً. انقر على شهر لعرض التفاصيل.',
-                settingsTitle: 'الإعدادات',
-                darkMode: 'الوضع المظلم',
-                currency: 'العملة',
-                language: 'اللغة',
-                cloudSync: 'المزامنة السحابية',
-                exportExcel: 'تصدير Excel (CSV)',
-                importCSV: 'استيراد CSV',
-                user: 'المستخدم',
-                adminPanel: 'لوحة المشرف',
-                adminSubtitle: 'انقر على مستخدم لرؤية مشترياته.',
-                globalStats: 'إحصائيات عامة',
-                noData: 'لا توجد بيانات بعد.',
-                noPurchases: 'لا توجد مشتريات بعد.',
-                loading: 'جاري التحميل...',
-                totalItems: 'إجمالي العناصر',
-                boughtItems: 'تم الشراء',
-                estimatedTotal: 'الإجمالي التقديري',
-                realTotal: 'الإجمالي الفعلي',
-                topCategory: 'أعلى فئة',
-                admin: 'مشرف',
-                users: 'المستخدمين',
-                totalUsers: 'إجمالي المستخدمين',
-                totalSpentAll: 'إجمالي المصروف (الكل)',
-                avgBudget: 'متوسط الميزانية',
-                month: 'الشهر',
-                spentLabel: 'المصروف',
-                budgetLabel: 'الميزانية',
-                profitLabel: 'الربح',
-                searchProducts: 'البحث عن منتجات...',
-                allCategories: 'جميع الفئات',
-                allSubcategories: 'جميع الفئات الفرعية',
-                allPriorities: 'جميع الأولويات',
-                all: 'الكل',
-                boughtFilter: 'تم الشراء',
-                unbought: 'لم يشتري',
-                high: 'عالية',
-                medium: 'متوسطة',
-                low: 'منخفضة',
-                noProducts: 'لم يتم العثور على منتجات',
-                deleteConfirm: 'حذف هذا المنتج من الشهر الحالي؟',
-                deleteAllConfirm: 'حذف هذا المنتج من جميع البيانات؟',
-                logoutConfirm: 'تسجيل الخروج؟',
-                budgetPrompt: 'تعيين الميزانية الشهرية',
-                currencyUpdated: 'تم تحديث العملة',
-                languageUpdated: 'تم تحديث اللغة',
-                exported: 'تم التصدير!',
-                imported: 'تم الاستيراد',
-                invalidCSV: 'ملف CSV غير صالح',
-                added: 'تمت الإضافة',
-                deleted: 'تم الحذف',
-                updated: 'تم التحديث',
-                synced: 'تمت المزامنة من جهاز آخر',
-                offline: 'استخدام البيانات دون اتصال',
-                cloudSyncText: 'متزامن',
-                backToUsers: 'العودة إلى المستخدمين',
-                userDetails: 'تفاصيل المستخدم',
-                noUserData: 'لا توجد بيانات لهذا المستخدم.',
-                emailVerified: 'تم التحقق من البريد الإلكتروني! مرحباً بك في الميزانية الذكية!',
-                verifyEmail: 'تحقق من بريدك الإلكتروني',
-                verifyInfo: 'تم إرسال رسالة تحقق إلى بريدك الإلكتروني. يرجى التحقق من صندوق الوارد والنقر على رابط التحقق.',
-                verifyBtn: 'لقد تحققت من بريدي الإلكتروني',
-                resend: 'إعادة الإرسال',
-                checkVerifying: 'جاري التحقق...',
-            },
-            tr: {
-                appTitle: 'Akıllı Bütçe',
-                loginSubtitle: 'Tüm cihazlarınızda senkronize olmak için giriş yapın',
-                loginBtn: 'Giriş Yap',
-                registerBtn: 'Hesap Oluştur',
-                logout: 'Çıkış Yap',
-                export: 'Dışa Aktar',
-                import: 'İçe Aktar',
-                budget: '💰 Aylık Bütçe',
-                spent: '✅ Harcanan',
-                remaining: '📊 Kalan',
-                profit: '📈 Aylık Kar',
-                dashboard: 'Kontrol Paneli',
-                shopping: 'Alışveriş',
-                products: 'Ürünler',
-                months: 'Aylar',
-                settings: 'Ayarlar',
-                admin: 'Yönetici',
-                categorySummary: 'Kategori Özeti',
-                thisMonth: 'Bu ay',
-                category: 'Kategori',
-                estimated: 'Tahmini',
-                real: 'Gerçek',
-                difference: 'Fark',
-                spendingByCategory: 'Kategoriye Göre Harcamalar',
-                monthlyComparison: 'Aylık Karşılaştırma',
-                recentPurchases: 'Son Alışverişler',
-                quickStats: 'Hızlı İstatistikler',
-                shoppingList: 'Alışveriş Listesi',
-                addProduct: 'Ürün ekle',
-                totalEstimated: 'Toplam tahmini',
-                totalReal: 'Toplam gerçek',
-                bought: 'Satın alındı',
-                productDatabase: 'Ürün Veritabanı',
-                monthlySheets: 'Aylık Sayfalar',
-                monthsSubtitle: 'Her ay otomatik olarak kaydedilir. Detayları görmek için bir aya tıklayın.',
-                settingsTitle: 'Ayarlar',
-                darkMode: 'Karanlık Mod',
-                currency: 'Para Birimi',
-                language: 'Dil',
-                cloudSync: 'Bulut Senkronizasyonu',
-                exportExcel: 'Excel Dışa Aktar (CSV)',
-                importCSV: 'CSV İçe Aktar',
-                user: 'Kullanıcı',
-                adminPanel: 'Yönetici Paneli',
-                adminSubtitle: 'Bir kullanıcıya tıklayarak alışveriş detaylarını görün.',
-                globalStats: 'Küresel İstatistikler',
-                noData: 'Henüz veri yok.',
-                noPurchases: 'Henüz alışveriş yok.',
-                loading: 'Yükleniyor...',
-                totalItems: 'Toplam öğe',
-                boughtItems: 'Satın alındı',
-                estimatedTotal: 'Tahmini toplam',
-                realTotal: 'Gerçek toplam',
-                topCategory: 'En çok kategori',
-                admin: 'Yönetici',
-                users: 'Kullanıcılar',
-                totalUsers: 'Toplam Kullanıcı',
-                totalSpentAll: 'Toplam Harcama (Tümü)',
-                avgBudget: 'Ortalama Bütçe',
-                month: 'Ay',
-                spentLabel: 'Harcanan',
-                budgetLabel: 'Bütçe',
-                profitLabel: 'Kar',
-                searchProducts: 'Ürünleri ara...',
-                allCategories: 'Tüm kategoriler',
-                allSubcategories: 'Tüm alt kategoriler',
-                allPriorities: 'Tüm öncelikler',
-                all: 'Tümü',
-                boughtFilter: 'Satın alındı',
-                unbought: 'Satın alınmadı',
-                high: 'Yüksek',
-                medium: 'Orta',
-                low: 'Düşük',
-                noProducts: 'Ürün bulunamadı',
-                deleteConfirm: 'Bu ürünü bu aydan sil?',
-                deleteAllConfirm: 'Bu ürünü TÜM verilerden sil?',
-                logoutConfirm: 'Çıkış yap?',
-                budgetPrompt: 'Aylık bütçeyi belirleyin',
-                currencyUpdated: 'Para birimi güncellendi',
-                languageUpdated: 'Dil güncellendi',
-                exported: 'Dışa aktarıldı!',
-                imported: 'İçe aktarıldı',
-                invalidCSV: 'Geçersiz CSV',
-                added: 'Eklendi',
-                deleted: 'Silindi',
-                updated: 'Güncellendi',
-                synced: 'Başka bir cihazdan senkronize edildi',
-                offline: 'Çevrimdışı veri kullanımı',
-                cloudSyncText: 'Senkronize',
-                backToUsers: 'Kullanıcılara Dön',
-                userDetails: 'Kullanıcı Detayları',
-                noUserData: 'Bu kullanıcı için veri yok.',
-                emailVerified: 'E-posta doğrulandı! Akıllı Bütçe\'ye hoş geldiniz!',
-                verifyEmail: 'E-postanızı Doğrulayın',
-                verifyInfo: 'E-posta adresinize bir doğrulama e-postası gönderildi. Lütfen gelen kutunuzu kontrol edin ve doğrulama bağlantısına tıklayın.',
-                verifyBtn: 'E-postamı Doğruladım',
-                resend: 'Yeniden Gönder',
-                checkVerifying: 'Kontrol ediliyor...',
-            },
-            ja: {
-                appTitle: 'スマートバジェット',
-                loginSubtitle: 'すべてのデバイスで同期するにはサインイン',
-                loginBtn: 'サインイン',
-                registerBtn: 'アカウント作成',
-                logout: 'ログアウト',
-                export: 'エクスポート',
-                import: 'インポート',
-                budget: '💰 月次予算',
-                spent: '✅ 支出合計',
-                remaining: '📊 残り',
-                profit: '📈 月次利益',
-                dashboard: 'ダッシュボード',
-                shopping: 'ショッピング',
-                products: '製品',
-                months: '月次',
-                settings: '設定',
-                admin: '管理者',
-                categorySummary: 'カテゴリー概要',
-                thisMonth: '今月',
-                category: 'カテゴリー',
-                estimated: '見積もり',
-                real: '実績',
-                difference: '差額',
-                spendingByCategory: 'カテゴリー別支出',
-                monthlyComparison: '月次比較',
-                recentPurchases: '最近の購入',
-                quickStats: 'クイック統計',
-                shoppingList: 'ショッピングリスト',
-                addProduct: '製品を追加',
-                totalEstimated: '見積もり合計',
-                totalReal: '実績合計',
-                bought: '購入済み',
-                productDatabase: '製品データベース',
-                monthlySheets: '月次シート',
-                monthsSubtitle: '各月は自動的に保存されます。詳細を表示するには月をクリックしてください。',
-                settingsTitle: '設定',
-                darkMode: 'ダークモード',
-                currency: '通貨',
-                language: '言語',
-                cloudSync: 'クラウド同期',
-                exportExcel: 'Excelエクスポート (CSV)',
-                importCSV: 'CSVインポート',
-                user: 'ユーザー',
-                adminPanel: '管理者パネル',
-                adminSubtitle: 'ユーザーをクリックして買い物の詳細を表示します。',
-                globalStats: 'グローバル統計',
-                noData: 'データがまだありません。',
-                noPurchases: '購入がまだありません。',
-                loading: '読み込み中...',
-                totalItems: '合計アイテム',
-                boughtItems: '購入済み',
-                estimatedTotal: '見積もり合計',
-                realTotal: '実績合計',
-                topCategory: 'トップカテゴリー',
-                admin: '管理者',
-                users: 'ユーザー',
-                totalUsers: '合計ユーザー',
-                totalSpentAll: '総支出 (全ユーザー)',
-                avgBudget: '平均予算',
-                month: '月',
-                spentLabel: '支出',
-                budgetLabel: '予算',
-                profitLabel: '利益',
-                searchProducts: '製品を検索...',
-                allCategories: 'すべてのカテゴリー',
-                allSubcategories: 'すべてのサブカテゴリー',
-                allPriorities: 'すべての優先度',
-                all: 'すべて',
-                boughtFilter: '購入済み',
-                unbought: '未購入',
-                high: '高',
-                medium: '中',
-                low: '低',
-                noProducts: '製品が見つかりません',
-                deleteConfirm: '今月からこの製品を削除しますか？',
-                deleteAllConfirm: 'すべてのデータからこの製品を削除しますか？',
-                logoutConfirm: 'ログアウトしますか？',
-                budgetPrompt: '月次予算を設定',
-                currencyUpdated: '通貨が更新されました',
-                languageUpdated: '言語が更新されました',
-                exported: 'エクスポート完了！',
-                imported: 'インポート完了',
-                invalidCSV: '無効なCSV',
-                added: '追加されました',
-                deleted: '削除されました',
-                updated: '更新されました',
-                synced: '別のデバイスから同期されました',
-                offline: 'オフラインデータ使用',
-                cloudSyncText: '同期済み',
-                backToUsers: 'ユーザーに戻る',
-                userDetails: 'ユーザー詳細',
-                noUserData: 'このユーザーのデータはありません。',
-                emailVerified: 'メールが認証されました！スマートバジェットへようこそ！',
-                verifyEmail: 'メールを認証する',
-                verifyInfo: '認証メールが送信されました。受信トレイを確認し、認証リンクをクリックしてください。',
-                verifyBtn: 'メールを認証しました',
-                resend: '再送信',
-                checkVerifying: '確認中...',
+                codeSent: 'Code de vérification envoyé !',
+                invalidCode: 'Code de vérification invalide.',
+                verified: 'Email vérifié ! Bienvenue !',
+                showCode: 'Afficher le code (test)',
+                enterCode: 'Entrez le code à 6 chiffres',
+                addShoppingDay: 'Ajouter un jour de courses',
+                day: 'Jour',
+                items: 'articles',
+                wishlistTitle: 'Ma Liste de Souhaits',
+                wishlistSub: 'Enregistrez vos souhaits et suivez combien vous devez économiser !',
+                wishlistAdd: 'Ajouter',
+                totalNeeded: 'Total nécessaire :',
+                whatYouWant: 'Que voulez-vous ?',
+                price: 'Prix',
+                delete: 'Supprimer',
+                noWishlist: 'Pas encore de souhaits. Ajoutez votre premier souhait !',
+                verifyCodeInstruction: 'Veuillez vérifier votre boîte de réception et entrer le code ci-dessous.'
             }
         };
 
@@ -2008,7 +1879,7 @@
         }
 
         function getCurrencySymbol() {
-            const symbols = { 'DH': 'DH', '$': '$', '€': '€', '£': '£', '₺': '₺','¥':'¥' };
+            const symbols = { 'DH': 'DH', '$': '$', '€': '€', '£': '£', '₺': '₺', '¥': '¥' };
             return symbols[data.currency] || 'DH';
         }
 
@@ -2024,6 +1895,8 @@
             document.getElementById('verifySection').classList.remove('active');
             document.getElementById('registerError').style.display = 'none';
             document.getElementById('registerSuccess').style.display = 'none';
+            document.getElementById('verifyError').style.display = 'none';
+            document.getElementById('verifySuccess').style.display = 'none';
         }
 
         function showLogin() {
@@ -2031,6 +1904,19 @@
             document.getElementById('registerForm').style.display = 'none';
             document.getElementById('verifySection').classList.remove('active');
             document.getElementById('loginError').style.display = 'none';
+        }
+
+        function generateVerificationCode() {
+            return String(Math.floor(100000 + Math.random() * 900000));
+        }
+
+        function sendVerificationCodeEmail(email, code) {
+            return db.collection('verificationCodes').doc(email).set({
+                code: code,
+                email: email,
+                createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+                verified: false
+            });
         }
 
         // ──────────────── AUTH FUNCTIONS ────────────────
@@ -2046,20 +1932,52 @@
             loadingEl.style.display = 'block';
             btn.disabled = true;
 
+            // Check admin login first
+            if (email === ADMIN_EMAIL) {
+                auth.signInWithEmailAndPassword(email, password)
+                    .then(userCredential => {
+                        currentUser = userCredential.user;
+                        isAdmin = true;
+                        loadingEl.style.display = 'none';
+                        btn.disabled = false;
+                        document.getElementById('authScreen').classList.add('hidden');
+                        document.getElementById('app').classList.add('visible');
+                        document.getElementById('adminBadge').classList.remove('hidden');
+                        document.getElementById('adminTab').classList.remove('hidden');
+                        loadUserData();
+                        initializeApp();
+                        showToast('👑 Welcome Admin!');
+                    })
+                    .catch(error => {
+                        loadingEl.style.display = 'none';
+                        btn.disabled = false;
+                        errorEl.textContent = error.message;
+                        errorEl.style.display = 'block';
+                    });
+                return;
+            }
+
             auth.signInWithEmailAndPassword(email, password)
                 .then(userCredential => {
                     currentUser = userCredential.user;
+                    return checkUserVerification(currentUser);
+                })
+                .then(isVerified => {
+                    if (!isVerified) {
+                        // Not verified - show verification
+                        document.getElementById('authScreen').classList.remove('hidden');
+                        showToast('⚠️ Please verify your email first.');
+                        sendNewVerificationCode(currentUser.email);
+                        return;
+                    }
+                    // Verified - proceed
                     loadingEl.style.display = 'none';
                     btn.disabled = false;
                     document.getElementById('authScreen').classList.add('hidden');
                     document.getElementById('app').classList.add('visible');
-                    if (currentUser.email === ADMIN_EMAIL) {
-                        isAdmin = true;
-                        document.getElementById('adminBadge').classList.remove('hidden');
-                        document.getElementById('adminTab').classList.remove('hidden');
-                    }
                     loadUserData();
                     initializeApp();
+                    showToast('✅ Welcome back!');
                 })
                 .catch(error => {
                     loadingEl.style.display = 'none';
@@ -2109,6 +2027,8 @@
                 return;
             }
 
+            pendingVerificationEmail = email;
+
             auth.createUserWithEmailAndPassword(email, password)
                 .then(userCredential => {
                     currentUser = userCredential.user;
@@ -2120,15 +2040,21 @@
                     }, { merge: true });
                 })
                 .then(() => {
-                    return currentUser.sendEmailVerification();
+                    const code = generateVerificationCode();
+                    pendingVerificationCode = code;
+                    return sendVerificationCodeEmail(email, code);
                 })
                 .then(() => {
                     loadingEl.style.display = 'none';
                     btn.disabled = false;
-                    successEl.textContent = '✅ Verification email sent! Please check your inbox.';
+                    successEl.textContent = '✅ Verification code sent to your email!';
                     successEl.style.display = 'block';
                     document.getElementById('verifySection').classList.add('active');
-                    showToast('📧 Verification email sent!');
+                    document.getElementById('sentCodeValue').textContent = pendingVerificationCode;
+                    document.getElementById('codeDisplay').style.display = 'block';
+                    showToast('📧 Verification code sent to ' + email);
+                    // Apply translation
+                    applyTranslations();
                 })
                 .catch(error => {
                     loadingEl.style.display = 'none';
@@ -2138,50 +2064,106 @@
                 });
         }
 
-        function checkVerification() {
+        function verifyCode() {
+            const codeInput = document.getElementById('verifyCodeInput').value.trim();
             const errorEl = document.getElementById('verifyError');
+            const successEl = document.getElementById('verifySuccess');
             const loadingEl = document.getElementById('verifyLoading');
             const btn = document.querySelector('#verifySection button');
 
             errorEl.style.display = 'none';
+            successEl.style.display = 'none';
             loadingEl.style.display = 'block';
             btn.disabled = true;
 
-            currentUser.reload().then(() => {
-                if (currentUser.emailVerified) {
+            if (codeInput.length !== 6 || !/^\d{6}$/.test(codeInput)) {
+                errorEl.textContent = 'Please enter a valid 6-digit code.';
+                errorEl.style.display = 'block';
+                loadingEl.style.display = 'none';
+                btn.disabled = false;
+                return;
+            }
+
+            const email = currentUser ? currentUser.email : pendingVerificationEmail;
+
+            db.collection('verificationCodes').doc(email).get()
+                .then(doc => {
+                    if (doc.exists && doc.data().code === codeInput) {
+                        return db.collection('verificationCodes').doc(email).update({
+                            verified: true,
+                            verifiedAt: firebase.firestore.FieldValue.serverTimestamp()
+                        });
+                    } else {
+                        throw new Error('Invalid code');
+                    }
+                })
+                .then(() => {
                     loadingEl.style.display = 'none';
                     btn.disabled = false;
+                    successEl.textContent = '✅ ' + _( 'verified');
+                    successEl.style.display = 'block';
+
                     document.getElementById('verifySection').classList.remove('active');
                     document.getElementById('authScreen').classList.add('hidden');
                     document.getElementById('app').classList.add('visible');
-                    if (currentUser.email === ADMIN_EMAIL) {
+
+                    if (currentUser && currentUser.email === ADMIN_EMAIL) {
                         isAdmin = true;
                         document.getElementById('adminBadge').classList.remove('hidden');
                         document.getElementById('adminTab').classList.remove('hidden');
                     }
+
                     loadUserData();
                     initializeApp();
-                    showToast('✅ ' + _( 'emailVerified'));
-                } else {
+                    showToast('✅ ' + _( 'verified'));
+                })
+                .catch(err => {
                     loadingEl.style.display = 'none';
                     btn.disabled = false;
-                    errorEl.textContent = 'Email not verified yet. Please check your inbox and click the verification link.';
+                    errorEl.textContent = err.message === 'Invalid code' ? _( 'invalidCode') : err.message;
                     errorEl.style.display = 'block';
-                }
-            }).catch(err => {
-                loadingEl.style.display = 'none';
-                btn.disabled = false;
-                errorEl.textContent = err.message;
-                errorEl.style.display = 'block';
-            });
+                });
         }
 
-        function resendVerification() {
-            if (currentUser) {
-                currentUser.sendEmailVerification()
-                    .then(() => showToast('📧 Verification email resent!'))
-                    .catch(err => showToast('❌ Error: ' + err.message));
+        function checkUserVerification(user) {
+            if (!user) return Promise.resolve(false);
+            if (user.email === ADMIN_EMAIL) return Promise.resolve(true);
+
+            return db.collection('verificationCodes').doc(user.email).get()
+                .then(doc => {
+                    if (doc.exists && doc.data().verified === true) {
+                        return true;
+                    }
+                    return false;
+                })
+                .catch(() => false);
+        }
+
+        function sendNewVerificationCode(email) {
+            const code = generateVerificationCode();
+            pendingVerificationCode = code;
+            return sendVerificationCodeEmail(email, code)
+                .then(() => {
+                    document.getElementById('sentCodeValue').textContent = code;
+                    document.getElementById('codeDisplay').style.display = 'block';
+                    document.getElementById('verifySection').classList.add('active');
+                    applyTranslations();
+                    showToast('📧 New code sent to ' + email);
+                });
+        }
+
+        function resendVerificationCode() {
+            const email = currentUser ? currentUser.email : pendingVerificationEmail;
+            if (!email) {
+                showToast('❌ No email found.');
+                return;
             }
+            sendNewVerificationCode(email);
+        }
+
+        function showCodeHint() {
+            const display = document.getElementById('codeDisplay');
+            display.style.display = display.style.display === 'none' ? 'block' : 'none';
         }
 
         function loadUserData() {
@@ -2190,8 +2172,9 @@
                 .then(doc => {
                     if (doc.exists) {
                         const userData = doc.data();
-                        currentUserName = userData.name || '';
-                        currentUserFullName = currentUserName + ' ' + (userData.surname || '');
+                        const name = userData.name || '';
+                        const surname = userData.surname || '';
+                        currentUserFullName = name + ' ' + surname;
                         document.getElementById('userNameDisplay').textContent = '- ' + currentUserFullName;
                         document.getElementById('userEmailDisplay').textContent = currentUser.email;
                     }
@@ -2209,7 +2192,9 @@
                     document.getElementById('loginPassword').value = '';
                     document.getElementById('adminBadge').classList.add('hidden');
                     document.getElementById('adminTab').classList.add('hidden');
-                    document.getElementById('authScreen').classList.remove('hidden');
+                    document.getElementById('loginForm').style.display = 'block';
+                    document.getElementById('registerForm').style.display = 'none';
+                    document.getElementById('verifySection').classList.remove('active');
                     showToast('Logged out');
                 });
             }
@@ -2223,11 +2208,25 @@
                     isAdmin = true;
                     document.getElementById('adminBadge').classList.remove('hidden');
                     document.getElementById('adminTab').classList.remove('hidden');
+                    document.getElementById('authScreen').classList.add('hidden');
+                    document.getElementById('app').classList.add('visible');
+                    loadUserData();
+                    initializeApp();
+                } else {
+                    checkUserVerification(user).then(isVerified => {
+                        if (isVerified) {
+                            document.getElementById('authScreen').classList.add('hidden');
+                            document.getElementById('app').classList.add('visible');
+                            loadUserData();
+                            initializeApp();
+                        } else {
+                            document.getElementById('authScreen').classList.remove('hidden');
+                            document.getElementById('app').classList.remove('visible');
+                            document.getElementById('verifySection').classList.add('active');
+                            sendNewVerificationCode(user.email);
+                        }
+                    });
                 }
-                document.getElementById('authScreen').classList.add('hidden');
-                document.getElementById('app').classList.add('visible');
-                loadUserData();
-                initializeApp();
             } else {
                 document.getElementById('authScreen').classList.remove('hidden');
                 document.getElementById('app').classList.remove('visible');
@@ -2236,6 +2235,71 @@
                 document.getElementById('verifySection').classList.remove('active');
             }
         });
+
+        // ──────────────── LANGUAGE ────────────────
+
+        function applyTranslations() {
+            const lang = getLang();
+            t = translations[lang] || translations.en;
+
+            document.querySelectorAll('[data-i18n]').forEach(el => {
+                const key = el.dataset.i18n;
+                if (t[key] !== undefined) el.textContent = t[key];
+            });
+
+            document.getElementById('loginBtn').textContent = _( 'loginBtn');
+            document.getElementById('registerBtn').textContent = _( 'registerBtn');
+            document.getElementById('searchProducts').placeholder = _( 'searchProducts');
+
+            // Update filter options
+            const filterShopping = document.getElementById('filterShopping');
+            if (filterShopping) {
+                filterShopping.options[0].textContent = _( 'all');
+                filterShopping.options[1].textContent = _( 'boughtFilter');
+                filterShopping.options[2].textContent = _( 'unbought');
+            }
+
+            document.querySelectorAll('select[id*="priority"] option').forEach(opt => {
+                if (opt.value === 'all') opt.textContent = _( 'allPriorities');
+                if (opt.value === 'high') opt.textContent = _( 'high');
+                if (opt.value === 'medium') opt.textContent = _( 'medium');
+                if (opt.value === 'low') opt.textContent = _( 'low');
+            });
+
+            document.querySelectorAll('select[id*="category"] option').forEach(opt => {
+                if (opt.value === 'all') opt.textContent = _( 'allCategories');
+            });
+
+            document.getElementById('languageSelect').value = data.language || 'en';
+
+            // Update wishlist
+            document.querySelector('#tab-wishlist .wishlist-card h3').innerHTML = '<i class="fas fa-heart" style="color:var(--pink);"></i> ' + _(
+                'wishlistTitle');
+            document.querySelector('#tab-wishlist .wishlist-card .text-muted').textContent = _( 'wishlistSub');
+            document.getElementById('wishlistInput').placeholder = _( 'whatYouWant');
+            document.getElementById('wishlistPrice').placeholder = _( 'price');
+            document.querySelector('#tab-wishlist .wishlist-card .flex button').textContent = _( 'wishlistAdd');
+
+            // Update verify section
+            document.querySelector('#verifySection h3').textContent = '✅ ' + _( 'verifyEmail');
+            document.querySelector('#verifySection .info').innerHTML = _( 'verifyInfo') + '<br>' + _( 'verifyCodeInstruction');
+            document.querySelector('#verifySection button').textContent = _( 'verifyBtn');
+            document.querySelector('#verifySection .toggle-mode a').textContent = _( 'resend');
+            document.querySelector('#verifySection .code-hint + .toggle-mode a').textContent = _( 'showCode');
+            document.getElementById('verifyCodeInput').placeholder = _( 'enterCode');
+
+            renderWishlist();
+            renderShoppingDays();
+        }
+
+        function updateLanguage() {
+            const sel = document.getElementById('languageSelect');
+            data.language = sel.value;
+            saveToFirebase();
+            applyTranslations();
+            refreshAll();
+            showToast('✅ ' + _( 'languageUpdated'));
+        }
 
         // ──────────────── DATA LAYER ────────────────
 
@@ -2293,6 +2357,8 @@
                 language: data.language || 'en',
                 products: data.products,
                 months: data.months,
+                shoppingDays: data.shoppingDays || [],
+                wishlist: data.wishlist || [],
                 updatedAt: firebase.firestore.FieldValue.serverTimestamp()
             };
 
@@ -2324,8 +2390,9 @@
                         data.language = fbData.language || 'en';
                         data.products = fbData.products || [];
                         data.months = fbData.months || {};
+                        data.shoppingDays = fbData.shoppingDays || [];
+                        data.wishlist = fbData.wishlist || [];
                         localStorage.setItem(STORAGE_KEY + '_' + currentUser.uid, JSON.stringify(data));
-                        applyTranslations();
                         refreshAll();
                         updateSyncStatus('online');
                     } else {
@@ -2334,17 +2401,14 @@
                             try {
                                 const parsed = JSON.parse(local);
                                 data = parsed;
-                                applyTranslations();
                                 refreshAll();
                                 updateSyncStatus('online');
                             } catch (e) {
                                 seedDemoData();
-                                applyTranslations();
                                 refreshAll();
                             }
                         } else {
                             seedDemoData();
-                            applyTranslations();
                             refreshAll();
                         }
                         saveToFirebase();
@@ -2358,17 +2422,14 @@
                         try {
                             const parsed = JSON.parse(local);
                             data = parsed;
-                            applyTranslations();
                             refreshAll();
                             updateSyncStatus('offline');
                         } catch (e) {
                             seedDemoData();
-                            applyTranslations();
                             refreshAll();
                         }
                     } else {
                         seedDemoData();
-                        applyTranslations();
                         refreshAll();
                     }
                 });
@@ -2380,19 +2441,15 @@
             docRef.onSnapshot(doc => {
                 if (doc.exists && !isSyncing) {
                     const fbData = doc.data();
-                    const currentStr = JSON.stringify({
-                        budget: data.budget,
-                        currency: data.currency,
-                        language: data.language,
-                        products: data.products,
-                        months: data.months
-                    });
+                    const currentStr = JSON.stringify(data);
                     const fbStr = JSON.stringify({
                         budget: fbData.budget,
                         currency: fbData.currency,
                         language: fbData.language,
                         products: fbData.products,
-                        months: fbData.months
+                        months: fbData.months,
+                        shoppingDays: fbData.shoppingDays,
+                        wishlist: fbData.wishlist
                     });
                     if (currentStr !== fbStr) {
                         data.budget = fbData.budget || 1500;
@@ -2400,8 +2457,9 @@
                         data.language = fbData.language || 'en';
                         data.products = fbData.products || [];
                         data.months = fbData.months || {};
+                        data.shoppingDays = fbData.shoppingDays || [];
+                        data.wishlist = fbData.wishlist || [];
                         localStorage.setItem(STORAGE_KEY + '_' + currentUser.uid, JSON.stringify(data));
-                        applyTranslations();
                         refreshAll();
                         showToast('🔄 ' + _( 'synced'));
                     }
@@ -2433,80 +2491,37 @@
             }
         }
 
-        // ──────────────── LANGUAGE ────────────────
-
-        function applyTranslations() {
-            const lang = getLang();
-            t = translations[lang] || translations.en;
-
-            // Update all text elements
-            document.querySelectorAll('[data-i18n]').forEach(el => {
-                const key = el.dataset.i18n;
-                if (t[key] !== undefined) el.textContent = t[key];
-            });
-
-            // Update button texts
-            document.getElementById('loginBtn').textContent = _( 'loginBtn');
-            document.getElementById('registerBtn').textContent = _( 'registerBtn');
-
-            // Update placeholders
-            document.getElementById('searchShopping').placeholder = _( 'searchProducts');
-            document.getElementById('searchProducts').placeholder = _( 'searchProducts');
-
-            // Update filter options
-            updateFilterLabels();
-
-            // Update language dropdown
-            document.getElementById('languageSelect').value = data.language || 'en';
-        }
-
-        function updateFilterLabels() {
-            const filterShopping = document.getElementById('filterShopping');
-            if (filterShopping) {
-                filterShopping.options[0].textContent = _( 'all');
-                filterShopping.options[1].textContent = _( 'boughtFilter');
-                filterShopping.options[2].textContent = _( 'unbought');
-            }
-
-            document.querySelectorAll('select[id*="priority"] option').forEach(opt => {
-                if (opt.value === 'all') opt.textContent = _( 'allPriorities');
-                if (opt.value === 'high') opt.textContent = _( 'high');
-                if (opt.value === 'medium') opt.textContent = _( 'medium');
-                if (opt.value === 'low') opt.textContent = _( 'low');
-            });
-
-            document.querySelectorAll('select[id*="category"] option').forEach(opt => {
-                if (opt.value === 'all') opt.textContent = _( 'allCategories');
-            });
-
-            document.querySelectorAll('select[id*="subcategory"] option').forEach(opt => {
-                if (opt.value === 'all') opt.textContent = _( 'allSubcategories');
-            });
-        }
-
-        function updateLanguage() {
-            const sel = document.getElementById('languageSelect');
-            data.language = sel.value;
-            saveToFirebase();
-            applyTranslations();
-            refreshAll();
-            showToast('✅ ' + _( 'languageUpdated'));
-        }
-
         // ──────────────── DEMO DATA ────────────────
 
         function seedDemoData() {
             const now = new Date();
             const monthKey = getMonthKey(now);
             data.products = [
-                { category: 'A1', name: 'ex', quantity: 1, unit: 'Kg', defaultPrice: 1, priority: 'medium', bought: false,
-                 estimated: 25, real: 0, notes: '', date: now
+                { id: 'p1', name: 'Riz', category: 'Alimentation', defaultPrice: 25, unit: 'Kg',
+                    priority: 'medium', bought: false, quantity: 1, estimated: 25, real: 0, notes: '', date: now
                         .toISOString() },
+                { id: 'p2', name: 'Lait', category: 'Produits laitiers', defaultPrice: 8, unit: 'L',
+                    priority: 'high', bought: false, quantity: 3, estimated: 24, real: 0, notes: '', date: now
+                        .toISOString() },
+                { id: 'p3', name: 'Poulet', category: 'Viandes', defaultPrice: 25, unit: 'Kg',
+                    priority: 'high', bought: false, quantity: 2, estimated: 50, real: 0, notes: '', date: now
+                        .toISOString() },
+                { id: 'p4', name: 'Œufs', category: 'Viandes', defaultPrice: 30, unit: 'pièce',
+                    priority: 'medium', bought: false, quantity: 30, estimated: 30, real: 0, notes: '', date: now
+                        .toISOString() },
+                { id: 'p5', name: 'Pâtes', category: 'Alimentation', defaultPrice: 20, unit: 'Kg',
+                    priority: 'low', bought: false, quantity: 1, estimated: 20, real: 0, notes: '', date: now
+                        .toISOString() },
+                { id: 'p6', name: 'Fromage', category: 'Produits laitiers', defaultPrice: 40,
+                    unit: 'boîte', priority: 'medium', bought: false, quantity: 1, estimated: 40, real: 0, notes: '',
+                    date: now.toISOString() },
             ];
             data.months[monthKey] = {
                 budget: data.budget,
                 products: JSON.parse(JSON.stringify(data.products))
             };
+            data.shoppingDays = [];
+            data.wishlist = [];
             localStorage.setItem(STORAGE_KEY + '_' + currentUser.uid, JSON.stringify(data));
         }
 
@@ -2516,7 +2531,6 @@
             loadFromFirebase();
             listenToFirebase();
             setupAutoSave();
-            applyTranslations();
             refreshAll();
             if (localStorage.getItem('darkMode') === 'true') {
                 document.body.classList.add('dark');
@@ -2524,6 +2538,7 @@
             }
             document.getElementById('currencySelect').value = data.currency || 'DH';
             document.getElementById('languageSelect').value = data.language || 'en';
+            applyTranslations();
         }
 
         function setupAutoSave() {
@@ -2544,19 +2559,15 @@
 
         // ──────────────── RENDER FUNCTIONS ────────────────
 
-        let sortShoppingField = 'name';
-        let sortShoppingAsc = true;
-        let sortProductsField = 'name';
-        let sortProductsAsc = true;
-
         function refreshAll() {
             renderStats();
-            renderShopping();
             renderProducts();
             renderMonths();
             renderDashboard();
             renderCategorySummary();
             renderMonthlyComparison();
+            renderWishlist();
+            renderShoppingDays();
             if (isAdmin) renderAdminPanel();
             updateCurrencySelect();
             updateDarkToggle();
@@ -2802,49 +2813,43 @@
             });
         }
 
-        // ──────────────── SHOPPING ────────────────
+        // ──────────────── PRODUCTS (Database) ────────────────
 
-        function renderShopping() {
-            const monthProducts = getCurrentMonthProducts();
-            const search = document.getElementById('searchShopping').value.toLowerCase();
-            const filter = document.getElementById('filterShopping').value;
-            const priority = document.getElementById('priorityFilter').value;
-            const category = document.getElementById('filterCategoryShopping').value;
+        function renderProducts() {
+            const search = document.getElementById('searchProducts').value.toLowerCase();
+            const catFilter = document.getElementById('categoryFilter').value;
 
-            const cats = new Set(monthProducts.map(p => p.category).filter(Boolean));
-            const catSelect = document.getElementById('filterCategoryShopping');
+            const cats = new Set(data.products.map(p => p.category).filter(Boolean));
+            const catSelect = document.getElementById('categoryFilter');
             const currentCat = catSelect.value;
             catSelect.innerHTML = '<option value="all">' + _( 'allCategories') + '</option>' +
                 Array.from(cats).map(c => `<option value="${c}">${c}</option>`).join('');
             catSelect.value = currentCat;
 
-            let filtered = monthProducts.filter(p => {
+            let filtered = data.products.filter(p => {
                 const matchSearch = p.name.toLowerCase().includes(search) || (p.category || '').toLowerCase()
                     .includes(search);
-                const matchFilter = filter === 'all' ? true : filter === 'bought' ? p.bought : !p.bought;
-                const matchPriority = priority === 'all' ? true : p.priority === priority;
-                const matchCategory = category === 'all' ? true : p.category === category;
-                return matchSearch && matchFilter && matchPriority && matchCategory;
+                const matchCat = catFilter === 'all' ? true : p.category === catFilter;
+                return matchSearch && matchCat;
             });
 
             filtered.sort((a, b) => {
-                let valA = a[sortShoppingField] || '';
-                let valB = b[sortShoppingField] || '';
+                let valA = a[sortProductsField] || '';
+                let valB = b[sortProductsField] || '';
                 if (typeof valA === 'string') valA = valA.toLowerCase();
                 if (typeof valB === 'string') valB = valB.toLowerCase();
-                if (valA < valB) return sortShoppingAsc ? -1 : 1;
-                if (valA > valB) return sortShoppingAsc ? 1 : -1;
+                if (valA < valB) return sortProductsAsc ? -1 : 1;
+                if (valA > valB) return sortProductsAsc ? 1 : -1;
                 return 0;
             });
 
-            const tbody = document.getElementById('shoppingBody');
+            const tbody = document.getElementById('productsBody');
             if (filtered.length === 0) {
                 tbody.innerHTML =
-                    `<tr><td colspan="10" class="text-muted text-center" style="padding:20px;">${_( 'noProducts')}</td></tr>`;
+                    `<tr><td colspan="8" class="text-muted text-center" style="padding:20px;">${_( 'noProducts')}</td></tr>`;
             } else {
                 tbody.innerHTML = filtered.map(p => `
                     <tr>
-                        <td><input type="checkbox" ${p.bought ? 'checked' : ''} onchange="toggleBought('${p.id}')" /></td>
                         <td><input type="text" value="${p.category || ''}" onchange="updateProductField('${p.id}','category',this.value)" /></td>
                         <td><input type="text" value="${p.name}" onchange="updateProductField('${p.id}','name',this.value)" /></td>
                         <td><input type="number" value="${p.quantity || 1}" onchange="updateProductField('${p.id}','quantity',parseFloat(this.value)||0)" style="width:50px;" /></td>
@@ -2864,87 +2869,6 @@
                     </tr>
                 `).join('');
             }
-
-            const totalEst = monthProducts.reduce((s, p) => s + (parseFloat(p.estimated) || 0), 0);
-            const totalReal = monthProducts.reduce((s, p) => s + (parseFloat(p.real) || 0), 0);
-            const totalBought = monthProducts.filter(p => p.bought).length;
-            document.getElementById('shoppingEstTotal').textContent = fmt(totalEst);
-            document.getElementById('shoppingRealTotal').textContent = fmt(totalReal);
-            document.getElementById('shoppingBoughtCount').textContent = totalBought;
-            document.getElementById('shoppingTotalCount').textContent = monthProducts.length;
-
-            saveToFirebase();
-            renderStats();
-            renderDashboard();
-        }
-
-        function sortShopping(field) {
-            if (sortShoppingField === field) {
-                sortShoppingAsc = !sortShoppingAsc;
-            } else {
-                sortShoppingField = field;
-                sortShoppingAsc = true;
-            }
-            renderShopping();
-        }
-
-        // ──────────────── PRODUCTS ────────────────
-
-        function renderProducts() {
-            const search = document.getElementById('searchProducts').value.toLowerCase();
-            const catFilter = document.getElementById('categoryFilter').value;
-            const subFilter = document.getElementById('subcategoryFilter').value;
-
-            const cats = new Set(data.products.map(p => p.category).filter(Boolean));
-            const catSelect = document.getElementById('categoryFilter');
-            const currentCat = catSelect.value;
-            catSelect.innerHTML = '<option value="all">' + _( 'allCategories') + '</option>' +
-                Array.from(cats).map(c => `<option value="${c}">${c}</option>`).join('');
-            catSelect.value = currentCat;
-
-            const subs = new Set(data.products.filter(p => p.category === catFilter || catFilter === 'all').map(p => p
-                .subcategory).filter(Boolean));
-            const subSelect = document.getElementById('subcategoryFilter');
-            const currentSub = subSelect.value;
-            subSelect.innerHTML = '<option value="all">' + _( 'allSubcategories') + '</option>' +
-                Array.from(subs).map(s => `<option value="${s}">${s}</option>`).join('');
-            subSelect.value = currentSub;
-
-            let filtered = data.products.filter(p => {
-                const matchSearch = p.name.toLowerCase().includes(search) || (p.category || '').toLowerCase()
-                    .includes(search);
-                const matchCat = catFilter === 'all' ? true : p.category === catFilter;
-                const matchSub = subFilter === 'all' ? true : p.subcategory === subFilter;
-                return matchSearch && matchCat && matchSub;
-            });
-
-            filtered.sort((a, b) => {
-                let valA = a[sortProductsField] || '';
-                let valB = b[sortProductsField] || '';
-                if (typeof valA === 'string') valA = valA.toLowerCase();
-                if (typeof valB === 'string') valB = valB.toLowerCase();
-                if (valA < valB) return sortProductsAsc ? -1 : 1;
-                if (valA > valB) return sortProductsAsc ? 1 : -1;
-                return 0;
-            });
-
-            const tbody = document.getElementById('productsBody');
-            if (filtered.length === 0) {
-                tbody.innerHTML =
-                    `<tr><td colspan="6" class="text-muted text-center" style="padding:20px;">${_( 'noProducts')}</td></tr>`;
-            } else {
-                tbody.innerHTML = filtered.map(p => `
-                    <tr>
-                        <td><input type="text" value="${p.category || ''}" onchange="updateMasterProduct('${p.id}','category',this.value)" /></td>
-                        <td><input type="text" value="${p.name}" onchange="updateMasterProduct('${p.id}','name',this.value)" /></td>
-                        <td><input type="text" value="${p.unit || ''}" onchange="updateMasterProduct('${p.id}','unit',this.value)" style="width:60px;" /></td>
-                        <td><input type="number" value="${p.defaultPrice || 0}" onchange="updateMasterProduct('${p.id}','defaultPrice',parseFloat(this.value)||0)" style="width:70px;" /></td>
-                        <td>
-                            <button class="btn-icon" onclick="deleteMasterProduct('${p.id}')"><i class="fas fa-trash danger"></i></button>
-                        </td>
-                    </tr>
-                `).join('');
-            }
         }
 
         function sortProducts(field) {
@@ -2955,6 +2879,258 @@
                 sortProductsAsc = true;
             }
             renderProducts();
+        }
+
+        function addProductToDatabase() {
+            const name = prompt(_( 'addProduct') + ' name:');
+            if (!name) return;
+            const cat = prompt('Category:') || 'Uncategorized';
+            const price = parseFloat(prompt('Estimated price (' + getCurrencySymbol() + '):')) || 0;
+            const qty = parseFloat(prompt('Quantity:')) || 1;
+            const newProduct = {
+                id: 'p' + Date.now() + Math.random().toString(36).slice(2, 6),
+                name: name,
+                category: cat,
+                defaultPrice: price,
+                unit: 'piece',
+                priority: 'medium',
+                bought: false,
+                quantity: qty,
+                estimated: price,
+                real: 0,
+                notes: '',
+                date: new Date().toISOString()
+            };
+            data.products.push(newProduct);
+            // Also add to current month
+            const monthProducts = getCurrentMonthProducts();
+            monthProducts.push(JSON.parse(JSON.stringify(newProduct)));
+            saveToFirebase();
+            refreshAll();
+            showToast('✅ ' + _( 'added') + ': ' + name);
+        }
+
+        function updateProductField(id, field, value) {
+            const monthProducts = getCurrentMonthProducts();
+            const p = monthProducts.find(p => p.id === id);
+            if (p) {
+                p[field] = value;
+                const master = data.products.find(m => m.id === id);
+                if (master) master[field] = value;
+                // If bought status changes, update real price
+                if (field === 'bought' && p.bought && p.real === 0) {
+                    p.real = p.estimated || 0;
+                }
+                saveToFirebase();
+                refreshAll();
+            }
+        }
+
+        function deleteProduct(id) {
+            if (!confirm(_( 'deleteConfirm'))) return;
+            const monthProducts = getCurrentMonthProducts();
+            const idx = monthProducts.findIndex(p => p.id === id);
+            if (idx !== -1) monthProducts.splice(idx, 1);
+            data.products = data.products.filter(p => p.id !== id);
+            saveToFirebase();
+            refreshAll();
+            showToast('🗑️ ' + _( 'deleted'));
+        }
+
+        // ──────────────── SHOPPING DAYS ────────────────
+
+        function renderShoppingDays() {
+            const container = document.getElementById('shoppingDaysContainer');
+            const days = data.shoppingDays || [];
+
+            if (days.length === 0) {
+                container.innerHTML =
+                    `<div class="text-muted text-center" style="padding:20px 0;">No shopping days yet. Click "Add Shopping Day" to start.</div>`;
+                return;
+            }
+
+            container.innerHTML = days.map((day, index) => {
+                const date = new Date(day.date);
+                const dateStr = date.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric',
+                    year: 'numeric' });
+                const totalItems = day.categories ? Object.values(day.categories).reduce((sum, cat) => sum + cat.items
+                    .length, 0) : 0;
+
+                // Build categories
+                let categoriesHtml = '';
+                if (day.categories) {
+                    for (const [catName, catData] of Object.entries(day.categories)) {
+                        const checkedItems = catData.items.filter(item => item.checked).length;
+                        categoriesHtml += `
+                            <div class="day-category-box">
+                                <div class="cat-title">📂 ${catName} (${checkedItems}/${catData.items.length})</div>
+                                <div class="cat-items">
+                                    ${catData.items.map(item => `
+                                        <div class="item-check">
+                                            <input type="checkbox" ${item.checked ? 'checked' : ''} 
+                                                onchange="toggleShoppingItem(${index}, '${catName}', '${item.id}')" />
+                                            <span style="${item.checked ? 'text-decoration:line-through;color:var(--text2);' : ''}">${item.name}</span>
+                                            ${item.price ? `<span style="font-size:12px;color:var(--text2);margin-left:auto;">${item.price} ${getCurrencySymbol()}</span>` : ''}
+                                        </div>
+                                    `).join('')}
+                                </div>
+                            </div>
+                        `;
+                    }
+                }
+
+                return `
+                    <div class="day-card">
+                        <div class="day-header">
+                            <div>
+                                <span class="day-title">🛒 ${_( 'day')} ${index + 1}</span>
+                                <span class="text-muted" style="margin-left:12px;">${dateStr}</span>
+                            </div>
+                            <div>
+                                <span class="text-muted" style="margin-right:12px;">${totalItems} ${_( 'items')}</span>
+                                <button class="btn-icon" onclick="deleteShoppingDay(${index})"><i class="fas fa-trash danger"></i></button>
+                            </div>
+                        </div>
+                        <div class="day-categories">
+                            ${categoriesHtml || '<div class="text-muted">No categories yet.</div>'}
+                        </div>
+                        <div style="margin-top:12px;display:flex;gap:8px;flex-wrap:wrap;">
+                            <button onclick="addCategoryToDay(${index})" style="background:var(--primary);color:white;border:none;padding:4px 12px;border-radius:40px;cursor:pointer;font-size:12px;">
+                                <i class="fas fa-plus"></i> Add Category
+                            </button>
+                            <button onclick="addItemToDay(${index})" style="background:var(--green);color:white;border:none;padding:4px 12px;border-radius:40px;cursor:pointer;font-size:12px;">
+                                <i class="fas fa-plus"></i> Add Item
+                            </button>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function addShoppingDay() {
+            if (!data.shoppingDays) data.shoppingDays = [];
+            const newDay = {
+                date: new Date().toISOString(),
+                categories: {}
+            };
+            data.shoppingDays.push(newDay);
+            saveToFirebase();
+            renderShoppingDays();
+            showToast('✅ New shopping day added!');
+        }
+
+        function deleteShoppingDay(index) {
+            if (!confirm('Delete this shopping day?')) return;
+            data.shoppingDays.splice(index, 1);
+            saveToFirebase();
+            renderShoppingDays();
+            showToast('🗑️ Deleted');
+        }
+
+        function addCategoryToDay(dayIndex) {
+            const catName = prompt('Category name:');
+            if (!catName) return;
+            if (!data.shoppingDays[dayIndex].categories) {
+                data.shoppingDays[dayIndex].categories = {};
+            }
+            data.shoppingDays[dayIndex].categories[catName] = {
+                items: []
+            };
+            saveToFirebase();
+            renderShoppingDays();
+            showToast('✅ Category added!');
+        }
+
+        function addItemToDay(dayIndex) {
+            const day = data.shoppingDays[dayIndex];
+            const catNames = Object.keys(day.categories || {});
+            if (catNames.length === 0) {
+                showToast('❌ Please add a category first.');
+                return;
+            }
+
+            const catName = prompt('Choose category:\n' + catNames.join('\n'));
+            if (!catName || !day.categories[catName]) {
+                showToast('❌ Invalid category.');
+                return;
+            }
+
+            const itemName = prompt('Item name:');
+            if (!itemName) return;
+            const itemPrice = parseFloat(prompt('Price (' + getCurrencySymbol() + '):')) || 0;
+
+            day.categories[catName].items.push({
+                id: 'i' + Date.now() + Math.random().toString(36).slice(2, 6),
+                name: itemName,
+                price: itemPrice,
+                checked: false
+            });
+
+            saveToFirebase();
+            renderShoppingDays();
+            showToast('✅ Item added to ' + catName);
+        }
+
+        function toggleShoppingItem(dayIndex, catName, itemId) {
+            const day = data.shoppingDays[dayIndex];
+            if (day && day.categories && day.categories[catName]) {
+                const item = day.categories[catName].items.find(i => i.id === itemId);
+                if (item) {
+                    item.checked = !item.checked;
+                    saveToFirebase();
+                    renderShoppingDays();
+                }
+            }
+        }
+
+        // ──────────────── WISHLIST ────────────────
+
+        function renderWishlist() {
+            const container = document.getElementById('wishlistContainer');
+            const wishlist = data.wishlist || [];
+
+            if (wishlist.length === 0) {
+                container.innerHTML = `<div class="text-muted text-center" style="padding:20px 0;">${_( 'noWishlist')}</div>`;
+            } else {
+                container.innerHTML = wishlist.map((item, index) => `
+                    <div class="wishlist-item">
+                        <span class="text">${item.name}</span>
+                        <span class="price-tag">${item.price || 0} ${getCurrencySymbol()}</span>
+                        <button class="btn-icon danger" onclick="deleteWishlistItem(${index})"><i class="fas fa-trash"></i></button>
+                    </div>
+                `).join('');
+            }
+
+            const total = wishlist.reduce((sum, item) => sum + (parseFloat(item.price) || 0), 0);
+            document.getElementById('wishlistTotal').textContent = total;
+            document.getElementById('wishlistCurrency').textContent = getCurrencySymbol();
+            document.getElementById('wishlistCount').textContent = wishlist.length;
+        }
+
+        function addWishlistItem() {
+            const name = document.getElementById('wishlistInput').value.trim();
+            const price = parseFloat(document.getElementById('wishlistPrice').value) || 0;
+
+            if (!name) {
+                showToast('❌ Please enter what you want.');
+                return;
+            }
+
+            if (!data.wishlist) data.wishlist = [];
+            data.wishlist.push({ name, price });
+            document.getElementById('wishlistInput').value = '';
+            document.getElementById('wishlistPrice').value = '';
+            saveToFirebase();
+            renderWishlist();
+            showToast('✅ Added to wishlist!');
+        }
+
+        function deleteWishlistItem(index) {
+            if (!confirm('Remove from wishlist?')) return;
+            data.wishlist.splice(index, 1);
+            saveToFirebase();
+            renderWishlist();
+            showToast('🗑️ Removed');
         }
 
         // ──────────────── MONTHS ────────────────
@@ -2971,7 +3147,6 @@
                 const month = data.months[key];
                 const totalReal = (month.products || []).reduce((s, p) => s + (p.bought ? (parseFloat(p.real) || 0) :
                     0), 0);
-                const totalEst = (month.products || []).reduce((s, p) => s + (parseFloat(p.estimated) || 0), 0);
                 const date = new Date(key + '-01');
                 const name = date.toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
                 return `
@@ -3008,97 +3183,6 @@
 
         // ──────────────── ACTIONS ────────────────
 
-        function addProduct() {
-            const name = prompt(_( 'addProduct') + ' name:');
-            if (!name) return;
-            const cat = prompt('Category:') || 'Uncategorized';
-            const sub = prompt('Subcategory:') || '';
-            const price = parseFloat(prompt('Estimated price (' + getCurrencySymbol() + '):')) || 0;
-            const newProduct = {
-                category: cat,
-                name: name,
-                quantity: 1,
-                unit: 'piece',
-                defaultPrice: price,
-                priority: 'medium',
-                estimated: price,
-                real: 0,
-                bought: false,
-                notes: '',
-                date: new Date().toISOString()
-            };
-            data.products.push(newProduct);
-            const monthProducts = getCurrentMonthProducts();
-            monthProducts.push(JSON.parse(JSON.stringify(newProduct)));
-            saveToFirebase();
-            refreshAll();
-            showToast('✅ ' + _( 'added') + ': ' + name);
-        }
-
-        function toggleBought(id) {
-            const monthProducts = getCurrentMonthProducts();
-            const p = monthProducts.find(p => p.id === id);
-            if (p) {
-                p.bought = !p.bought;
-                if (p.bought && p.real === 0) {
-                    p.real = p.estimated || 0;
-                }
-                const master = data.products.find(m => m.id === id);
-                if (master) master.bought = p.bought;
-                saveToFirebase();
-                refreshAll();
-            }
-        }
-
-        function updateProductField(id, field, value) {
-            const monthProducts = getCurrentMonthProducts();
-            const p = monthProducts.find(p => p.id === id);
-            if (p) {
-                p[field] = value;
-                if (['name', 'category', 'defaultPrice', 'unit', 'priority'].includes(field)) {
-                    const master = data.products.find(m => m.id === id);
-                    if (master) master[field] = value;
-                }
-                saveToFirebase();
-                refreshAll();
-            }
-        }
-
-        function updateMasterProduct(id, field, value) {
-            const p = data.products.find(p => p.id === id);
-            if (p) {
-                p[field] = value;
-                for (const key in data.months) {
-                    const mp = data.months[key].products.find(m => m.id === id);
-                    if (mp) mp[field] = value;
-                }
-                saveToFirebase();
-                refreshAll();
-                showToast('✅ ' + _( 'updated'));
-            }
-        }
-
-        function deleteProduct(id) {
-            if (!confirm(_( 'deleteConfirm'))) return;
-            const monthProducts = getCurrentMonthProducts();
-            const idx = monthProducts.findIndex(p => p.id === id);
-            if (idx !== -1) monthProducts.splice(idx, 1);
-            saveToFirebase();
-            refreshAll();
-            showToast('🗑️ ' + _( 'deleted'));
-        }
-
-        function deleteMasterProduct(id) {
-            if (!confirm(_( 'deleteAllConfirm'))) return;
-            data.products = data.products.filter(p => p.id !== id);
-            for (const key in data.months) {
-                data.months[key].products = data.months[key].products.filter(p => p.id !== id);
-            }
-            saveToFirebase();
-            refreshAll();
-            showToast('🗑️ ' + _( 'deleted'));
-        }
-
         function editBudget() {
             const current = getCurrentMonthBudget();
             const newBudget = prompt(_( 'budgetPrompt') + ' (' + getCurrencySymbol() + '):', current);
@@ -3122,9 +3206,10 @@
             document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
             document.getElementById('tab-' + tab)?.classList.add('active');
             if (tab === 'dashboard') renderDashboard();
-            if (tab === 'shopping') renderShopping();
             if (tab === 'products') renderProducts();
             if (tab === 'months') renderMonths();
+            if (tab === 'wishlist') renderWishlist();
+            if (tab === 'shopping') renderShoppingDays();
             if (tab === 'admin' && isAdmin) renderAdminPanel();
         }
 
@@ -3239,15 +3324,7 @@
 
             viewingUserEmail = email;
 
-            // Find user data
-            getUsersCollectionRef().where('email', '==', email).get()
-                .then(snapshot => {
-                    if (snapshot.empty) {
-                        // Try using doc ID
-                        return getUsersCollectionRef().doc(email).get();
-                    }
-                    return snapshot.docs[0].ref.get();
-                })
+            getUsersCollectionRef().doc(email).get()
                 .then(doc => {
                     if (!doc || !doc.exists) {
                         contentEl.innerHTML = `<div class="text-muted">${_( 'noUserData')}</div>`;
@@ -3281,7 +3358,6 @@
                         return;
                     }
 
-                    // Build a summary table
                     let html = `
                         <div style="margin-bottom:16px;">
                             <strong>${_( 'totalItems')}:</strong> ${allProducts.length} |
@@ -3377,11 +3453,9 @@
                 showToast(_( 'noData'));
                 return;
             }
-            const headers = ['Name', 'Category', 'Quantity', 'Unit', 'Estimated', 'Real', 'Bought', 'Priority',
-                'Notes'
-            ];
+            const headers = ['Name', 'Category', 'Quantity', 'Unit', 'Estimated', 'Real', 'Bought', 'Priority', 'Notes'];
             const rows = monthProducts.map(p => [
-                p.name, p.category || '', p.subcategory || '', p.quantity || 1, p.unit || '',
+                p.name, p.category || '', p.quantity || 1, p.unit || '',
                 p.estimated || 0, p.real || 0, p.bought ? 'Yes' : 'No', p.priority || '', p.notes || ''
             ]);
             const csv = [headers.join(','), ...rows.map(r => r.join(','))].join('\n');
@@ -3418,15 +3492,16 @@
                         existing.priority = obj.priority || 'medium';
                     } else {
                         monthProducts.push({
-                            category: obj.category || 'Uncategorized',
+                            id: 'p' + Date.now() + Math.random().toString(36).slice(2, 6),
                             name: obj.name,
-                            quantity: parseFloat(obj.quantity) || 1,
-                            unit: obj.unit || '',
+                            category: obj.category || 'Uncategorized',
                             defaultPrice: parseFloat(obj.estimated) || 0,
-                            estimated: parseFloat(obj.estimated) || 0,
-                            real: parseFloat(obj.real) || 0,
+                            unit: obj.unit || '',
                             priority: obj.priority || 'medium',
                             bought: obj.bought?.toLowerCase() === 'yes',
+                            quantity: parseFloat(obj.quantity) || 1,
+                            estimated: parseFloat(obj.estimated) || 0,
+                            real: parseFloat(obj.real) || 0,
                             notes: obj.notes || '',
                             date: new Date().toISOString()
                         });
@@ -3466,10 +3541,9 @@
             }, 500);
         };
 
-        console.log('🚀 Smart Budget v2.0');
+        console.log('🚀 Smart Budget v3.0');
         console.log('👑 Admin: ' + ADMIN_EMAIL);
-        console.log('📝 Features: Sign Up, Email Verification, Admin Panel, Multi-language');
-        console.log('📊 Monthly Comparison: Line Graph');
+        console.log('📝 Features: Code Verification, Admin Panel, Shopping Days, Wishlist');
     </script>
 </body>
 </html>
