@@ -3424,7 +3424,7 @@
                         <td><input type="text" value="${p.quantity || 1}" onchange="updateProductField('${p.id}','quantity',this.value)" style="width:50px;" /></td>
                         <td><input type="number" value="${p.estimated || 0}" onchange="updateProductField('${p.id}','estimated',parseFloat(this.value)||0)" style="width:60px;" /></td>
                         <td><input type="number" value="${p.real || 0}" onchange="updateProductField('${p.id}','real',parseFloat(this.value)||0)" style="width:60px;" /></td>
-                        <td style="font-weight:600;color:${(p.real||0) > (p.estimated||0) ? 'var(--red)' : (p.real||0) < (p.estimated||0) ? 'var(--orange)' : 'var(--green)'};">${fmt((p.real||0) - (p.estimated||0))}</td>
+                        <td style="font-weight:600;color:${(p.real||0) > (p.estimated||0) ? 'var(--red)' : (p.real||0) < (p.estimated||0) ? 'var(--green)' : 'var(--orange)'};">${fmt((p.real||0) - (p.estimated||0))}</td>
                         <td>
                             <select onchange="updateProductField('${p.id}','priority',this.value)" style="background:transparent;border:1px solid var(--border);border-radius:6px;padding:2px 6px;color:var(--text);">
                                 <option value="low" ${p.priority === 'low' ? 'selected' : ''}>${_( 'low')}</option>
