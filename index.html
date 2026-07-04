@@ -1774,7 +1774,7 @@
                     <option value="Fruits">Fruits</option>
                     <option value="Gourmandises">Gourmandises</option>
                     <option value="Boissons">Boissons</option>
-                    <option value="Epices et graisses">Epices et graisses</option>
+                    <option value="Epices et huile">Epices et huile</option>
                     <option value="Hygiène">Hygiène</option>
                     <option value="Transport">Transport</option>
                     <option value="Santé">Santé</option>
@@ -1831,7 +1831,7 @@
         const CATEGORIES = [
             'Féculents', 'Conserves', 'Produits laitiers', 'Viandes et protéines',
             'Légumes', 'Fruits', 'Gourmandises', 'Boissons',
-            'Epices et graisses', 'Hygiène', 'Transport', 'Santé',
+            'Epices et huile', 'Hygiène', 'Transport', 'Santé',
             'Etudes', 'Epargnes', 'Perte'
         ];
 
@@ -3303,7 +3303,7 @@
                             </select>
                         </td>
                         <td><input type="text" value="${p.name}" onchange="updateProductField('${p.id}','name',this.value)" /></td>
-                        <td><input type="number" value="${p.quantity || 1}" onchange="updateProductField('${p.id}','quantity',parseFloat(this.value)||0)" style="width:50px;" /></td>
+                        <td><input type="text" value="${p.quantity}" onchange="updateProductField('${p.id}','quantity',this.value)" /></td>
                         <td><input type="number" value="${p.estimated || 0}" onchange="updateProductField('${p.id}','estimated',parseFloat(this.value)||0)" style="width:60px;" /></td>
                         <td><input type="number" value="${p.real || 0}" onchange="updateProductField('${p.id}','real',parseFloat(this.value)||0)" style="width:60px;" /></td>
                         <td style="font-weight:600;color:${(p.real||0) > (p.estimated||0) ? 'var(--red)' : (p.real||0) < (p.estimated||0) ? 'var(--orange)' : 'var(--green)'};">${fmt((p.real||0) - (p.estimated||0))}</td>
@@ -3341,9 +3341,8 @@
             const catChoice = prompt('Choose category:\n' + catOptions);
             const catIndex = parseInt(catChoice) - 1;
             const cat = (catIndex >= 0 && catIndex < CATEGORIES.length) ? CATEGORIES[catIndex] : 'Féculents';
-
+            const qty = prompt('Quantity:');
             const price = parseFloat(prompt('Estimated price (' + getCurrencySymbol() + '):')) || 0;
-            const qty = parseFloat(prompt('Quantity:')) || 1;
 
             const newProduct = {
                 id: 'p' + Date.now() + Math.random().toString(36).slice(2, 6),
