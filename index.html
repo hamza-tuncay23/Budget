@@ -29,20 +29,21 @@
         }
 
         :root {
-            --bg: #f5f7fa;
+            --bg: #f0f4f8;
             --card: #ffffff;
             --text: #1e293b;
             --text2: #64748b;
             --border: #e2e8f0;
             --primary: #3b82f6;
             --primary-light: #dbeafe;
-            --shadow: 0 4px 24px rgba(0, 0, 0, 0.06);
-            --radius: 16px;
+            --shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
+            --radius: 20px;
             --green: #22c55e;
             --red: #ef4444;
             --orange: #f59e0b;
             --purple: #8b5cf6;
-            --transition: 0.25s ease;
+            --pink: #ec4899;
+            --transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
         .dark {
@@ -53,7 +54,7 @@
             --border: #334155;
             --primary: #60a5fa;
             --primary-light: #1e293b;
-            --shadow: 0 4px 24px rgba(0, 0, 0, 0.3);
+            --shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
         }
 
         body {
@@ -61,16 +62,40 @@
             color: var(--text);
             min-height: 100vh;
             transition: background var(--transition), color var(--transition);
+            background-image: url('picture.jpg');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            background-blend-mode: overlay;
         }
 
-        /* ───────────── LOGIN/REGISTER SCREEN ───────────── */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: var(--bg);
+            opacity: 0.88;
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        .app-container {
+            position: relative;
+            z-index: 1;
+        }
+
+        /* ───────────── AUTH SCREEN ───────────── */
         #authScreen {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background: var(--bg);
+            background: rgba(15, 23, 42, 0.6);
+            backdrop-filter: blur(20px);
             display: flex;
             justify-content: center;
             align-items: center;
@@ -89,17 +114,25 @@
             background: var(--card);
             padding: 40px 36px;
             border-radius: var(--radius);
-            box-shadow: var(--shadow);
-            border: 1px solid var(--border);
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.1);
             max-width: 440px;
             width: 100%;
             max-height: 95vh;
             overflow-y: auto;
+            backdrop-filter: blur(10px);
         }
 
         .auth-box h2 {
-            font-size: 24px;
+            font-size: 26px;
             margin-bottom: 4px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .auth-box h2 i {
+            color: var(--primary);
         }
 
         .auth-box .subtitle {
@@ -129,7 +162,7 @@
         .auth-box input {
             width: 100%;
             padding: 12px 16px;
-            border: 1px solid var(--border);
+            border: 2px solid var(--border);
             border-radius: 12px;
             background: var(--bg);
             color: var(--text);
@@ -141,6 +174,7 @@
         .auth-box input:focus {
             outline: none;
             border-color: var(--primary);
+            box-shadow: 0 0 0 4px var(--primary-light);
         }
 
         .auth-box .input-group {
@@ -159,16 +193,18 @@
             font-size: 16px;
             font-weight: 600;
             cursor: pointer;
-            transition: opacity var(--transition);
+            transition: all var(--transition);
         }
 
         .auth-box button:hover {
-            opacity: 0.85;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(59, 130, 246, 0.3);
         }
 
         .auth-box button:disabled {
             opacity: 0.5;
             cursor: not-allowed;
+            transform: none;
         }
 
         .auth-box .error {
@@ -195,20 +231,11 @@
             display: none;
         }
 
-        .auth-box .admin-note {
-            margin-top: 16px;
-            font-size: 12px;
-            color: var(--text2);
-            text-align: center;
-            border-top: 1px solid var(--border);
-            padding-top: 16px;
-        }
-
         .auth-box .verify-section {
             display: none;
             margin-top: 16px;
             padding-top: 16px;
-            border-top: 1px solid var(--border);
+            border-top: 2px solid var(--border);
         }
 
         .auth-box .verify-section.active {
@@ -242,10 +269,15 @@
             flex-wrap: wrap;
             gap: 16px;
             margin-bottom: 28px;
+            background: var(--card);
+            padding: 16px 24px;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            border: 1px solid var(--border);
         }
 
         .header h1 {
-            font-size: 26px;
+            font-size: 22px;
             font-weight: 700;
             display: flex;
             align-items: center;
@@ -256,6 +288,12 @@
             color: var(--primary);
         }
 
+        .header h1 .user-name {
+            font-size: 16px;
+            font-weight: 500;
+            color: var(--text2);
+        }
+
         .header-actions {
             display: flex;
             gap: 10px;
@@ -264,7 +302,7 @@
         }
 
         .header-actions button {
-            background: var(--card);
+            background: var(--bg);
             border: 1px solid var(--border);
             color: var(--text);
             padding: 8px 16px;
@@ -276,12 +314,12 @@
             align-items: center;
             gap: 8px;
             transition: all var(--transition);
-            box-shadow: var(--shadow);
         }
 
         .header-actions button:hover {
             transform: translateY(-2px);
-            box-shadow: 0 6px 28px rgba(0, 0, 0, 0.1);
+            box-shadow: var(--shadow);
+            background: var(--primary-light);
         }
 
         .header-actions .logout-btn {
@@ -323,18 +361,12 @@
         .admin-badge {
             background: var(--purple);
             color: white;
-            padding: 2px 12px;
+            padding: 4px 14px;
             border-radius: 40px;
             font-size: 11px;
             font-weight: 600;
             text-transform: uppercase;
             letter-spacing: 0.5px;
-        }
-
-        .user-name-display {
-            font-weight: 500;
-            color: var(--text2);
-            font-size: 14px;
         }
 
         @keyframes pulse {
@@ -347,7 +379,7 @@
             }
         }
 
-        /* ───────────── REST OF STYLES (same as before) ───────────── */
+        /* ───────────── STATS GRID ───────────── */
         .stats-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
@@ -365,15 +397,16 @@
         }
 
         .stat-card:hover {
-            transform: translateY(-3px);
+            transform: translateY(-4px);
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.1);
         }
 
         .stat-card .label {
-            font-size: 13px;
+            font-size: 12px;
             font-weight: 500;
             color: var(--text2);
             text-transform: uppercase;
-            letter-spacing: 0.4px;
+            letter-spacing: 0.5px;
             margin-bottom: 4px;
         }
 
@@ -420,6 +453,7 @@
             color: var(--purple);
         }
 
+        /* ───────────── ROW LAYOUT ───────────── */
         .row {
             display: grid;
             grid-template-columns: 1fr 1fr;
@@ -442,6 +476,10 @@
             transition: all var(--transition);
         }
 
+        .card:hover {
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.08);
+        }
+
         .card h3 {
             font-size: 17px;
             font-weight: 600;
@@ -456,7 +494,7 @@
         }
 
         .card h3 .badge {
-            font-size: 12px;
+            font-size: 11px;
             background: var(--primary-light);
             color: var(--primary);
             padding: 2px 12px;
@@ -473,12 +511,13 @@
         }
 
         .chart-container-large {
-            max-height: 300px;
+            max-height: 280px;
             max-width: 100%;
             margin: 0 auto;
             position: relative;
         }
 
+        /* ───────────── CATEGORY SUMMARY TABLE ───────────── */
         .category-summary-table {
             width: 100%;
             border-collapse: collapse;
@@ -491,9 +530,9 @@
             font-weight: 600;
             color: var(--text2);
             border-bottom: 2px solid var(--border);
-            font-size: 12px;
+            font-size: 11px;
             text-transform: uppercase;
-            letter-spacing: 0.3px;
+            letter-spacing: 0.5px;
         }
 
         .category-summary-table td {
@@ -517,6 +556,7 @@
             border-bottom: none;
         }
 
+        /* ───────────── TABLE STYLES ───────────── */
         .table-wrap {
             overflow-x: auto;
         }
@@ -533,9 +573,9 @@
             font-weight: 600;
             color: var(--text2);
             border-bottom: 2px solid var(--border);
-            font-size: 12px;
+            font-size: 11px;
             text-transform: uppercase;
-            letter-spacing: 0.3px;
+            letter-spacing: 0.5px;
             cursor: pointer;
             user-select: none;
             white-space: nowrap;
@@ -605,12 +645,13 @@
 
         .add-row {
             background: transparent;
-            border: 1px dashed var(--border);
+            border: 2px dashed var(--border);
             color: var(--text2);
-            padding: 8px 16px;
+            padding: 8px 18px;
             border-radius: 40px;
             cursor: pointer;
             font-size: 13px;
+            font-weight: 500;
             transition: all var(--transition);
             margin-top: 10px;
             display: inline-flex;
@@ -624,6 +665,7 @@
             background: var(--primary-light);
         }
 
+        /* ───────────── TOOLBAR ───────────── */
         .toolbar {
             display: flex;
             flex-wrap: wrap;
@@ -635,13 +677,14 @@
         .toolbar input,
         .toolbar select {
             background: var(--bg);
-            border: 1px solid var(--border);
+            border: 2px solid var(--border);
             padding: 8px 14px;
             border-radius: 40px;
             color: var(--text);
             font-size: 14px;
             flex: 1 1 160px;
             min-width: 120px;
+            transition: border var(--transition);
         }
 
         .toolbar input:focus,
@@ -657,35 +700,42 @@
             align-items: center;
         }
 
+        /* ───────────── TABS ───────────── */
         .tabs {
             display: flex;
             gap: 4px;
-            background: var(--bg);
-            border-radius: 40px;
-            padding: 4px;
-            margin-bottom: 20px;
+            background: var(--card);
+            border-radius: 60px;
+            padding: 6px;
+            margin-bottom: 24px;
             flex-wrap: wrap;
+            box-shadow: var(--shadow);
+            border: 1px solid var(--border);
         }
 
         .tabs button {
             background: transparent;
             border: none;
-            padding: 8px 20px;
+            padding: 10px 22px;
             border-radius: 40px;
             font-weight: 500;
             color: var(--text2);
             cursor: pointer;
             transition: all var(--transition);
             font-size: 14px;
+            flex: 1;
+            min-width: 80px;
+            text-align: center;
         }
 
         .tabs button.active {
-            background: var(--card);
-            color: var(--text);
-            box-shadow: var(--shadow);
+            background: var(--primary);
+            color: white;
+            box-shadow: 0 4px 16px rgba(59, 130, 246, 0.3);
         }
 
-        .tabs button:hover {
+        .tabs button:hover:not(.active) {
+            background: var(--bg);
             color: var(--text);
         }
 
@@ -697,6 +747,7 @@
             display: block;
         }
 
+        /* ───────────── MONTH GRID ───────────── */
         .month-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
@@ -714,8 +765,8 @@
         }
 
         .month-card:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
+            transform: translateY(-4px);
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.1);
         }
 
         .month-card .month-name {
@@ -736,11 +787,12 @@
             color: var(--text);
         }
 
+        /* ───────────── SETTINGS ───────────── */
         .settings-row {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 12px 0;
+            padding: 14px 0;
             border-bottom: 1px solid var(--border);
         }
 
@@ -749,8 +801,8 @@
         }
 
         .toggle-switch {
-            width: 44px;
-            height: 24px;
+            width: 48px;
+            height: 26px;
             background: var(--border);
             border-radius: 40px;
             position: relative;
@@ -764,8 +816,8 @@
         }
 
         .toggle-switch .knob {
-            width: 18px;
-            height: 18px;
+            width: 20px;
+            height: 20px;
             background: white;
             border-radius: 50%;
             position: absolute;
@@ -776,19 +828,26 @@
         }
 
         .toggle-switch.active .knob {
-            left: 23px;
+            left: 25px;
         }
 
         .settings-select {
             background: var(--bg);
-            border: 1px solid var(--border);
+            border: 2px solid var(--border);
             padding: 6px 12px;
             border-radius: 8px;
             color: var(--text);
             font-size: 14px;
             min-width: 120px;
+            transition: border var(--transition);
         }
 
+        .settings-select:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+
+        /* ───────────── ADMIN PANEL ───────────── */
         .admin-panel {
             background: var(--card);
             border-radius: var(--radius);
@@ -807,31 +866,78 @@
 
         .admin-user-list {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
             gap: 12px;
             margin-top: 12px;
         }
 
         .admin-user-card {
             background: var(--bg);
-            padding: 12px 16px;
+            padding: 14px 18px;
             border-radius: 12px;
-            border: 1px solid var(--border);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
+            border: 2px solid var(--border);
+            cursor: pointer;
+            transition: all var(--transition);
+        }
+
+        .admin-user-card:hover {
+            border-color: var(--primary);
+            transform: translateY(-2px);
+            box-shadow: var(--shadow);
         }
 
         .admin-user-card .email {
-            font-weight: 500;
-            font-size: 13px;
+            font-weight: 600;
+            font-size: 14px;
         }
 
         .admin-user-card .status {
             font-size: 12px;
             color: var(--text2);
+            margin-top: 4px;
         }
 
+        .admin-user-card .badge-admin {
+            background: var(--purple);
+            color: white;
+            padding: 1px 10px;
+            border-radius: 40px;
+            font-size: 10px;
+            font-weight: 600;
+        }
+
+        /* Admin User Detail View */
+        .admin-user-detail {
+            background: var(--card);
+            border-radius: var(--radius);
+            padding: 24px;
+            border: 2px solid var(--primary);
+            margin-top: 20px;
+            display: none;
+        }
+
+        .admin-user-detail.active {
+            display: block;
+        }
+
+        .admin-user-detail .back-btn {
+            background: transparent;
+            border: none;
+            color: var(--primary);
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .admin-user-detail .back-btn:hover {
+            text-decoration: underline;
+        }
+
+        /* ───────────── CATEGORY ITEM ───────────── */
         .category-item {
             display: flex;
             justify-content: space-between;
@@ -862,9 +968,16 @@
             font-weight: 600;
         }
 
+        /* ───────────── RESPONSIVE ───────────── */
         @media (max-width: 600px) {
+            .header {
+                padding: 12px 16px;
+            }
             .header h1 {
-                font-size: 20px;
+                font-size: 18px;
+            }
+            .header h1 .user-name {
+                font-size: 13px;
             }
             .stat-card .value {
                 font-size: 22px;
@@ -872,20 +985,9 @@
             .card {
                 padding: 16px;
             }
-            td input[type="text"],
-            td input[type="number"] {
-                min-width: 40px;
+            .tabs button {
+                padding: 8px 14px;
                 font-size: 12px;
-            }
-            th {
-                font-size: 10px;
-            }
-            td {
-                font-size: 12px;
-                padding: 6px 4px;
-            }
-            .stats-grid {
-                grid-template-columns: 1fr 1fr;
             }
             .auth-box {
                 padding: 24px 20px;
@@ -893,14 +995,22 @@
             .auth-box .input-group {
                 grid-template-columns: 1fr;
             }
+            .stats-grid {
+                grid-template-columns: 1fr 1fr;
+            }
         }
 
         @media (max-width: 400px) {
             .stats-grid {
                 grid-template-columns: 1fr;
             }
+            .header-actions button {
+                padding: 6px 12px;
+                font-size: 12px;
+            }
         }
 
+        /* ───────────── UTILITIES ───────────── */
         .mt-16 {
             margin-top: 16px;
         }
@@ -929,13 +1039,14 @@
             right: 24px;
             background: var(--card);
             border: 1px solid var(--border);
-            padding: 14px 22px;
+            padding: 16px 24px;
             border-radius: var(--radius);
-            box-shadow: 0 8px 40px rgba(0, 0, 0, 0.15);
+            box-shadow: 0 12px 48px rgba(0, 0, 0, 0.15);
             font-weight: 500;
             z-index: 999;
             animation: slideUp 0.3s ease;
-            max-width: 340px;
+            max-width: 380px;
+            backdrop-filter: blur(10px);
         }
 
         @keyframes slideUp {
@@ -952,340 +1063,379 @@
 </head>
 <body>
 
-    <!-- ═══════════ AUTH SCREEN ═══════════ -->
-    <div id="authScreen">
-        <div class="auth-box" id="authBox">
-            <!-- Login Form -->
-            <div id="loginForm">
-                <h2>🔐 Smart Budget</h2>
-                <p class="subtitle">Sign in to sync across all your devices</p>
+    <div class="app-container">
 
-                <input type="email" id="loginEmail" placeholder="Email" required />
-                <input type="password" id="loginPassword" placeholder="Password" required />
+        <!-- ═══════════ AUTH SCREEN ═══════════ -->
+        <div id="authScreen">
+            <div class="auth-box" id="authBox">
 
-                <button id="loginBtn" onclick="handleLogin()">Sign In</button>
+                <!-- Login Form -->
+                <div id="loginForm">
+                    <h2><i class="fas fa-wallet"></i> Smart Budget</h2>
+                    <p class="subtitle">Sign in to sync across all your devices</p>
 
-                <div class="error" id="loginError">Invalid email or password</div>
-                <div class="loading-text" id="loginLoading">Connecting...</div>
+                    <input type="email" id="loginEmail" placeholder="Email" required />
+                    <input type="password" id="loginPassword" placeholder="Password" required />
 
-                <div class="toggle-mode">
-                    Don't have an account? <a onclick="showRegister()">Sign Up</a>
+                    <button id="loginBtn" onclick="handleLogin()">Sign In</button>
+
+                    <div class="error" id="loginError">Invalid email or password</div>
+                    <div class="loading-text" id="loginLoading">Connecting...</div>
+
+                    <div class="toggle-mode">
+                        Don't have an account? <a onclick="showRegister()">Sign Up</a>
+                    </div>
                 </div>
 
-                <div class="admin-note">
-                    <i class="fas fa-shield-alt"></i> Admin: Hamza Margal
+                <!-- Register Form -->
+                <div id="registerForm" style="display:none;">
+                    <h2><i class="fas fa-user-plus"></i> Create Account</h2>
+                    <p class="subtitle">Join Smart Budget and track your finances</p>
+
+                    <div class="input-group">
+                        <input type="text" id="regName" placeholder="Name" required />
+                        <input type="text" id="regSurname" placeholder="Surname" required />
+                    </div>
+                    <input type="email" id="regEmail" placeholder="Email" required />
+                    <input type="password" id="regPassword" placeholder="Password (min 6 chars)" required />
+                    <input type="password" id="regConfirmPassword" placeholder="Confirm Password" required />
+
+                    <button id="registerBtn" onclick="handleRegister()">Create Account</button>
+
+                    <div class="error" id="registerError"></div>
+                    <div class="success" id="registerSuccess"></div>
+                    <div class="loading-text" id="registerLoading">Creating account...</div>
+
+                    <div class="toggle-mode">
+                        Already have an account? <a onclick="showLogin()">Sign In</a>
+                    </div>
                 </div>
-            </div>
 
-            <!-- Register Form -->
-            <div id="registerForm" style="display:none;">
-                <h2>📝 Create Account</h2>
-                <p class="subtitle">Join Smart Budget and track your finances</p>
+                <!-- Verification Section -->
+                <div class="verify-section" id="verifySection">
+                    <h3 style="font-size:18px;margin-bottom:8px;">✅ Verify Your Email</h3>
+                    <div class="info">
+                        A <strong>6-digit verification code</strong> has been sent to your email.<br>
+                        Please check your inbox and enter the code below.
+                    </div>
 
-                <div class="input-group">
-                    <input type="text" id="regName" placeholder="Name" required />
-                    <input type="text" id="regSurname" placeholder="Surname" required />
+                    <!-- Show the code that was sent (for testing/debug) -->
+                    <div class="code-hint" id="codeDisplay" style="display:none;">
+                        📧 Code: <span id="sentCodeValue">------</span>
+                    </div>
+
+                    <div class="code-input-group">
+                        <input type="text" id="verifyCodeInput" placeholder="● ● ● ● ● ●" maxlength="6" 
+                               oninput="this.value=this.value.replace(/[^0-9]/g,'').slice(0,6);" />
+                    </div>
+
+                    <button onclick="verifyCode()" style="margin-top:8px;">Verify Code</button>
+
+                    <div class="error" id="verifyError"></div>
+                    <div class="success" id="verifySuccess"></div>
+                    <div class="loading-text" id="verifyLoading">Verifying...</div>
+
+                    <div class="toggle-mode" style="margin-top:12px;">
+                        Didn't receive code? <a onclick="resendVerificationCode()">Resend</a>
+                    </div>
+
+                    <div class="toggle-mode" style="margin-top:8px;font-size:12px;">
+                        <a onclick="showCodeHint()" style="color:var(--text2);font-size:12px;">Show code (for testing)</a>
+                    </div>
                 </div>
-                <input type="email" id="regEmail" placeholder="Email" required />
-                <input type="password" id="regPassword" placeholder="Password (min 6 chars)" required />
-                <input type="password" id="regConfirmPassword" placeholder="Confirm Password" required />
 
-                <button id="registerBtn" onclick="handleRegister()">Create Account</button>
-
-                <div class="error" id="registerError"></div>
-                <div class="success" id="registerSuccess"></div>
-                <div class="loading-text" id="registerLoading">Creating account...</div>
-
-                <div class="toggle-mode">
-                    Already have an account? <a onclick="showLogin()">Sign In</a>
-                </div>
-            </div>
-
-            <!-- Verification Section -->
-            <div class="verify-section" id="verifySection">
-                <h3>✅ Verify Your Email</h3>
-                <div class="info">
-                    A verification code has been sent to your email.<br>
-                    Please enter it below to complete registration.
-                </div>
-                <input type="text" id="verifyCode" placeholder="Enter verification code" />
-                <button onclick="verifyEmail()">Verify</button>
-                <div class="error" id="verifyError"></div>
-                <div class="loading-text" id="verifyLoading">Verifying...</div>
-                <div class="toggle-mode" style="margin-top:12px;">
-                    Didn't receive code? <a onclick="resendVerification()">Resend</a>
-                </div>
             </div>
         </div>
+
+        <!-- ═══════════ APP ═══════════ -->
+        <div id="app">
+
+            <!-- Header -->
+            <header class="header">
+                <h1>
+                    <i class="fas fa-wallet"></i>
+                    Smart Budget
+                    <span class="user-name" id="userNameDisplay">- User</span>
+                </h1>
+                <div class="header-actions">
+                    <span class="sync-status" id="syncStatus">
+                        <span class="dot offline" id="syncDot"></span>
+                        <span id="syncText">Offline</span>
+                    </span>
+                    <span id="adminBadge" class="admin-badge hidden">👑 Admin</span>
+                    <button onclick="exportCSV()"><i class="fas fa-file-export"></i> Export</button>
+                    <button onclick="document.getElementById('csvInput').click()"><i class="fas fa-file-import"></i> Import</button>
+                    <button class="logout-btn" onclick="handleLogout()"><i class="fas fa-sign-out-alt"></i> Logout</button>
+                </div>
+            </header>
+
+            <!-- Stats Grid -->
+            <section class="stats-grid" id="statsGrid">
+                <div class="stat-card blue">
+                    <div class="label">💰 Monthly Budget</div>
+                    <div class="value" id="budgetDisplay">0</div>
+                    <div class="sub"><i class="fas fa-pen" style="cursor:pointer;" onclick="editBudget()"></i> Click to edit</div>
+                </div>
+                <div class="stat-card green">
+                    <div class="label">✅ Total Spent</div>
+                    <div class="value" id="spentDisplay">0</div>
+                    <div class="sub">This month</div>
+                </div>
+                <div class="stat-card orange">
+                    <div class="label">📊 Remaining</div>
+                    <div class="value" id="remainingDisplay">0</div>
+                    <div class="progress-bar"><div class="fill" id="progressFill" style="width:0%;"></div></div>
+                </div>
+                <div class="stat-card purple">
+                    <div class="label">📈 Monthly Profit</div>
+                    <div class="value" id="profitDisplay">0</div>
+                    <div class="sub">Budget - Spent</div>
+                </div>
+            </section>
+
+            <!-- Tabs -->
+            <div class="tabs">
+                <button class="active" data-tab="dashboard"><i class="fas fa-chart-pie"></i> Dashboard</button>
+                <button data-tab="shopping"><i class="fas fa-shopping-cart"></i> Shopping</button>
+                <button data-tab="products"><i class="fas fa-boxes"></i> Products</button>
+                <button data-tab="months"><i class="fas fa-calendar-alt"></i> Months</button>
+                <button data-tab="settings"><i class="fas fa-cog"></i> Settings</button>
+                <button data-tab="admin" id="adminTab" class="hidden"><i class="fas fa-user-shield"></i> Admin</button>
+            </div>
+
+            <!-- ═══════ DASHBOARD ═══════ -->
+            <div class="tab-content active" id="tab-dashboard">
+                <div class="card" style="margin-bottom:24px;">
+                    <h3><i class="fas fa-table"></i> Category Summary <span class="badge">This month</span></h3>
+                    <div class="table-wrap">
+                        <table class="category-summary-table" id="categorySummaryTable">
+                            <thead>
+                                <tr>
+                                    <th>Category</th>
+                                    <th style="text-align:right;">Estimated</th>
+                                    <th style="text-align:right;">Real</th>
+                                    <th style="text-align:right;">Difference</th>
+                                </tr>
+                            </thead>
+                            <tbody id="categorySummaryBody"></tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="card">
+                        <h3><i class="fas fa-chart-pie"></i> Spending by Category</h3>
+                        <div class="chart-container">
+                            <canvas id="pieChart"></canvas>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <h3><i class="fas fa-chart-line"></i> Monthly Comparison</h3>
+                        <div class="chart-container-large">
+                            <canvas id="monthlyComparisonChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="card">
+                        <h3><i class="fas fa-clock"></i> Recent Purchases</h3>
+                        <div id="recentPurchases">
+                            <div class="text-muted text-center" style="padding:20px 0;">No purchases yet.</div>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <h3><i class="fas fa-bolt"></i> Quick Stats</h3>
+                        <div id="quickStats">
+                            <div class="text-muted text-center" style="padding:20px 0;">Statistics will appear here.</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ═══════ SHOPPING ═══════ -->
+            <div class="tab-content" id="tab-shopping">
+                <div class="card">
+                    <h3><i class="fas fa-shopping-list"></i> Shopping Checklist</h3>
+                    <div class="toolbar">
+                        <input type="text" id="searchShopping" placeholder="🔍 Search products..." oninput="renderShopping()" />
+                        <div class="filter-group">
+                            <select id="filterCategoryShopping" onchange="renderShopping()">
+                                <option value="all">All Categories</option>
+                            </select>
+                            <select id="filterShopping" onchange="renderShopping()">
+                                <option value="all">All</option>
+                                <option value="bought">Bought</option>
+                                <option value="unbought">Unbought</option>
+                            </select>
+                            <select id="priorityFilter" onchange="renderShopping()">
+                                <option value="all">All priorities</option>
+                                <option value="high">High</option>
+                                <option value="medium">Medium</option>
+                                <option value="low">Low</option>
+                            </select>
+                        </div>
+                        <button class="add-row" onclick="addProduct()"><i class="fas fa-plus"></i> Add product</button>
+                    </div>
+                    <div class="table-wrap">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th style="width:30px;">✔</th>
+                                    <th onclick="sortShopping('category')">Category <span class="sort-icon">↕</span></th>
+                                    <th onclick="sortShopping('name')">Product <span class="sort-icon">↕</span></th>
+                                    <th onclick="sortShopping('quantity')">Qty <span class="sort-icon">↕</span></th>
+                                    <th onclick="sortShopping('estimated')">Est. <span class="sort-icon">↕</span></th>
+                                    <th onclick="sortShopping('real')">Real <span class="sort-icon">↕</span></th>
+                                    <th>Diff</th>
+                                    <th onclick="sortShopping('priority')">Priority <span class="sort-icon">↕</span></th>
+                                    <th style="width:60px;">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="shoppingBody"></tbody>
+                        </table>
+                    </div>
+                    <div style="margin-top:12px; display:flex; gap:12px; flex-wrap:wrap;">
+                        <span class="text-muted">Total estimated: <strong id="shoppingEstTotal">0</strong></span>
+                        <span class="text-muted">Total real: <strong id="shoppingRealTotal">0</strong></span>
+                        <span class="text-muted">Bought: <strong id="shoppingBoughtCount">0</strong> / <span id="shoppingTotalCount">0</span></span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ═══════ PRODUCTS ═══════ -->
+            <div class="tab-content" id="tab-products">
+                <div class="card">
+                    <h3><i class="fas fa-box"></i> Product Database</h3>
+                    <div class="toolbar">
+                        <input type="text" id="searchProducts" placeholder="🔍 Search products..." oninput="renderProducts()" />
+                        <div class="filter-group">
+                            <select id="categoryFilter" onchange="renderProducts()">
+                                <option value="all">All categories</option>
+                            </select>
+                        </div>
+                        <button class="add-row" onclick="addProduct()"><i class="fas fa-plus"></i> Add product</button>
+                    </div>
+                    <div class="table-wrap">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th onclick="sortProducts('name')">Product <span class="sort-icon">↕</span></th>
+                                    <th onclick="sortProducts('category')">Category <span class="sort-icon">↕</span></th>
+                                    <th onclick="sortProducts('subcategory')">Subcategory <span class="sort-icon">↕</span></th>
+                                    <th onclick="sortProducts('defaultPrice')">Default price <span class="sort-icon">↕</span></th>
+                                    <th onclick="sortProducts('unit')">Unit <span class="sort-icon">↕</span></th>
+                                    <th style="width:60px;">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="productsBody"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ═══════ MONTHS ═══════ -->
+            <div class="tab-content" id="tab-months">
+                <div class="card">
+                    <h3><i class="fas fa-calendar-alt"></i> Monthly Sheets</h3>
+                    <p class="text-muted" style="margin-bottom:16px;">Each month is saved automatically. Click a month to view details.</p>
+                    <div id="monthGrid" class="month-grid"></div>
+                </div>
+            </div>
+
+            <!-- ═══════ SETTINGS ═══════ -->
+            <div class="tab-content" id="tab-settings">
+                <div class="card">
+                    <h3><i class="fas fa-sliders-h"></i> Settings</h3>
+
+                    <div class="settings-row">
+                        <span><i class="fas fa-moon"></i> Dark Mode</span>
+                        <div class="toggle-switch" id="darkToggle" onclick="toggleDark()">
+                            <div class="knob"></div>
+                        </div>
+                    </div>
+
+                    <div class="settings-row">
+                        <span><i class="fas fa-coins"></i> Currency</span>
+                        <select id="currencySelect" onchange="updateCurrency()" class="settings-select">
+                            <option value="DH">DH</option>
+                            <option value="$">$</option>
+                            <option value="€">€</option>
+                            <option value="₺">₺</option>
+                            <option value="£">£</option>
+                            <option value="¥">¥</option>
+                        </select>
+                    </div>
+
+                    <div class="settings-row">
+                        <span><i class="fas fa-language"></i> Language</span>
+                        <select id="languageSelect" onchange="updateLanguage()" class="settings-select">
+                            <option value="en">🇬🇧 English</option>
+                            <option value="fr">🇫🇷 Français</option>
+                            <option value="ar">🇸🇦 العربية</option>
+                            <option value="tr">🇹🇷 Türkçe</option>
+                            <option value="ja">🇯🇵 日本語</option>
+                        </select>
+                    </div>
+
+                    <div class="settings-row">
+                        <span><i class="fas fa-cloud"></i> Cloud Sync</span>
+                        <span class="text-muted" id="syncStatusText">Connected</span>
+                    </div>
+
+                    <div class="settings-row">
+                        <span><i class="fas fa-file-excel"></i> Export Excel (CSV)</span>
+                        <button onclick="exportCSV()" style="background:var(--primary);color:white;border:none;padding:6px 16px;border-radius:40px;cursor:pointer;">Export</button>
+                    </div>
+
+                    <div class="settings-row">
+                        <span><i class="fas fa-file-import"></i> Import CSV</span>
+                        <input type="file" id="csvInput" accept=".csv" style="display:none;" onchange="handleImport(event)" />
+                        <button onclick="document.getElementById('csvInput').click()" style="background:var(--primary);color:white;border:none;padding:6px 16px;border-radius:40px;cursor:pointer;">Import</button>
+                    </div>
+
+                    <div class="settings-row" style="border-bottom: none; padding-top: 16px;">
+                        <span><i class="fas fa-user"></i> User</span>
+                        <span class="text-muted" id="userEmailDisplay">—</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ═══════ ADMIN ═══════ -->
+            <div class="tab-content" id="tab-admin">
+                <div class="admin-panel">
+                    <h3><i class="fas fa-user-shield"></i> Admin Panel</h3>
+                    <p class="text-muted" style="margin-bottom:16px;">Click on any user to see their full shopping details.</p>
+
+                    <div id="adminUserList">
+                        <div class="text-muted text-center" style="padding:20px 0;">Loading users...</div>
+                    </div>
+
+                    <!-- User Detail View -->
+                    <div class="admin-user-detail" id="adminUserDetail">
+                        <button class="back-btn" onclick="closeUserDetail()"><i class="fas fa-arrow-left"></i> Back to Users</button>
+                        <h4 id="detailUserName" style="margin-bottom:8px;">User: —</h4>
+                        <p class="text-muted" id="detailUserEmail" style="margin-bottom:16px;">—</p>
+                        <div id="detailUserContent">
+                            <div class="text-muted text-center">Loading user data...</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <h3><i class="fas fa-chart-bar"></i> Global Statistics</h3>
+                    <div id="adminGlobalStats">
+                        <div class="text-muted text-center" style="padding:20px 0;">Loading global statistics...</div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- Toast -->
+        <div id="toast" class="toast hidden"></div>
+
     </div>
-
-    <!-- ═══════════ APP ═══════════ -->
-    <div id="app">
-
-        <!-- Header -->
-        <header class="header">
-            <h1><i class="fas fa-wallet"></i> Smart Budget</h1>
-            <div class="header-actions">
-                <span class="user-name-display" id="userNameDisplay">👤 User</span>
-                <span class="sync-status" id="syncStatus">
-                    <span class="dot offline" id="syncDot"></span>
-                    <span id="syncText">Offline</span>
-                </span>
-                <span id="adminBadge" class="admin-badge hidden">Admin</span>
-                <button onclick="exportCSV()"><i class="fas fa-file-export"></i> Export</button>
-                <button onclick="document.getElementById('csvInput').click()"><i class="fas fa-file-import"></i> Import</button>
-                <button class="logout-btn" onclick="handleLogout()"><i class="fas fa-sign-out-alt"></i> Logout</button>
-            </div>
-        </header>
-
-        <!-- Stats Grid -->
-        <section class="stats-grid" id="statsGrid">
-            <div class="stat-card blue">
-                <div class="label">💰 Monthly Budget</div>
-                <div class="value" id="budgetDisplay">0</div>
-                <div class="sub"><i class="fas fa-pen" style="cursor:pointer;" onclick="editBudget()"></i> Click to edit</div>
-            </div>
-            <div class="stat-card green">
-                <div class="label">✅ Total Spent</div>
-                <div class="value" id="spentDisplay">0</div>
-                <div class="sub">This month</div>
-            </div>
-            <div class="stat-card orange">
-                <div class="label">📊 Remaining</div>
-                <div class="value" id="remainingDisplay">0</div>
-                <div class="progress-bar"><div class="fill" id="progressFill" style="width:0%;"></div></div>
-            </div>
-            <div class="stat-card purple">
-                <div class="label">📈 Monthly Profit</div>
-                <div class="value" id="profitDisplay">0</div>
-                <div class="sub">Budget - Spent</div>
-            </div>
-        </section>
-
-        <!-- Tabs -->
-        <div class="tabs">
-            <button class="active" data-tab="dashboard"><i class="fas fa-chart-pie"></i> Dashboard</button>
-            <button data-tab="shopping"><i class="fas fa-shopping-cart"></i> Shopping</button>
-            <button data-tab="products"><i class="fas fa-boxes"></i> Products</button>
-            <button data-tab="months"><i class="fas fa-calendar-alt"></i> Months</button>
-            <button data-tab="settings"><i class="fas fa-cog"></i> Settings</button>
-            <button data-tab="admin" id="adminTab" class="hidden"><i class="fas fa-user-shield"></i> Admin</button>
-        </div>
-
-        <!-- ═══════ DASHBOARD ═══════ -->
-        <div class="tab-content active" id="tab-dashboard">
-            <div class="card" style="margin-bottom:24px;">
-                <h3><i class="fas fa-table"></i> Category Summary <span class="badge">This month</span></h3>
-                <div class="table-wrap">
-                    <table class="category-summary-table" id="categorySummaryTable">
-                        <thead>
-                            <tr>
-                                <th>Category</th>
-                                <th style="text-align:right;">Estimated</th>
-                                <th style="text-align:right;">Real</th>
-                                <th style="text-align:right;">Difference</th>
-                            </tr>
-                        </thead>
-                        <tbody id="categorySummaryBody"></tbody>
-                    </table>
-                </div>
-            </div>
-
-            <div class="row">
-                <div class="card">
-                    <h3><i class="fas fa-chart-pie"></i> Spending by Category</h3>
-                    <div class="chart-container">
-                        <canvas id="pieChart"></canvas>
-                    </div>
-                </div>
-                <div class="card">
-                    <h3><i class="fas fa-chart-line"></i> Monthly Comparison</h3>
-                    <div class="chart-container-large">
-                        <canvas id="monthlyComparisonChart"></canvas>
-                    </div>
-                </div>
-            </div>
-
-            <div class="row">
-                <div class="card">
-                    <h3><i class="fas fa-clock"></i> Recent Purchases</h3>
-                    <div id="recentPurchases">
-                        <div class="text-muted text-center" style="padding:20px 0;">No purchases yet.</div>
-                    </div>
-                </div>
-                <div class="card">
-                    <h3><i class="fas fa-bolt"></i> Quick Stats</h3>
-                    <div id="quickStats">
-                        <div class="text-muted text-center" style="padding:20px 0;">Statistics will appear here.</div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- ═══════ SHOPPING ═══════ -->
-        <div class="tab-content" id="tab-shopping">
-            <div class="card">
-                <h3><i class="fas fa-shopping-list"></i> Shopping Checklist</h3>
-                <div class="toolbar">
-                    <input type="text" id="searchShopping" placeholder="🔍 Search products..." oninput="renderShopping()" />
-                    <div class="filter-group">
-                        <select id="filterCategoryShopping" onchange="renderShopping()">
-                            <option value="all">All Categories</option>
-                        </select>
-                        <select id="filterShopping" onchange="renderShopping()">
-                            <option value="all">All</option>
-                            <option value="bought">Bought</option>
-                            <option value="unbought">Unbought</option>
-                        </select>
-                        <select id="priorityFilter" onchange="renderShopping()">
-                            <option value="all">All priorities</option>
-                            <option value="high">High</option>
-                            <option value="medium">Medium</option>
-                            <option value="low">Low</option>
-                        </select>
-                    </div>
-                    <button class="add-row" onclick="addProduct()"><i class="fas fa-plus"></i> Add product</button>
-                </div>
-                <div class="table-wrap">
-                    <table>
-                        <thead>
-                            <tr>
-                                <th style="width:30px;">✔</th>
-                                <th onclick="sortShopping('category')">Category <span class="sort-icon">↕</span></th>
-                                <th onclick="sortShopping('subcategory')">Subcategory <span class="sort-icon">↕</span></th>
-                                <th onclick="sortShopping('name')">Product <span class="sort-icon">↕</span></th>
-                                <th onclick="sortShopping('quantity')">Qty <span class="sort-icon">↕</span></th>
-                                <th onclick="sortShopping('estimated')">Est. <span class="sort-icon">↕</span></th>
-                                <th onclick="sortShopping('real')">Real <span class="sort-icon">↕</span></th>
-                                <th>Diff</th>
-                                <th onclick="sortShopping('priority')">Priority <span class="sort-icon">↕</span></th>
-                                <th style="width:60px;">Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody id="shoppingBody"></tbody>
-                    </table>
-                </div>
-                <div style="margin-top:12px; display:flex; gap:12px; flex-wrap:wrap;">
-                    <span class="text-muted">Total estimated: <strong id="shoppingEstTotal">0</strong></span>
-                    <span class="text-muted">Total real: <strong id="shoppingRealTotal">0</strong></span>
-                    <span class="text-muted">Bought: <strong id="shoppingBoughtCount">0</strong> / <span id="shoppingTotalCount">0</span></span>
-                </div>
-            </div>
-        </div>
-
-        <!-- ═══════ PRODUCTS ═══════ -->
-        <div class="tab-content" id="tab-products">
-            <div class="card">
-                <h3><i class="fas fa-box"></i> Product Database</h3>
-                <div class="toolbar">
-                    <input type="text" id="searchProducts" placeholder="🔍 Search products..." oninput="renderProducts()" />
-                    <div class="filter-group">
-                        <select id="categoryFilter" onchange="renderProducts()">
-                            <option value="all">All categories</option>
-                        </select>
-                        <select id="subcategoryFilter" onchange="renderProducts()">
-                            <option value="all">All subcategories</option>
-                        </select>
-                    </div>
-                    <button class="add-row" onclick="addProduct()"><i class="fas fa-plus"></i> Add product</button>
-                </div>
-                <div class="table-wrap">
-                    <table>
-                        <thead>
-                            <tr>
-                                <th onclick="sortProducts('category')">Category <span class="sort-icon">↕</span></th>
-                                <th onclick="sortProducts('subcategory')">Subcategory <span class="sort-icon">↕</span></th>
-                                <th onclick="sortProducts('name')">Product <span class="sort-icon">↕</span></th>
-                                <th onclick="sortProducts('defaultPrice')">Default price <span class="sort-icon">↕</span></th>
-                                <th onclick="sortProducts('unit')">Unit <span class="sort-icon">↕</span></th>
-                                <th style="width:60px;">Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody id="productsBody"></tbody>
-                    </table>
-                </div>
-            </div>
-        </div>
-
-        <!-- ═══════ MONTHS ═══════ -->
-        <div class="tab-content" id="tab-months">
-            <div class="card">
-                <h3><i class="fas fa-calendar-alt"></i> Monthly Sheets</h3>
-                <p class="text-muted" style="margin-bottom:16px;">Each month is saved automatically. Click a month to view details.</p>
-                <div id="monthGrid" class="month-grid"></div>
-            </div>
-        </div>
-
-        <!-- ═══════ SETTINGS ═══════ -->
-        <div class="tab-content" id="tab-settings">
-            <div class="card">
-                <h3><i class="fas fa-sliders-h"></i> Settings</h3>
-
-                <div class="settings-row">
-                    <span><i class="fas fa-moon"></i> Dark Mode</span>
-                    <div class="toggle-switch" id="darkToggle" onclick="toggleDark()">
-                        <div class="knob"></div>
-                    </div>
-                </div>
-
-                <div class="settings-row">
-                    <span><i class="fas fa-coins"></i> Currency</span>
-                    <select id="currencySelect" onchange="updateCurrency()" class="settings-select">
-                        <option value="DH">DH</option>
-                        <option value="$">$</option>
-                        <option value="€">€</option>
-                        <option value="£">£</option>
-                        <option value="₺">₺</option>
-                        <option value="¥">¥</option>
-                    </select>
-                </div>
-
-                <div class="settings-row">
-                    <span><i class="fas fa-cloud"></i> Cloud Sync</span>
-                    <span class="text-muted" id="syncStatusText">Connected</span>
-                </div>
-
-                <div class="settings-row">
-                    <span><i class="fas fa-file-excel"></i> Export Excel (CSV)</span>
-                    <button onclick="exportCSV()" style="background:var(--primary);color:white;border:none;padding:6px 16px;border-radius:40px;cursor:pointer;">Export</button>
-                </div>
-
-                <div class="settings-row">
-                    <span><i class="fas fa-file-import"></i> Import CSV</span>
-                    <input type="file" id="csvInput" accept=".csv" style="display:none;" onchange="handleImport(event)" />
-                    <button onclick="document.getElementById('csvInput').click()" style="background:var(--primary);color:white;border:none;padding:6px 16px;border-radius:40px;cursor:pointer;">Import</button>
-                </div>
-
-                <div class="settings-row" style="border-bottom: none; padding-top: 16px;">
-                    <span><i class="fas fa-user"></i> User</span>
-                    <span class="text-muted" id="userEmailDisplay">—</span>
-                </div>
-            </div>
-        </div>
-
-        <!-- ═══════ ADMIN ═══════ -->
-        <div class="tab-content" id="tab-admin">
-            <div class="admin-panel">
-                <h3><i class="fas fa-user-shield"></i> Admin Panel — Hamza Margal</h3>
-                <p class="text-muted" style="margin-bottom:16px;">View all users and their data. You can see everything but cannot modify other users' data.</p>
-
-                <div id="adminUserList">
-                    <div class="text-muted text-center" style="padding:20px 0;">Loading users...</div>
-                </div>
-            </div>
-
-            <div class="card">
-                <h3><i class="fas fa-chart-bar"></i> Global Statistics</h3>
-                <div id="adminGlobalStats">
-                    <div class="text-muted text-center" style="padding:20px 0;">Loading global statistics...</div>
-                </div>
-            </div>
-        </div>
-
-    </div>
-
-    <!-- Toast -->
-    <div id="toast" class="toast hidden"></div>
 
     <!-- ──────────────────────────────────────────────── -->
     <!-- JAVASCRIPT -->
@@ -1297,17 +1447,17 @@
         // ═══════════════════════════════════════════════════
 
         const firebaseConfig = {
-  apiKey: "AIzaSyBeSa90G5b_fl9HoNiDQhUJSyS_4n3x5o0",
-  authDomain: "smart-budget-55f99.firebaseapp.com",
-  projectId: "smart-budget-55f99",
-  storageBucket: "smart-budget-55f99.firebasestorage.app",
-  messagingSenderId: "386991773547",
-  appId: "1:386991773547:web:9e335b919e448f2dcfde2e",
-  measurementId: "G-M6HT37LGFK"
-};
+            apiKey: "AIzaSyBeSa90G5b_fl9HoNiDQhUJSyS_4n3x5o0",
+            authDomain: "smart-budget-55f99.firebaseapp.com",
+            projectId: "smart-budget-55f99",
+            storageBucket: "smart-budget-55f99.firebasestorage.app",
+            messagingSenderId: "386991773547",
+            appId: "1:386991773547:web:9e335b919e448f2dcfde2e",
+            measurementId: "G-M6HT37LGFK"
+        };
 
-        // ─── Admin Credentials ───
-        const ADMIN_EMAIL = "hamzamp2026@gmail.com";
+        // ─── Admin Email ───
+        const ADMIN_EMAIL = "hamzamp2026@admin.com";
 
         // ─── Initialize Firebase ───
         firebase.initializeApp(firebaseConfig);
@@ -1322,9 +1472,11 @@
         let currentUser = null;
         let isAdmin = false;
         let currentUserName = '';
+        let currentUserFullName = '';
         let data = {
             budget: 0000,
             currency: 'DH',
+            language: 'en',
             products: [],
             months: {}
         };
@@ -1332,10 +1484,537 @@
         let syncTimeout = null;
         let pieChartInstance = null;
         let monthlyChartInstance = null;
-        let pendingVerificationEmail = '';
+        let viewingUserEmail = null;
 
         const STORAGE_KEY = 'smartBudgetLocal';
-        const USER_DATA_KEY = 'smartBudgetUser';
+
+        // ──────────────── TRANSLATIONS ────────────────
+        const translations = {
+            en: {
+                appTitle: 'Smart Budget',
+                loginSubtitle: 'Sign in to sync across all your devices',
+                loginBtn: 'Sign In',
+                registerBtn: 'Create Account',
+                logout: 'Logout',
+                export: 'Export',
+                import: 'Import',
+                budget: '💰 Monthly Budget',
+                spent: '✅ Total Spent',
+                remaining: '📊 Remaining',
+                profit: '📈 Monthly Profit',
+                dashboard: 'Dashboard',
+                shopping: 'Shopping',
+                products: 'Products',
+                months: 'Months',
+                settings: 'Settings',
+                admin: 'Admin',
+                categorySummary: 'Category Summary',
+                thisMonth: 'This month',
+                category: 'Category',
+                estimated: 'Estimated',
+                real: 'Real',
+                difference: 'Difference',
+                spendingByCategory: 'Spending by Category',
+                monthlyComparison: 'Monthly Comparison',
+                recentPurchases: 'Recent Purchases',
+                quickStats: 'Quick Stats',
+                shoppingList: 'Shopping Checklist',
+                addProduct: 'Add product',
+                totalEstimated: 'Total estimated',
+                totalReal: 'Total real',
+                bought: 'Bought',
+                productDatabase: 'Product Database',
+                monthlySheets: 'Monthly Sheets',
+                monthsSubtitle: 'Each month is saved automatically. Click a month to view details.',
+                settingsTitle: 'Settings',
+                darkMode: 'Dark Mode',
+                currency: 'Currency',
+                language: 'Language',
+                cloudSync: 'Cloud Sync',
+                exportExcel: 'Export Excel (CSV)',
+                importCSV: 'Import CSV',
+                user: 'User',
+                adminPanel: 'Admin Panel',
+                adminSubtitle: 'Click on any user to see their full shopping details.',
+                globalStats: 'Global Statistics',
+                noData: 'No data yet.',
+                noPurchases: 'No purchases yet.',
+                loading: 'Loading...',
+                totalItems: 'Total items',
+                boughtItems: 'Bought',
+                estimatedTotal: 'Estimated total',
+                realTotal: 'Real total',
+                topCategory: 'Top category',
+                admin: 'Admin',
+                users: 'Users',
+                totalUsers: 'Total Users',
+                totalSpentAll: 'Total Spent (All)',
+                avgBudget: 'Average Budget',
+                month: 'Month',
+                spentLabel: 'Spent',
+                budgetLabel: 'Budget',
+                profitLabel: 'Profit',
+                searchProducts: 'Search products...',
+                allCategories: 'All categories',
+                allSubcategories: 'All subcategories',
+                allPriorities: 'All priorities',
+                all: 'All',
+                boughtFilter: 'Bought',
+                unbought: 'Unbought',
+                high: 'High',
+                medium: 'Medium',
+                low: 'Low',
+                noProducts: 'No products found',
+                deleteConfirm: 'Delete this product from current month?',
+                deleteAllConfirm: 'Delete this product from ALL data?',
+                logoutConfirm: 'Logout?',
+                budgetPrompt: 'Set monthly budget',
+                currencyUpdated: 'Currency updated',
+                languageUpdated: 'Language updated',
+                exported: 'Exported!',
+                imported: 'Imported',
+                invalidCSV: 'Invalid CSV',
+                added: 'Added',
+                deleted: 'Deleted',
+                updated: 'Updated',
+                synced: 'Synced from another device',
+                offline: 'Using offline data',
+                cloudSyncText: 'Synced',
+                backToUsers: 'Back to Users',
+                userDetails: 'User Details',
+                noUserData: 'No data for this user.',
+                emailVerified: 'Email verified! Welcome to Smart Budget!',
+                verifyEmail: 'Verify Your Email',
+                verifyInfo: 'A verification email has been sent to your email. Please check your inbox and click the verification link.',
+                verifyBtn: 'I\'ve Verified My Email',
+                resend: 'Resend',
+                checkVerifying: 'Checking...',
+            },
+            fr: {
+                appTitle: 'Budget Intelligent',
+                loginSubtitle: 'Connectez-vous pour synchroniser tous vos appareils',
+                loginBtn: 'Se connecter',
+                registerBtn: 'Créer un compte',
+                logout: 'Déconnexion',
+                export: 'Exporter',
+                import: 'Importer',
+                budget: '💰 Budget Mensuel',
+                spent: '✅ Dépensé',
+                remaining: '📊 Restant',
+                profit: '📈 Profit Mensuel',
+                dashboard: 'Tableau de bord',
+                shopping: 'Courses',
+                products: 'Produits',
+                months: 'Mois',
+                settings: 'Paramètres',
+                admin: 'Admin',
+                categorySummary: 'Résumé par Catégorie',
+                thisMonth: 'Ce mois-ci',
+                category: 'Catégorie',
+                estimated: 'Estimé',
+                real: 'Réel',
+                difference: 'Différence',
+                spendingByCategory: 'Dépenses par Catégorie',
+                monthlyComparison: 'Comparaison Mensuelle',
+                recentPurchases: 'Achats Récents',
+                quickStats: 'Statistiques Rapides',
+                shoppingList: 'Liste de Courses',
+                addProduct: 'Ajouter un produit',
+                totalEstimated: 'Total estimé',
+                totalReal: 'Total réel',
+                bought: 'Acheté',
+                productDatabase: 'Base de Données Produits',
+                monthlySheets: 'Feuilles Mensuelles',
+                monthsSubtitle: 'Chaque mois est sauvegardé automatiquement. Cliquez sur un mois pour voir les détails.',
+                settingsTitle: 'Paramètres',
+                darkMode: 'Mode Sombre',
+                currency: 'Devise',
+                language: 'Langue',
+                cloudSync: 'Synchronisation Cloud',
+                exportExcel: 'Exporter Excel (CSV)',
+                importCSV: 'Importer CSV',
+                user: 'Utilisateur',
+                adminPanel: 'Panneau Admin',
+                adminSubtitle: 'Cliquez sur un utilisateur pour voir ses achats.',
+                globalStats: 'Statistiques Globales',
+                noData: 'Pas encore de données.',
+                noPurchases: 'Pas encore d\'achats.',
+                loading: 'Chargement...',
+                totalItems: 'Total articles',
+                boughtItems: 'Achetés',
+                estimatedTotal: 'Total estimé',
+                realTotal: 'Total réel',
+                topCategory: 'Catégorie principale',
+                admin: 'Admin',
+                users: 'Utilisateurs',
+                totalUsers: 'Total Utilisateurs',
+                totalSpentAll: 'Total Dépensé (Tous)',
+                avgBudget: 'Budget Moyen',
+                month: 'Mois',
+                spentLabel: 'Dépensé',
+                budgetLabel: 'Budget',
+                profitLabel: 'Profit',
+                searchProducts: 'Rechercher des produits...',
+                allCategories: 'Toutes les catégories',
+                allSubcategories: 'Toutes les sous-catégories',
+                allPriorities: 'Toutes les priorités',
+                all: 'Tous',
+                boughtFilter: 'Acheté',
+                unbought: 'Non acheté',
+                high: 'Haute',
+                medium: 'Moyenne',
+                low: 'Basse',
+                noProducts: 'Aucun produit trouvé',
+                deleteConfirm: 'Supprimer ce produit du mois en cours ?',
+                deleteAllConfirm: 'Supprimer ce produit de TOUTES les données ?',
+                logoutConfirm: 'Se déconnecter ?',
+                budgetPrompt: 'Définir le budget mensuel',
+                currencyUpdated: 'Devise mise à jour',
+                languageUpdated: 'Langue mise à jour',
+                exported: 'Exporté !',
+                imported: 'Importé',
+                invalidCSV: 'CSV invalide',
+                added: 'Ajouté',
+                deleted: 'Supprimé',
+                updated: 'Mis à jour',
+                synced: 'Synchronisé depuis un autre appareil',
+                offline: 'Utilisation hors ligne',
+                cloudSyncText: 'Synchronisé',
+                backToUsers: 'Retour aux utilisateurs',
+                userDetails: 'Détails de l\'utilisateur',
+                noUserData: 'Pas de données pour cet utilisateur.',
+                emailVerified: 'Email vérifié ! Bienvenue sur Budget Intelligent !',
+                verifyEmail: 'Vérifiez votre email',
+                verifyInfo: 'Un email de vérification a été envoyé à votre adresse. Veuillez vérifier votre boîte de réception et cliquer sur le lien de vérification.',
+                verifyBtn: 'J\'ai vérifié mon email',
+                resend: 'Renvoyer',
+                checkVerifying: 'Vérification...',
+            },
+            ar: {
+                appTitle: 'الميزانية الذكية',
+                loginSubtitle: 'تسجيل الدخول للمزامنة بين جميع أجهزتك',
+                loginBtn: 'تسجيل الدخول',
+                registerBtn: 'إنشاء حساب',
+                logout: 'تسجيل الخروج',
+                export: 'تصدير',
+                import: 'استيراد',
+                budget: '💰 الميزانية الشهرية',
+                spent: '✅ المصروف',
+                remaining: '📊 المتبقي',
+                profit: '📈 الربح الشهري',
+                dashboard: 'لوحة التحكم',
+                shopping: 'التسوق',
+                products: 'المنتجات',
+                months: 'الأشهر',
+                settings: 'الإعدادات',
+                admin: 'المشرف',
+                categorySummary: 'ملخص الفئات',
+                thisMonth: 'هذا الشهر',
+                category: 'الفئة',
+                estimated: 'تقديري',
+                real: 'فعلي',
+                difference: 'الفرق',
+                spendingByCategory: 'المصروفات حسب الفئة',
+                monthlyComparison: 'مقارنة شهرية',
+                recentPurchases: 'المشتريات الأخيرة',
+                quickStats: 'إحصائيات سريعة',
+                shoppingList: 'قائمة التسوق',
+                addProduct: 'إضافة منتج',
+                totalEstimated: 'الإجمالي التقديري',
+                totalReal: 'الإجمالي الفعلي',
+                bought: 'تم الشراء',
+                productDatabase: 'قاعدة بيانات المنتجات',
+                monthlySheets: 'الأوراق الشهرية',
+                monthsSubtitle: 'يتم حفظ كل شهر تلقائياً. انقر على شهر لعرض التفاصيل.',
+                settingsTitle: 'الإعدادات',
+                darkMode: 'الوضع المظلم',
+                currency: 'العملة',
+                language: 'اللغة',
+                cloudSync: 'المزامنة السحابية',
+                exportExcel: 'تصدير Excel (CSV)',
+                importCSV: 'استيراد CSV',
+                user: 'المستخدم',
+                adminPanel: 'لوحة المشرف',
+                adminSubtitle: 'انقر على مستخدم لرؤية مشترياته.',
+                globalStats: 'إحصائيات عامة',
+                noData: 'لا توجد بيانات بعد.',
+                noPurchases: 'لا توجد مشتريات بعد.',
+                loading: 'جاري التحميل...',
+                totalItems: 'إجمالي العناصر',
+                boughtItems: 'تم الشراء',
+                estimatedTotal: 'الإجمالي التقديري',
+                realTotal: 'الإجمالي الفعلي',
+                topCategory: 'أعلى فئة',
+                admin: 'مشرف',
+                users: 'المستخدمين',
+                totalUsers: 'إجمالي المستخدمين',
+                totalSpentAll: 'إجمالي المصروف (الكل)',
+                avgBudget: 'متوسط الميزانية',
+                month: 'الشهر',
+                spentLabel: 'المصروف',
+                budgetLabel: 'الميزانية',
+                profitLabel: 'الربح',
+                searchProducts: 'البحث عن منتجات...',
+                allCategories: 'جميع الفئات',
+                allSubcategories: 'جميع الفئات الفرعية',
+                allPriorities: 'جميع الأولويات',
+                all: 'الكل',
+                boughtFilter: 'تم الشراء',
+                unbought: 'لم يشتري',
+                high: 'عالية',
+                medium: 'متوسطة',
+                low: 'منخفضة',
+                noProducts: 'لم يتم العثور على منتجات',
+                deleteConfirm: 'حذف هذا المنتج من الشهر الحالي؟',
+                deleteAllConfirm: 'حذف هذا المنتج من جميع البيانات؟',
+                logoutConfirm: 'تسجيل الخروج؟',
+                budgetPrompt: 'تعيين الميزانية الشهرية',
+                currencyUpdated: 'تم تحديث العملة',
+                languageUpdated: 'تم تحديث اللغة',
+                exported: 'تم التصدير!',
+                imported: 'تم الاستيراد',
+                invalidCSV: 'ملف CSV غير صالح',
+                added: 'تمت الإضافة',
+                deleted: 'تم الحذف',
+                updated: 'تم التحديث',
+                synced: 'تمت المزامنة من جهاز آخر',
+                offline: 'استخدام البيانات دون اتصال',
+                cloudSyncText: 'متزامن',
+                backToUsers: 'العودة إلى المستخدمين',
+                userDetails: 'تفاصيل المستخدم',
+                noUserData: 'لا توجد بيانات لهذا المستخدم.',
+                emailVerified: 'تم التحقق من البريد الإلكتروني! مرحباً بك في الميزانية الذكية!',
+                verifyEmail: 'تحقق من بريدك الإلكتروني',
+                verifyInfo: 'تم إرسال رسالة تحقق إلى بريدك الإلكتروني. يرجى التحقق من صندوق الوارد والنقر على رابط التحقق.',
+                verifyBtn: 'لقد تحققت من بريدي الإلكتروني',
+                resend: 'إعادة الإرسال',
+                checkVerifying: 'جاري التحقق...',
+            },
+            tr: {
+                appTitle: 'Akıllı Bütçe',
+                loginSubtitle: 'Tüm cihazlarınızda senkronize olmak için giriş yapın',
+                loginBtn: 'Giriş Yap',
+                registerBtn: 'Hesap Oluştur',
+                logout: 'Çıkış Yap',
+                export: 'Dışa Aktar',
+                import: 'İçe Aktar',
+                budget: '💰 Aylık Bütçe',
+                spent: '✅ Harcanan',
+                remaining: '📊 Kalan',
+                profit: '📈 Aylık Kar',
+                dashboard: 'Kontrol Paneli',
+                shopping: 'Alışveriş',
+                products: 'Ürünler',
+                months: 'Aylar',
+                settings: 'Ayarlar',
+                admin: 'Yönetici',
+                categorySummary: 'Kategori Özeti',
+                thisMonth: 'Bu ay',
+                category: 'Kategori',
+                estimated: 'Tahmini',
+                real: 'Gerçek',
+                difference: 'Fark',
+                spendingByCategory: 'Kategoriye Göre Harcamalar',
+                monthlyComparison: 'Aylık Karşılaştırma',
+                recentPurchases: 'Son Alışverişler',
+                quickStats: 'Hızlı İstatistikler',
+                shoppingList: 'Alışveriş Listesi',
+                addProduct: 'Ürün ekle',
+                totalEstimated: 'Toplam tahmini',
+                totalReal: 'Toplam gerçek',
+                bought: 'Satın alındı',
+                productDatabase: 'Ürün Veritabanı',
+                monthlySheets: 'Aylık Sayfalar',
+                monthsSubtitle: 'Her ay otomatik olarak kaydedilir. Detayları görmek için bir aya tıklayın.',
+                settingsTitle: 'Ayarlar',
+                darkMode: 'Karanlık Mod',
+                currency: 'Para Birimi',
+                language: 'Dil',
+                cloudSync: 'Bulut Senkronizasyonu',
+                exportExcel: 'Excel Dışa Aktar (CSV)',
+                importCSV: 'CSV İçe Aktar',
+                user: 'Kullanıcı',
+                adminPanel: 'Yönetici Paneli',
+                adminSubtitle: 'Bir kullanıcıya tıklayarak alışveriş detaylarını görün.',
+                globalStats: 'Küresel İstatistikler',
+                noData: 'Henüz veri yok.',
+                noPurchases: 'Henüz alışveriş yok.',
+                loading: 'Yükleniyor...',
+                totalItems: 'Toplam öğe',
+                boughtItems: 'Satın alındı',
+                estimatedTotal: 'Tahmini toplam',
+                realTotal: 'Gerçek toplam',
+                topCategory: 'En çok kategori',
+                admin: 'Yönetici',
+                users: 'Kullanıcılar',
+                totalUsers: 'Toplam Kullanıcı',
+                totalSpentAll: 'Toplam Harcama (Tümü)',
+                avgBudget: 'Ortalama Bütçe',
+                month: 'Ay',
+                spentLabel: 'Harcanan',
+                budgetLabel: 'Bütçe',
+                profitLabel: 'Kar',
+                searchProducts: 'Ürünleri ara...',
+                allCategories: 'Tüm kategoriler',
+                allSubcategories: 'Tüm alt kategoriler',
+                allPriorities: 'Tüm öncelikler',
+                all: 'Tümü',
+                boughtFilter: 'Satın alındı',
+                unbought: 'Satın alınmadı',
+                high: 'Yüksek',
+                medium: 'Orta',
+                low: 'Düşük',
+                noProducts: 'Ürün bulunamadı',
+                deleteConfirm: 'Bu ürünü bu aydan sil?',
+                deleteAllConfirm: 'Bu ürünü TÜM verilerden sil?',
+                logoutConfirm: 'Çıkış yap?',
+                budgetPrompt: 'Aylık bütçeyi belirleyin',
+                currencyUpdated: 'Para birimi güncellendi',
+                languageUpdated: 'Dil güncellendi',
+                exported: 'Dışa aktarıldı!',
+                imported: 'İçe aktarıldı',
+                invalidCSV: 'Geçersiz CSV',
+                added: 'Eklendi',
+                deleted: 'Silindi',
+                updated: 'Güncellendi',
+                synced: 'Başka bir cihazdan senkronize edildi',
+                offline: 'Çevrimdışı veri kullanımı',
+                cloudSyncText: 'Senkronize',
+                backToUsers: 'Kullanıcılara Dön',
+                userDetails: 'Kullanıcı Detayları',
+                noUserData: 'Bu kullanıcı için veri yok.',
+                emailVerified: 'E-posta doğrulandı! Akıllı Bütçe\'ye hoş geldiniz!',
+                verifyEmail: 'E-postanızı Doğrulayın',
+                verifyInfo: 'E-posta adresinize bir doğrulama e-postası gönderildi. Lütfen gelen kutunuzu kontrol edin ve doğrulama bağlantısına tıklayın.',
+                verifyBtn: 'E-postamı Doğruladım',
+                resend: 'Yeniden Gönder',
+                checkVerifying: 'Kontrol ediliyor...',
+            },
+            ja: {
+                appTitle: 'スマートバジェット',
+                loginSubtitle: 'すべてのデバイスで同期するにはサインイン',
+                loginBtn: 'サインイン',
+                registerBtn: 'アカウント作成',
+                logout: 'ログアウト',
+                export: 'エクスポート',
+                import: 'インポート',
+                budget: '💰 月次予算',
+                spent: '✅ 支出合計',
+                remaining: '📊 残り',
+                profit: '📈 月次利益',
+                dashboard: 'ダッシュボード',
+                shopping: 'ショッピング',
+                products: '製品',
+                months: '月次',
+                settings: '設定',
+                admin: '管理者',
+                categorySummary: 'カテゴリー概要',
+                thisMonth: '今月',
+                category: 'カテゴリー',
+                estimated: '見積もり',
+                real: '実績',
+                difference: '差額',
+                spendingByCategory: 'カテゴリー別支出',
+                monthlyComparison: '月次比較',
+                recentPurchases: '最近の購入',
+                quickStats: 'クイック統計',
+                shoppingList: 'ショッピングリスト',
+                addProduct: '製品を追加',
+                totalEstimated: '見積もり合計',
+                totalReal: '実績合計',
+                bought: '購入済み',
+                productDatabase: '製品データベース',
+                monthlySheets: '月次シート',
+                monthsSubtitle: '各月は自動的に保存されます。詳細を表示するには月をクリックしてください。',
+                settingsTitle: '設定',
+                darkMode: 'ダークモード',
+                currency: '通貨',
+                language: '言語',
+                cloudSync: 'クラウド同期',
+                exportExcel: 'Excelエクスポート (CSV)',
+                importCSV: 'CSVインポート',
+                user: 'ユーザー',
+                adminPanel: '管理者パネル',
+                adminSubtitle: 'ユーザーをクリックして買い物の詳細を表示します。',
+                globalStats: 'グローバル統計',
+                noData: 'データがまだありません。',
+                noPurchases: '購入がまだありません。',
+                loading: '読み込み中...',
+                totalItems: '合計アイテム',
+                boughtItems: '購入済み',
+                estimatedTotal: '見積もり合計',
+                realTotal: '実績合計',
+                topCategory: 'トップカテゴリー',
+                admin: '管理者',
+                users: 'ユーザー',
+                totalUsers: '合計ユーザー',
+                totalSpentAll: '総支出 (全ユーザー)',
+                avgBudget: '平均予算',
+                month: '月',
+                spentLabel: '支出',
+                budgetLabel: '予算',
+                profitLabel: '利益',
+                searchProducts: '製品を検索...',
+                allCategories: 'すべてのカテゴリー',
+                allSubcategories: 'すべてのサブカテゴリー',
+                allPriorities: 'すべての優先度',
+                all: 'すべて',
+                boughtFilter: '購入済み',
+                unbought: '未購入',
+                high: '高',
+                medium: '中',
+                low: '低',
+                noProducts: '製品が見つかりません',
+                deleteConfirm: '今月からこの製品を削除しますか？',
+                deleteAllConfirm: 'すべてのデータからこの製品を削除しますか？',
+                logoutConfirm: 'ログアウトしますか？',
+                budgetPrompt: '月次予算を設定',
+                currencyUpdated: '通貨が更新されました',
+                languageUpdated: '言語が更新されました',
+                exported: 'エクスポート完了！',
+                imported: 'インポート完了',
+                invalidCSV: '無効なCSV',
+                added: '追加されました',
+                deleted: '削除されました',
+                updated: '更新されました',
+                synced: '別のデバイスから同期されました',
+                offline: 'オフラインデータ使用',
+                cloudSyncText: '同期済み',
+                backToUsers: 'ユーザーに戻る',
+                userDetails: 'ユーザー詳細',
+                noUserData: 'このユーザーのデータはありません。',
+                emailVerified: 'メールが認証されました！スマートバジェットへようこそ！',
+                verifyEmail: 'メールを認証する',
+                verifyInfo: '認証メールが送信されました。受信トレイを確認し、認証リンクをクリックしてください。',
+                verifyBtn: 'メールを認証しました',
+                resend: '再送信',
+                checkVerifying: '確認中...',
+            }
+        };
+
+        let t = translations.en;
+
+        function getLang() { return data.language || 'en'; }
+
+        function _(key) {
+            const lang = getLang();
+            if (translations[lang] && translations[lang][key] !== undefined) {
+                return translations[lang][key];
+            }
+            if (translations.en && translations.en[key] !== undefined) {
+                return translations.en[key];
+            }
+            return key;
+        }
+
+        function getCurrencySymbol() {
+            const symbols = { 'DH': 'DH', '$': '$', '€': '€', '£': '£', '₺': '₺','¥':'¥' };
+            return symbols[data.currency] || 'DH';
+        }
+
+        function fmt(n) {
+            return Number(n).toFixed(0) + ' ' + getCurrencySymbol();
+        }
 
         // ──────────────── AUTH UI ────────────────
 
@@ -1367,44 +2046,20 @@
             loadingEl.style.display = 'block';
             btn.disabled = true;
 
-            // Check admin login
-            if (email === ADMIN_EMAIL) {
-                auth.signInWithEmailAndPassword(email, password)
-                    .then(userCredential => {
-                        currentUser = userCredential.user;
-                        isAdmin = true;
-                        loadingEl.style.display = 'none';
-                        btn.disabled = false;
-                        document.getElementById('authScreen').classList.add('hidden');
-                        document.getElementById('app').classList.add('visible');
-                        document.getElementById('adminBadge').classList.remove('hidden');
-                        document.getElementById('adminTab').classList.remove('hidden');
-                        initializeApp();
-                        showToast('👑 Welcome Admin!');
-                    })
-                    .catch(error => {
-                        loadingEl.style.display = 'none';
-                        btn.disabled = false;
-                        errorEl.textContent = error.message;
-                        errorEl.style.display = 'block';
-                    });
-                return;
-            }
-
             auth.signInWithEmailAndPassword(email, password)
                 .then(userCredential => {
                     currentUser = userCredential.user;
-                    isAdmin = false;
                     loadingEl.style.display = 'none';
                     btn.disabled = false;
                     document.getElementById('authScreen').classList.add('hidden');
                     document.getElementById('app').classList.add('visible');
-                    document.getElementById('adminBadge').classList.add('hidden');
-                    document.getElementById('adminTab').classList.add('hidden');
-                    // Load user name
-                    loadUserName();
+                    if (currentUser.email === ADMIN_EMAIL) {
+                        isAdmin = true;
+                        document.getElementById('adminBadge').classList.remove('hidden');
+                        document.getElementById('adminTab').classList.remove('hidden');
+                    }
+                    loadUserData();
                     initializeApp();
-                    showToast('✅ Welcome back!');
                 })
                 .catch(error => {
                     loadingEl.style.display = 'none';
@@ -1454,12 +2109,9 @@
                 return;
             }
 
-            pendingVerificationEmail = email;
-
             auth.createUserWithEmailAndPassword(email, password)
                 .then(userCredential => {
                     currentUser = userCredential.user;
-                    // Save user name to Firestore
                     return db.collection('users').doc(currentUser.uid).set({
                         name: name,
                         surname: surname,
@@ -1468,13 +2120,12 @@
                     }, { merge: true });
                 })
                 .then(() => {
-                    // Send verification email
                     return currentUser.sendEmailVerification();
                 })
                 .then(() => {
                     loadingEl.style.display = 'none';
                     btn.disabled = false;
-                    successEl.textContent = '✅ Verification code sent to your email! Please check your inbox.';
+                    successEl.textContent = '✅ Verification email sent! Please check your inbox.';
                     successEl.style.display = 'block';
                     document.getElementById('verifySection').classList.add('active');
                     showToast('📧 Verification email sent!');
@@ -1487,24 +2138,15 @@
                 });
         }
 
-        function verifyEmail() {
-            const code = document.getElementById('verifyCode').value.trim();
+        function checkVerification() {
             const errorEl = document.getElementById('verifyError');
             const loadingEl = document.getElementById('verifyLoading');
             const btn = document.querySelector('#verifySection button');
-
-            if (!code) {
-                errorEl.textContent = 'Please enter the verification code.';
-                errorEl.style.display = 'block';
-                return;
-            }
 
             errorEl.style.display = 'none';
             loadingEl.style.display = 'block';
             btn.disabled = true;
 
-            // Firebase email verification is automatic via link
-            // We'll just check if the user verified their email
             currentUser.reload().then(() => {
                 if (currentUser.emailVerified) {
                     loadingEl.style.display = 'none';
@@ -1512,14 +2154,14 @@
                     document.getElementById('verifySection').classList.remove('active');
                     document.getElementById('authScreen').classList.add('hidden');
                     document.getElementById('app').classList.add('visible');
-                    isAdmin = currentUser.email === ADMIN_EMAIL;
-                    if (isAdmin) {
+                    if (currentUser.email === ADMIN_EMAIL) {
+                        isAdmin = true;
                         document.getElementById('adminBadge').classList.remove('hidden');
                         document.getElementById('adminTab').classList.remove('hidden');
                     }
-                    loadUserName();
+                    loadUserData();
                     initializeApp();
-                    showToast('✅ Email verified! Welcome to Smart Budget!');
+                    showToast('✅ ' + _( 'emailVerified'));
                 } else {
                     loadingEl.style.display = 'none';
                     btn.disabled = false;
@@ -1537,23 +2179,20 @@
         function resendVerification() {
             if (currentUser) {
                 currentUser.sendEmailVerification()
-                    .then(() => {
-                        showToast('📧 Verification email resent!');
-                    })
-                    .catch(err => {
-                        showToast('❌ Error: ' + err.message);
-                    });
+                    .then(() => showToast('📧 Verification email resent!'))
+                    .catch(err => showToast('❌ Error: ' + err.message));
             }
         }
 
-        function loadUserName() {
+        function loadUserData() {
             if (!currentUser) return;
             db.collection('users').doc(currentUser.uid).get()
                 .then(doc => {
                     if (doc.exists) {
                         const userData = doc.data();
-                        currentUserName = userData.name + ' ' + userData.surname;
-                        document.getElementById('userNameDisplay').textContent = '👤 ' + currentUserName;
+                        currentUserName = userData.name || '';
+                        currentUserFullName = currentUserName + ' ' + (userData.surname || '');
+                        document.getElementById('userNameDisplay').textContent = '- ' + currentUserFullName;
                         document.getElementById('userEmailDisplay').textContent = currentUser.email;
                     }
                 })
@@ -1561,7 +2200,7 @@
         }
 
         function handleLogout() {
-            if (confirm('Logout?')) {
+            if (confirm(_( 'logoutConfirm'))) {
                 auth.signOut().then(() => {
                     currentUser = null;
                     isAdmin = false;
@@ -1570,12 +2209,13 @@
                     document.getElementById('loginPassword').value = '';
                     document.getElementById('adminBadge').classList.add('hidden');
                     document.getElementById('adminTab').classList.add('hidden');
+                    document.getElementById('authScreen').classList.remove('hidden');
                     showToast('Logged out');
                 });
             }
         }
 
-        // ─── Auto-login check ───
+        // ─── Auth State Listener ───
         auth.onAuthStateChanged(user => {
             if (user) {
                 currentUser = user;
@@ -1586,7 +2226,7 @@
                 }
                 document.getElementById('authScreen').classList.add('hidden');
                 document.getElementById('app').classList.add('visible');
-                loadUserName();
+                loadUserData();
                 initializeApp();
             } else {
                 document.getElementById('authScreen').classList.remove('hidden');
@@ -1630,15 +2270,6 @@
             refreshAll();
         }
 
-        function getCurrencySymbol() {
-            const symbols = { 'DH': 'DH', '$': '$', '€': '€', '£': '£', '₺': '₺', '¥':'¥' };
-            return symbols[data.currency] || 'DH';
-        }
-
-        function fmt(n) {
-            return Number(n).toFixed(0) + ' ' + getCurrencySymbol();
-        }
-
         function getUserDocRef() {
             if (!currentUser) return null;
             return db.collection('users').doc(currentUser.uid);
@@ -1659,6 +2290,7 @@
             const saveData = {
                 budget: data.budget,
                 currency: data.currency,
+                language: data.language || 'en',
                 products: data.products,
                 months: data.months,
                 updatedAt: firebase.firestore.FieldValue.serverTimestamp()
@@ -1687,11 +2319,13 @@
                 .then(doc => {
                     if (doc.exists) {
                         const fbData = doc.data();
-                        data.budget = fbData.budget || 0000;
+                        data.budget = fbData.budget || 1500;
                         data.currency = fbData.currency || 'DH';
+                        data.language = fbData.language || 'en';
                         data.products = fbData.products || [];
                         data.months = fbData.months || {};
                         localStorage.setItem(STORAGE_KEY + '_' + currentUser.uid, JSON.stringify(data));
+                        applyTranslations();
                         refreshAll();
                         updateSyncStatus('online');
                     } else {
@@ -1700,14 +2334,17 @@
                             try {
                                 const parsed = JSON.parse(local);
                                 data = parsed;
+                                applyTranslations();
                                 refreshAll();
                                 updateSyncStatus('online');
                             } catch (e) {
                                 seedDemoData();
+                                applyTranslations();
                                 refreshAll();
                             }
                         } else {
                             seedDemoData();
+                            applyTranslations();
                             refreshAll();
                         }
                         saveToFirebase();
@@ -1721,14 +2358,17 @@
                         try {
                             const parsed = JSON.parse(local);
                             data = parsed;
+                            applyTranslations();
                             refreshAll();
                             updateSyncStatus('offline');
                         } catch (e) {
                             seedDemoData();
+                            applyTranslations();
                             refreshAll();
                         }
                     } else {
                         seedDemoData();
+                        applyTranslations();
                         refreshAll();
                     }
                 });
@@ -1740,21 +2380,30 @@
             docRef.onSnapshot(doc => {
                 if (doc.exists && !isSyncing) {
                     const fbData = doc.data();
-                    const currentStr = JSON.stringify(data);
+                    const currentStr = JSON.stringify({
+                        budget: data.budget,
+                        currency: data.currency,
+                        language: data.language,
+                        products: data.products,
+                        months: data.months
+                    });
                     const fbStr = JSON.stringify({
                         budget: fbData.budget,
                         currency: fbData.currency,
+                        language: fbData.language,
                         products: fbData.products,
                         months: fbData.months
                     });
                     if (currentStr !== fbStr) {
-                        data.budget = fbData.budget || 0000;
+                        data.budget = fbData.budget || 1500;
                         data.currency = fbData.currency || 'DH';
+                        data.language = fbData.language || 'en';
                         data.products = fbData.products || [];
                         data.months = fbData.months || {};
                         localStorage.setItem(STORAGE_KEY + '_' + currentUser.uid, JSON.stringify(data));
+                        applyTranslations();
                         refreshAll();
-                        showToast('🔄 Synced from another device');
+                        showToast('🔄 ' + _( 'synced'));
                     }
                 }
             }, err => {
@@ -1771,17 +2420,77 @@
             dot.className = 'dot';
             if (status === 'online') {
                 dot.classList.add('online');
-                text.textContent = 'Synced';
-                if (statusText) statusText.textContent = 'Connected';
+                text.textContent = _( 'cloudSyncText') || 'Synced';
+                if (statusText) statusText.textContent = _( 'cloudSyncText') || 'Connected';
             } else if (status === 'offline') {
                 dot.classList.add('offline');
-                text.textContent = 'Offline';
-                if (statusText) statusText.textContent = 'Offline';
+                text.textContent = _( 'offline') || 'Offline';
+                if (statusText) statusText.textContent = _( 'offline') || 'Offline';
             } else {
                 dot.classList.add('syncing');
                 text.textContent = 'Syncing...';
                 if (statusText) statusText.textContent = 'Syncing...';
             }
+        }
+
+        // ──────────────── LANGUAGE ────────────────
+
+        function applyTranslations() {
+            const lang = getLang();
+            t = translations[lang] || translations.en;
+
+            // Update all text elements
+            document.querySelectorAll('[data-i18n]').forEach(el => {
+                const key = el.dataset.i18n;
+                if (t[key] !== undefined) el.textContent = t[key];
+            });
+
+            // Update button texts
+            document.getElementById('loginBtn').textContent = _( 'loginBtn');
+            document.getElementById('registerBtn').textContent = _( 'registerBtn');
+
+            // Update placeholders
+            document.getElementById('searchShopping').placeholder = _( 'searchProducts');
+            document.getElementById('searchProducts').placeholder = _( 'searchProducts');
+
+            // Update filter options
+            updateFilterLabels();
+
+            // Update language dropdown
+            document.getElementById('languageSelect').value = data.language || 'en';
+        }
+
+        function updateFilterLabels() {
+            const filterShopping = document.getElementById('filterShopping');
+            if (filterShopping) {
+                filterShopping.options[0].textContent = _( 'all');
+                filterShopping.options[1].textContent = _( 'boughtFilter');
+                filterShopping.options[2].textContent = _( 'unbought');
+            }
+
+            document.querySelectorAll('select[id*="priority"] option').forEach(opt => {
+                if (opt.value === 'all') opt.textContent = _( 'allPriorities');
+                if (opt.value === 'high') opt.textContent = _( 'high');
+                if (opt.value === 'medium') opt.textContent = _( 'medium');
+                if (opt.value === 'low') opt.textContent = _( 'low');
+            });
+
+            document.querySelectorAll('select[id*="category"] option').forEach(opt => {
+                if (opt.value === 'all') opt.textContent = _( 'allCategories');
+            });
+
+            document.querySelectorAll('select[id*="subcategory"] option').forEach(opt => {
+                if (opt.value === 'all') opt.textContent = _( 'allSubcategories');
+            });
+        }
+
+        function updateLanguage() {
+            const sel = document.getElementById('languageSelect');
+            data.language = sel.value;
+            saveToFirebase();
+            applyTranslations();
+            refreshAll();
+            showToast('✅ ' + _( 'languageUpdated'));
         }
 
         // ──────────────── DEMO DATA ────────────────
@@ -1790,8 +2499,8 @@
             const now = new Date();
             const monthKey = getMonthKey(now);
             data.products = [
-                { category: 'A', subcategory: 'A1', name: 'exmple', quantity: 1, unit: 'Kg',
-                    priority: 'medium', bought: false, estimated: 10, real: 0, notes: '', date: now
+                { category: 'A1', name: 'ex', quantity: 1, unit: 'Kg', defaultPrice: 1, priority: 'medium', bought: false,
+                 estimated: 25, real: 0, notes: '', date: now
                         .toISOString() },
             ];
             data.months[monthKey] = {
@@ -1807,12 +2516,14 @@
             loadFromFirebase();
             listenToFirebase();
             setupAutoSave();
+            applyTranslations();
             refreshAll();
             if (localStorage.getItem('darkMode') === 'true') {
                 document.body.classList.add('dark');
                 updateDarkToggle();
             }
             document.getElementById('currencySelect').value = data.currency || 'DH';
+            document.getElementById('languageSelect').value = data.language || 'en';
         }
 
         function setupAutoSave() {
@@ -1832,6 +2543,11 @@
         }
 
         // ──────────────── RENDER FUNCTIONS ────────────────
+
+        let sortShoppingField = 'name';
+        let sortShoppingAsc = true;
+        let sortProductsField = 'name';
+        let sortProductsAsc = true;
 
         function refreshAll() {
             renderStats();
@@ -1890,7 +2606,7 @@
 
             if (entries.length === 0) {
                 tbody.innerHTML =
-                    `<tr><td colspan="4" class="text-muted text-center" style="padding:20px;">No data yet.</td></tr>`;
+                    `<tr><td colspan="4" class="text-muted text-center" style="padding:20px;">${_( 'noData')}</td></tr>`;
                 return;
             }
 
@@ -1916,14 +2632,14 @@
             const totalDiff = totalEst - totalReal;
             html += `
                 <tr class="total-row">
-                    <td><strong>Total</strong></td>
+                    <td><strong>${_( 'totalEstimated')}</strong></td>
                     <td style="text-align:right;"><strong>${fmt(totalEst)}</strong></td>
                     <td style="text-align:right;"><strong>${fmt(totalReal)}</strong></td>
                     <td style="text-align:right;color:${totalDiff >= 0 ? 'var(--green)' : 'var(--red)'};"><strong>${fmt(totalDiff)}</strong></td>
                 </tr>
                 <tr class="profit-row">
                     <td colspan="4" style="text-align:center;">
-                        🎯 <strong>Monthly Profit: ${fmt(totalDiff)}</strong>
+                        🎯 <strong>${_( 'profit')}: ${fmt(totalDiff)}</strong>
                         ${totalDiff >= 0 ? ' ✅' : ' ⚠️'}
                     </td>
                 </tr>
@@ -1949,7 +2665,7 @@
             if (catEntries.length === 0) {
                 pieChartInstance = new Chart(ctx, {
                     type: 'doughnut',
-                    data: { labels: ['No data'], datasets: [{ data: [1], backgroundColor: ['#e2e8f0'] }] },
+                    data: { labels: [_( 'noData')], datasets: [{ data: [1], backgroundColor: ['#e2e8f0'] }] },
                     options: { responsive: true, maintainAspectRatio: true, plugins: { legend: { display: false } } }
                 });
             } else {
@@ -1975,7 +2691,7 @@
             const recentEl = document.getElementById('recentPurchases');
             if (recent.length === 0) {
                 recentEl.innerHTML =
-                    '<div class="text-muted text-center" style="padding:20px 0;">No purchases yet.</div>';
+                    `<div class="text-muted text-center" style="padding:20px 0;">${_( 'noPurchases')}</div>`;
             } else {
                 recentEl.innerHTML = recent.map(p => `
                     <div class="category-item">
@@ -1990,22 +2706,25 @@
             const totalEst = monthProducts.reduce((s, p) => s + (parseFloat(p.estimated) || 0), 0);
             const totalReal = monthProducts.reduce((s, p) => s + (parseFloat(p.real) || 0), 0);
             document.getElementById('quickStats').innerHTML = `
-                <div class="category-item"><span class="name">📦 Total items</span><span>${totalItems}</span></div>
-                <div class="category-item"><span class="name">✅ Bought</span><span>${boughtItems}</span></div>
-                <div class="category-item"><span class="name">📊 Estimated total</span><span>${fmt(totalEst)}</span></div>
-                <div class="category-item"><span class="name">💵 Real total</span><span>${fmt(totalReal)}</span></div>
-                <div class="category-item"><span class="name">🏷️ Top category</span><span>${catEntries.length > 0 ? catEntries[0][0] : '—'}</span></div>
+                <div class="category-item"><span class="name">📦 ${_( 'totalItems')}</span><span>${totalItems}</span></div>
+                <div class="category-item"><span class="name">✅ ${_( 'boughtItems')}</span><span>${boughtItems}</span></div>
+                <div class="category-item"><span class="name">📊 ${_( 'estimatedTotal')}</span><span>${fmt(totalEst)}</span></div>
+                <div class="category-item"><span class="name">💵 ${_( 'realTotal')}</span><span>${fmt(totalReal)}</span></div>
+                <div class="category-item"><span class="name">🏷️ ${_( 'topCategory')}</span><span>${catEntries.length > 0 ? catEntries[0][0] : '—'}</span></div>
             `;
         }
 
         function renderMonthlyComparison() {
             const keys = Object.keys(data.months).sort();
+            const ctx = document.getElementById('monthlyComparisonChart').getContext('2d');
+
+            if (monthlyChartInstance) monthlyChartInstance.destroy();
+
             if (keys.length === 0) {
-                const ctx = document.getElementById('monthlyComparisonChart').getContext('2d');
-                if (monthlyChartInstance) monthlyChartInstance.destroy();
                 monthlyChartInstance = new Chart(ctx, {
-                    type: 'bar',
-                    data: { labels: ['No data'], datasets: [{ data: [0], backgroundColor: ['#e2e8f0'] }] },
+                    type: 'line',
+                    data: { labels: [_( 'noData')], datasets: [{ data: [0], backgroundColor: 'transparent',
+                            borderColor: '#e2e8f0', pointRadius: 0 }] },
                     options: { responsive: true, maintainAspectRatio: true, plugins: { legend: { display: false } } }
                 });
                 return;
@@ -2025,27 +2744,34 @@
                 return data.months[k].budget || 0;
             });
 
-            const ctx = document.getElementById('monthlyComparisonChart').getContext('2d');
-            if (monthlyChartInstance) monthlyChartInstance.destroy();
+            const textColor = getComputedStyle(document.body).getPropertyValue('--text').trim() || '#1e293b';
+            const text2Color = getComputedStyle(document.body).getPropertyValue('--text2').trim() || '#64748b';
 
             monthlyChartInstance = new Chart(ctx, {
-                type: 'bar',
+                type: 'line',
                 data: {
                     labels: labels,
                     datasets: [{
-                        label: 'Spent',
+                        label: _( 'spentLabel'),
                         data: spentData,
-                        backgroundColor: 'rgba(59, 130, 246, 0.7)',
                         borderColor: '#3b82f6',
-                        borderWidth: 2,
-                        borderRadius: 6
+                        backgroundColor: 'rgba(59, 130, 246, 0.1)',
+                        fill: true,
+                        tension: 0.4,
+                        pointBackgroundColor: '#3b82f6',
+                        pointRadius: 4,
+                        pointHoverRadius: 6,
                     }, {
-                        label: 'Budget',
+                        label: _( 'budgetLabel'),
                         data: budgetData,
-                        backgroundColor: 'rgba(34, 197, 94, 0.5)',
                         borderColor: '#22c55e',
-                        borderWidth: 2,
-                        borderRadius: 6
+                        backgroundColor: 'rgba(34, 197, 94, 0.05)',
+                        fill: true,
+                        tension: 0.4,
+                        borderDash: [8, 4],
+                        pointBackgroundColor: '#22c55e',
+                        pointRadius: 4,
+                        pointHoverRadius: 6,
                     }]
                 },
                 options: {
@@ -2054,31 +2780,29 @@
                     plugins: {
                         legend: {
                             position: 'top',
-                            labels: { color: getComputedStyle(document.body).getPropertyValue('--text').trim() ||
-                                    '#1e293b' }
+                            labels: { color: textColor, usePointStyle: true, padding: 16 }
                         }
                     },
                     scales: {
                         y: {
                             beginAtZero: true,
-                            ticks: { color: getComputedStyle(document.body).getPropertyValue('--text2').trim() ||
-                                    '#64748b' }
+                            ticks: { color: text2Color },
+                            grid: { color: text2Color + '20' }
                         },
                         x: {
-                            ticks: { color: getComputedStyle(document.body).getPropertyValue('--text2').trim() ||
-                                    '#64748b' }
+                            ticks: { color: text2Color },
+                            grid: { color: text2Color + '20' }
                         }
+                    },
+                    interaction: {
+                        intersect: false,
+                        mode: 'index'
                     }
                 }
             });
         }
 
         // ──────────────── SHOPPING ────────────────
-
-        let sortShoppingField = 'name';
-        let sortShoppingAsc = true;
-        let sortProductsField = 'name';
-        let sortProductsAsc = true;
 
         function renderShopping() {
             const monthProducts = getCurrentMonthProducts();
@@ -2090,7 +2814,7 @@
             const cats = new Set(monthProducts.map(p => p.category).filter(Boolean));
             const catSelect = document.getElementById('filterCategoryShopping');
             const currentCat = catSelect.value;
-            catSelect.innerHTML = '<option value="all">All Categories</option>' +
+            catSelect.innerHTML = '<option value="all">' + _( 'allCategories') + '</option>' +
                 Array.from(cats).map(c => `<option value="${c}">${c}</option>`).join('');
             catSelect.value = currentCat;
 
@@ -2116,23 +2840,22 @@
             const tbody = document.getElementById('shoppingBody');
             if (filtered.length === 0) {
                 tbody.innerHTML =
-                    `<tr><td colspan="10" class="text-muted text-center" style="padding:20px;">No products found</td></tr>`;
+                    `<tr><td colspan="10" class="text-muted text-center" style="padding:20px;">${_( 'noProducts')}</td></tr>`;
             } else {
                 tbody.innerHTML = filtered.map(p => `
                     <tr>
                         <td><input type="checkbox" ${p.bought ? 'checked' : ''} onchange="toggleBought('${p.id}')" /></td>
                         <td><input type="text" value="${p.category || ''}" onchange="updateProductField('${p.id}','category',this.value)" /></td>
-                        <td><input type="text" value="${p.subcategory || ''}" onchange="updateProductField('${p.id}','subcategory',this.value)" /></td>
                         <td><input type="text" value="${p.name}" onchange="updateProductField('${p.id}','name',this.value)" /></td>
                         <td><input type="number" value="${p.quantity || 1}" onchange="updateProductField('${p.id}','quantity',parseFloat(this.value)||0)" style="width:50px;" /></td>
                         <td><input type="number" value="${p.estimated || 0}" onchange="updateProductField('${p.id}','estimated',parseFloat(this.value)||0)" style="width:60px;" /></td>
                         <td><input type="number" value="${p.real || 0}" onchange="updateProductField('${p.id}','real',parseFloat(this.value)||0)" style="width:60px;" /></td>
                         <td style="font-weight:600;color:${(p.real||0) > (p.estimated||0) ? 'var(--red)' : 'var(--green)'};">${fmt((p.real||0) - (p.estimated||0))}</td>
-                        <td> 
+                        <td>
                             <select onchange="updateProductField('${p.id}','priority',this.value)" style="background:transparent;border:1px solid var(--border);border-radius:6px;padding:2px 6px;color:var(--text);">
-                                <option value="low" ${p.priority === 'low' ? 'selected' : ''}>Low</option>
-                                <option value="medium" ${p.priority === 'medium' ? 'selected' : ''}>Medium</option>
-                                <option value="high" ${p.priority === 'high' ? 'selected' : ''}>High</option>
+                                <option value="low" ${p.priority === 'low' ? 'selected' : ''}>${_( 'low')}</option>
+                                <option value="medium" ${p.priority === 'medium' ? 'selected' : ''}>${_( 'medium')}</option>
+                                <option value="high" ${p.priority === 'high' ? 'selected' : ''}>${_( 'high')}</option>
                             </select>
                         </td>
                         <td>
@@ -2175,7 +2898,7 @@
             const cats = new Set(data.products.map(p => p.category).filter(Boolean));
             const catSelect = document.getElementById('categoryFilter');
             const currentCat = catSelect.value;
-            catSelect.innerHTML = '<option value="all">All categories</option>' +
+            catSelect.innerHTML = '<option value="all">' + _( 'allCategories') + '</option>' +
                 Array.from(cats).map(c => `<option value="${c}">${c}</option>`).join('');
             catSelect.value = currentCat;
 
@@ -2183,7 +2906,7 @@
                 .subcategory).filter(Boolean));
             const subSelect = document.getElementById('subcategoryFilter');
             const currentSub = subSelect.value;
-            subSelect.innerHTML = '<option value="all">All subcategories</option>' +
+            subSelect.innerHTML = '<option value="all">' + _( 'allSubcategories') + '</option>' +
                 Array.from(subs).map(s => `<option value="${s}">${s}</option>`).join('');
             subSelect.value = currentSub;
 
@@ -2208,15 +2931,14 @@
             const tbody = document.getElementById('productsBody');
             if (filtered.length === 0) {
                 tbody.innerHTML =
-                    `<tr><td colspan="6" class="text-muted text-center" style="padding:20px;">No products in database</td></tr>`;
+                    `<tr><td colspan="6" class="text-muted text-center" style="padding:20px;">${_( 'noProducts')}</td></tr>`;
             } else {
                 tbody.innerHTML = filtered.map(p => `
                     <tr>
                         <td><input type="text" value="${p.category || ''}" onchange="updateMasterProduct('${p.id}','category',this.value)" /></td>
-                        <td><input type="text" value="${p.subcategory || ''}" onchange="updateMasterProduct('${p.id}','subcategory',this.value)" /></td>
                         <td><input type="text" value="${p.name}" onchange="updateMasterProduct('${p.id}','name',this.value)" /></td>
-                        <td><input type="number" value="${p.defaultPrice || 0}" onchange="updateMasterProduct('${p.id}','defaultPrice',parseFloat(this.value)||0)" style="width:70px;" /></td>
                         <td><input type="text" value="${p.unit || ''}" onchange="updateMasterProduct('${p.id}','unit',this.value)" style="width:60px;" /></td>
+                        <td><input type="number" value="${p.defaultPrice || 0}" onchange="updateMasterProduct('${p.id}','defaultPrice',parseFloat(this.value)||0)" style="width:70px;" /></td>
                         <td>
                             <button class="btn-icon" onclick="deleteMasterProduct('${p.id}')"><i class="fas fa-trash danger"></i></button>
                         </td>
@@ -2242,7 +2964,7 @@
             const keys = Object.keys(data.months).sort().reverse();
             if (keys.length === 0) {
                 grid.innerHTML =
-                    '<div class="text-muted text-center" style="padding:20px 0;">No months yet.</div>';
+                    `<div class="text-muted text-center" style="padding:20px 0;">${_( 'noData')}</div>`;
                 return;
             }
             grid.innerHTML = keys.map(key => {
@@ -2256,12 +2978,12 @@
                     <div class="month-card" onclick="loadMonth('${key}')">
                         <div class="month-name">📅 ${name}</div>
                         <div class="month-stats">
-                            <span>Budget: ${fmt(month.budget || 0)}</span>
-                            <span>Spent: ${fmt(totalReal)}</span>
+                            <span>${_( 'budgetLabel')}: ${fmt(month.budget || 0)}</span>
+                            <span>${_( 'spentLabel')}: ${fmt(totalReal)}</span>
                         </div>
                         <div class="month-stats">
-                            <span>Items: ${(month.products||[]).length}</span>
-                            <span>Remaining: ${fmt((month.budget||0) - totalReal)}</span>
+                            <span>${_( 'totalItems')}: ${(month.products||[]).length}</span>
+                            <span>${_( 'remaining')}: ${fmt((month.budget||0) - totalReal)}</span>
                         </div>
                     </div>
                 `;
@@ -2269,7 +2991,7 @@
         }
 
         function loadMonth(key) {
-            if (confirm('Load ' + key + '? This will switch your current view to that month.')) {
+            if (confirm('Load ' + key + '?')) {
                 const currentKey = getMonthKey();
                 data.months[currentKey].products = getCurrentMonthProducts();
                 const monthData = data.months[key];
@@ -2287,21 +3009,21 @@
         // ──────────────── ACTIONS ────────────────
 
         function addProduct() {
-            const name = prompt('Product name:');
+            const name = prompt(_( 'addProduct') + ' name:');
             if (!name) return;
             const cat = prompt('Category:') || 'Uncategorized';
             const sub = prompt('Subcategory:') || '';
             const price = parseFloat(prompt('Estimated price (' + getCurrencySymbol() + '):')) || 0;
             const newProduct = {
                 category: cat,
-                subcategory: sub,
                 name: name,
                 quantity: 1,
                 unit: 'piece',
+                defaultPrice: price,
                 priority: 'medium',
-                bought: false,
                 estimated: price,
                 real: 0,
+                bought: false,
                 notes: '',
                 date: new Date().toISOString()
             };
@@ -2310,7 +3032,7 @@
             monthProducts.push(JSON.parse(JSON.stringify(newProduct)));
             saveToFirebase();
             refreshAll();
-            showToast('✅ Added: ' + name);
+            showToast('✅ ' + _( 'added') + ': ' + name);
         }
 
         function toggleBought(id) {
@@ -2333,7 +3055,7 @@
             const p = monthProducts.find(p => p.id === id);
             if (p) {
                 p[field] = value;
-                if (['name', 'category', 'subcategory', 'defaultPrice', 'unit', 'priority'].includes(field)) {
+                if (['name', 'category', 'defaultPrice', 'unit', 'priority'].includes(field)) {
                     const master = data.products.find(m => m.id === id);
                     if (master) master[field] = value;
                 }
@@ -2352,37 +3074,37 @@
                 }
                 saveToFirebase();
                 refreshAll();
-                showToast('✅ Updated');
+                showToast('✅ ' + _( 'updated'));
             }
         }
 
         function deleteProduct(id) {
-            if (!confirm('Delete this product from current month?')) return;
+            if (!confirm(_( 'deleteConfirm'))) return;
             const monthProducts = getCurrentMonthProducts();
             const idx = monthProducts.findIndex(p => p.id === id);
             if (idx !== -1) monthProducts.splice(idx, 1);
             saveToFirebase();
             refreshAll();
-            showToast('🗑️ Deleted');
+            showToast('🗑️ ' + _( 'deleted'));
         }
 
         function deleteMasterProduct(id) {
-            if (!confirm('Delete this product from ALL data?')) return;
+            if (!confirm(_( 'deleteAllConfirm'))) return;
             data.products = data.products.filter(p => p.id !== id);
             for (const key in data.months) {
                 data.months[key].products = data.months[key].products.filter(p => p.id !== id);
             }
             saveToFirebase();
             refreshAll();
-            showToast('🗑️ Deleted from all');
+            showToast('🗑️ ' + _( 'deleted'));
         }
 
         function editBudget() {
             const current = getCurrentMonthBudget();
-            const newBudget = prompt('Set monthly budget (' + getCurrencySymbol() + '):', current);
+            const newBudget = prompt(_( 'budgetPrompt') + ' (' + getCurrencySymbol() + '):', current);
             if (newBudget !== null && !isNaN(parseFloat(newBudget))) {
                 setCurrentMonthBudget(parseFloat(newBudget));
-                showToast('✅ Budget updated to ' + fmt(parseFloat(newBudget)));
+                showToast('✅ ' + _( 'updated') + ' ' + fmt(parseFloat(newBudget)));
             }
         }
 
@@ -2414,14 +3136,14 @@
             const listEl = document.getElementById('adminUserList');
             const statsEl = document.getElementById('adminGlobalStats');
 
-            listEl.innerHTML = `<div class="text-muted">Loading users...</div>`;
-            statsEl.innerHTML = `<div class="text-muted">Loading global statistics...</div>`;
+            listEl.innerHTML = `<div class="text-muted">${_( 'loading')}</div>`;
+            statsEl.innerHTML = `<div class="text-muted">${_( 'loading')}</div>`;
 
             getUsersCollectionRef().get()
                 .then(snapshot => {
                     if (snapshot.empty) {
-                        listEl.innerHTML = `<div class="text-muted">No users found</div>`;
-                        statsEl.innerHTML = `<div class="text-muted">No data available</div>`;
+                        listEl.innerHTML = `<div class="text-muted">${_( 'noData')}</div>`;
+                        statsEl.innerHTML = `<div class="text-muted">${_( 'noData')}</div>`;
                         return;
                     }
 
@@ -2456,10 +3178,10 @@
                         const surname = userData.surname || '';
                         const fullName = name + ' ' + surname;
                         userCards += `
-                            <div class="admin-user-card">
+                            <div class="admin-user-card" onclick="viewUserDetail('${email}')">
                                 <div>
                                     <div class="email">${fullName.trim() || email} ${isAdminUser ? '👑' : ''}</div>
-                                    <div class="status">Spent: ${userSpent} ${userData.currency || 'DH'} | Budget: ${userBudget} ${userData.currency || 'DH'}</div>
+                                    <div class="status">${_( 'spentLabel')}: ${userSpent} ${userData.currency || 'DH'} | ${_( 'budgetLabel')}: ${userBudget} ${userData.currency || 'DH'}</div>
                                 </div>
                                 <span style="font-size:12px;color:${userSpent <= userBudget ? 'var(--green)' : 'var(--red)'};">${userSpent <= userBudget ? '✅' : '⚠️'}</span>
                             </div>
@@ -2468,7 +3190,7 @@
 
                     listEl.innerHTML = `
                         <div style="margin-bottom:12px;font-weight:600;color:var(--text2);">
-                            👥 Total Users: ${totalUsers}
+                            👥 ${_( 'totalUsers')}: ${totalUsers}
                         </div>
                         <div class="admin-user-list">${userCards}</div>
                     `;
@@ -2476,19 +3198,19 @@
                     statsEl.innerHTML = `
                         <div class="stats-grid" style="grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));">
                             <div class="stat-card blue">
-                                <div class="label">👥 Total Users</div>
+                                <div class="label">👥 ${_( 'totalUsers')}</div>
                                 <div class="value">${totalUsers}</div>
                             </div>
                             <div class="stat-card orange">
-                                <div class="label">💰 Total Spent (All)</div>
+                                <div class="label">💰 ${_( 'totalSpentAll')}</div>
                                 <div class="value">${totalSpentAll} ${data.currency || 'DH'}</div>
                             </div>
                             <div class="stat-card green">
-                                <div class="label">📊 Average Budget</div>
+                                <div class="label">📊 ${_( 'avgBudget')}</div>
                                 <div class="value">${totalUsers > 0 ? Math.round(totalBudgetAll / totalUsers) : 0} ${data.currency || 'DH'}</div>
                             </div>
                             <div class="stat-card purple">
-                                <div class="label">📈 Profit</div>
+                                <div class="label">📈 ${_( 'profitLabel')}</div>
                                 <div class="value">${totalBudgetAll - totalSpentAll} ${data.currency || 'DH'}</div>
                             </div>
                         </div>
@@ -2501,6 +3223,121 @@
                     statsEl.innerHTML =
                         `<div class="text-muted" style="color:var(--red);">Error loading statistics</div>`;
                 });
+        }
+
+        function viewUserDetail(email) {
+            if (!isAdmin) return;
+
+            const detailEl = document.getElementById('adminUserDetail');
+            detailEl.classList.add('active');
+
+            document.getElementById('detailUserName').textContent = '👤 ' + email;
+            document.getElementById('detailUserEmail').textContent = '';
+
+            const contentEl = document.getElementById('detailUserContent');
+            contentEl.innerHTML = `<div class="text-muted">${_( 'loading')}</div>`;
+
+            viewingUserEmail = email;
+
+            // Find user data
+            getUsersCollectionRef().where('email', '==', email).get()
+                .then(snapshot => {
+                    if (snapshot.empty) {
+                        // Try using doc ID
+                        return getUsersCollectionRef().doc(email).get();
+                    }
+                    return snapshot.docs[0].ref.get();
+                })
+                .then(doc => {
+                    if (!doc || !doc.exists) {
+                        contentEl.innerHTML = `<div class="text-muted">${_( 'noUserData')}</div>`;
+                        return;
+                    }
+
+                    const userData = doc.data();
+                    const name = userData.name || '';
+                    const surname = userData.surname || '';
+                    document.getElementById('detailUserName').textContent = '👤 ' + (name + ' ' + surname).trim() || email;
+                    document.getElementById('detailUserEmail').textContent = '📧 ' + email;
+
+                    const months = userData.months || {};
+                    const allProducts = [];
+
+                    for (const monthKey in months) {
+                        const month = months[monthKey];
+                        if (month.products) {
+                            month.products.forEach(p => {
+                                allProducts.push({
+                                    ...p,
+                                    month: monthKey,
+                                    budget: month.budget || 0
+                                });
+                            });
+                        }
+                    }
+
+                    if (allProducts.length === 0) {
+                        contentEl.innerHTML = `<div class="text-muted">${_( 'noUserData')}</div>`;
+                        return;
+                    }
+
+                    // Build a summary table
+                    let html = `
+                        <div style="margin-bottom:16px;">
+                            <strong>${_( 'totalItems')}:</strong> ${allProducts.length} |
+                            <strong>${_( 'boughtItems')}:</strong> ${allProducts.filter(p => p.bought).length}
+                        </div>
+                        <div class="table-wrap">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>${_( 'month')}</th>
+                                        <th>${_( 'category')}</th>
+                                        <th>${_( 'product')}</th>
+                                        <th>${_( 'estimated')}</th>
+                                        <th>${_( 'real')}</th>
+                                        <th>${_( 'boughtFilter')}</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                    `;
+
+                    allProducts.sort((a, b) => new Date(b.date) - new Date(a.date)).slice(0, 50).forEach(p => {
+                        const date = new Date(p.date);
+                        const monthLabel = date.toLocaleDateString('en-US', { month: 'short', year: 'numeric' });
+                        html += `
+                            <tr>
+                                <td>${monthLabel}</td>
+                                <td>${p.category || '—'}</td>
+                                <td>${p.name}</td>
+                                <td>${p.estimated || 0} ${userData.currency || 'DH'}</td>
+                                <td style="font-weight:600;color:${p.bought ? 'var(--green)' : 'var(--text2)'};">${p.bought ? (p.real || 0) : '—'} ${userData.currency || 'DH'}</td>
+                                <td>${p.bought ? '✅' : '❌'}</td>
+                            </tr>
+                        `;
+                    });
+
+                    html += `
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="text-muted" style="margin-top:12px;font-size:12px;">
+                            Showing last 50 items. Total: ${allProducts.length} items.
+                        </div>
+                    `;
+
+                    contentEl.innerHTML = html;
+                })
+                .catch(err => {
+                    console.warn('Error loading user detail:', err);
+                    contentEl.innerHTML =
+                        `<div class="text-muted" style="color:var(--red);">Error: ${err.message}</div>`;
+                });
+        }
+
+        function closeUserDetail() {
+            document.getElementById('adminUserDetail').classList.remove('active');
+            viewingUserEmail = null;
         }
 
         // ──────────────── DARK MODE ────────────────
@@ -2529,7 +3366,7 @@
             data.currency = sel.value;
             saveToFirebase();
             refreshAll();
-            showToast('✅ Currency updated');
+            showToast('✅ ' + _( 'currencyUpdated'));
         }
 
         // ──────────────── EXPORT / IMPORT ────────────────
@@ -2537,10 +3374,10 @@
         function exportCSV() {
             const monthProducts = getCurrentMonthProducts();
             if (monthProducts.length === 0) {
-                showToast('No data to export');
+                showToast(_( 'noData'));
                 return;
             }
-            const headers = ['Category', 'Subcategory', 'Name', 'Quantity', 'Unit', 'Estimated', 'Real', 'Bought', 'Priority',
+            const headers = ['Name', 'Category', 'Quantity', 'Unit', 'Estimated', 'Real', 'Bought', 'Priority',
                 'Notes'
             ];
             const rows = monthProducts.map(p => [
@@ -2553,7 +3390,7 @@
             link.href = URL.createObjectURL(blob);
             link.download = `budget_${getMonthKey()}.csv`;
             link.click();
-            showToast('✅ Exported!');
+            showToast('✅ ' + _( 'exported'));
         }
 
         function handleImport(event) {
@@ -2563,7 +3400,7 @@
             reader.onload = function(e) {
                 const text = e.target.result;
                 const lines = text.split('\n').filter(l => l.trim());
-                if (lines.length < 2) { showToast('Invalid CSV'); return; }
+                if (lines.length < 2) { showToast(_( 'invalidCSV')); return; }
                 const headers = lines[0].split(',').map(h => h.trim().toLowerCase());
                 const monthProducts = getCurrentMonthProducts();
                 for (let i = 1; i < lines.length; i++) {
@@ -2581,17 +3418,15 @@
                         existing.priority = obj.priority || 'medium';
                     } else {
                         monthProducts.push({
-                            id: 'p' + Date.now() + Math.random().toString(36).slice(2, 6),
-                            name: obj.name,
                             category: obj.category || 'Uncategorized',
-                            subcategory: obj.subcategory || '',
-                            defaultPrice: parseFloat(obj.estimated) || 0,
-                            unit: obj.unit || '',
-                            priority: obj.priority || 'medium',
-                            bought: obj.bought?.toLowerCase() === 'yes',
+                            name: obj.name,
                             quantity: parseFloat(obj.quantity) || 1,
+                            unit: obj.unit || '',
+                            defaultPrice: parseFloat(obj.estimated) || 0,
                             estimated: parseFloat(obj.estimated) || 0,
                             real: parseFloat(obj.real) || 0,
+                            priority: obj.priority || 'medium',
+                            bought: obj.bought?.toLowerCase() === 'yes',
                             notes: obj.notes || '',
                             date: new Date().toISOString()
                         });
@@ -2604,7 +3439,7 @@
                 }
                 saveToFirebase();
                 refreshAll();
-                showToast('✅ Imported ' + (monthProducts.length) + ' products');
+                showToast('✅ ' + _( 'imported') + ' ' + (monthProducts.length) + ' products');
             };
             reader.readAsText(file);
             event.target.value = '';
@@ -2631,12 +3466,10 @@
             }, 500);
         };
 
-        console.log('🚀 Smart Budget with Sign Up & Email Verification!');
-        console.log('👑 Admin: Hamza Margal');
-        console.log('📧 Admin email: hamza.margal@admin.com');
-        console.log('🔑 Admin password: Hamza2005');
-        console.log('📝 New users: Sign up with email + password');
-        console.log('✅ Email verification required!');
+        console.log('🚀 Smart Budget v2.0');
+        console.log('👑 Admin: ' + ADMIN_EMAIL);
+        console.log('📝 Features: Sign Up, Email Verification, Admin Panel, Multi-language');
+        console.log('📊 Monthly Comparison: Line Graph');
     </script>
 </body>
 </html>
